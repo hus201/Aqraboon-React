@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Login from './pages/Login';
+import AcceptedRequest from './pages/AcceptedRequest';
 import RequestService from './pages/RequestService';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
@@ -29,7 +30,10 @@ export default function Router() {
     {
       path: '/Service',
       element: <DashboardLayout />,
-      children: [{ path: 'RequestService', element: <RequestService /> }]
+      children: [
+        { path: 'RequestService', element: <RequestService /> },
+        { path: 'AcceptedRequest', element: <AcceptedRequest /> }
+      ]
     },
     {
       path: '/',

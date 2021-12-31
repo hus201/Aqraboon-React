@@ -43,12 +43,12 @@ const sidebarConfig = [
   //   icon: getIcon(personAddFill)
   // },
   {
-    title: 'login',
-    path: '/login',
+    title: 'Accepted Request',
+    path: '/Service/AcceptedRequest',
     icon: getIcon(fileTextFill)
   },
   {
-    title: 'RequestService',
+    title: 'Request Service',
     path: '/Service/RequestService',
     icon: getIcon(personAddFill)
   }

@@ -1,1 +1,4 @@
-export { default as LoginForm } from './LoginForm';
+import AcceptedReqForm from './AcceptedReqForm';
+import LoginForm from './LoginForm';
+
+export { AcceptedReqForm, LoginForm };

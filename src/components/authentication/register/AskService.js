@@ -1,21 +1,9 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { Icon } from '@iconify/react';
 import { useFormik, Form, FormikProvider } from 'formik';
-import eyeFill from '@iconify/icons-eva/eye-fill';
-import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { useNavigate } from 'react-router-dom';
 // material
-import {
-  Stack,
-  TextField,
-  Box,
-  IconButton,
-  Autocomplete,
-  Tooltip,
-  FormHelperText,
-  InputAdornment
-} from '@mui/material';
+import { Stack, TextField, Box, Autocomplete, Tooltip, FormHelperText } from '@mui/material';
 import { LoadingButton, DateTimePicker } from '@mui/lab';
 import GoogleMapReact from 'google-map-react';
 // ----------------------------------------------------------------------
@@ -27,7 +15,6 @@ import Checkbox from '@mui/material/Checkbox';
 
 export default function AskService() {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
   const [valueDate, setvalueDate] = useState(new Date('2014-08-18T21:11:54'));
 
   const handleChangeTime = (newValue) => {
