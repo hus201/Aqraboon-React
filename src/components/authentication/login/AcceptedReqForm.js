@@ -23,7 +23,6 @@ export default function AcceptedReqForm() {
     <div>
       <Stack spacing={3}>
         <TextField fullWidth disabled size="small" label="Sevice" value={Service.service} />
-
         <TextField
           fullWidth
           disabled
@@ -33,7 +32,6 @@ export default function AcceptedReqForm() {
           label="Sevice"
           value={Service.desc}
         />
-
         <Box style={{ height: '300px' }}>
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyC4EGFc_Y4wOspdDUmgEUu_76dBP2v6RD4' }}
@@ -47,18 +45,17 @@ export default function AcceptedReqForm() {
             <AnyReactComponent text="My Marker" />
           </GoogleMapReact>
         </Box>
-
         <TextField fullWidth disabled size="small" label="الوقت المطلوب" value={Service.date} />
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          loading={Boolean(false)}
+        >
+          موافقة
+        </LoadingButton>{' '}
       </Stack>
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        loading={Boolean(false)}
-      >
-        موافقة
-      </LoadingButton>
     </div>
   );
 }

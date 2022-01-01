@@ -64,6 +64,11 @@ const DescSpan = styled('span')(({ theme }) => ({
 export default function RequestService() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+  const [Images, setImages] = React.useState([
+    'https://image.freepik.com/free-vector/flat-hand-drawn-patient-taking-medical-examination_52683-57828.jpg',
+    'https://image.freepik.com/free-vector/person-with-cold-concept-illustration_114360-1594.jpg',
+    'https://image.freepik.com/free-vector/group-doctors-standing-hospital-building-team-practitioners-ambulance-car_74855-14034.jpg'
+  ]);
   const [RenderComponent, setRenderComponent] = React.useState([
     <RequestServiceForm />,
     <PatientForm />,
@@ -115,7 +120,7 @@ export default function RequestService() {
             <br />
             <DescSpan> {'  مشروع تبادل الخدمات الطبية بين افراد الحي '}</DescSpan>
           </Typography>
-          <img alt="register" src="/static/illustrations/illustration_register.png" />
+          <img alt="register" src={Images[activeStep]} />
         </SectionStyle>
       </MHidden>
 
@@ -168,17 +173,11 @@ export default function RequestService() {
                     onClick={handleBack}
                     sx={{ mr: 1 }}
                   >
-                    Back
+                    رجوع
                   </Button>
                   <Box sx={{ flex: '1 1 auto' }} />
-                  {isStepOptional(activeStep) && (
-                    <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                      Skip
-                    </Button>
-                  )}
-
                   <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
                   </Button>
                 </Box>
               </Box>

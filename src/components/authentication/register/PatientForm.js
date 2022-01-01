@@ -1,19 +1,10 @@
 import * as Yup from 'yup';
-import { useState, forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
-// material
-import { Stack, TextField, Box, Autocomplete, Tooltip, FormHelperText } from '@mui/material';
-import { LoadingButton, DateTimePicker } from '@mui/lab';
-import GoogleMapReact from 'google-map-react';
-// ----------------------------------------------------------------------
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+import { Stack, TextField, Autocomplete } from '@mui/material';
 
 const NumberFormatCustom = forwardRef((props, ref) => {
   const { onChange, ...other } = props;
@@ -41,28 +32,21 @@ const NumberFormatCustom = forwardRef((props, ref) => {
 
 export default function PatientForm() {
   const navigate = useNavigate();
-  const [valueDate, setvalueDate] = useState(new Date('2014-08-18T21:11:54'));
-
-  const handleChangeTime = (newValue) => {
-    setvalueDate(newValue);
-  };
 
   const RegisterSchema = Yup.object().shape({
-    Service: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Service is required'),
-    description: Yup.string()
-      .email('description must be a valid description address')
-      .required('description is required'),
-    Location: Yup.object().shape({
-      lat: Yup.number().required('Password is required'),
-      lng: Yup.number().required('Password is required')
-    })
+    Name: Yup.string()
+      .min(2, 'الاسم قصير جدا!')
+      .max(50, 'الاسم طويل جدا!')
+      .required('الاسم اجباري'),
+    Age: Yup.number().required('العمر اجباري'),
+    Sex: Yup.string().required('تحديد جنس المريض اجباري')
   });
 
   const formik = useFormik({
     initialValues: {
-      Service: '',
-      description: '',
-      Location: { lat: 23.222, lng: 32 }
+      Sex: '',
+      Name: '',
+      Age: ''
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
@@ -70,14 +54,7 @@ export default function PatientForm() {
     }
   });
 
-  const handleApiLoaded = (map, maps) => {
-    console.log('map', map.center.lat());
-    console.log('map', map.center.lng());
-  };
-
-  const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const { errors, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
   NumberFormatCustom.propTypes = {
     name: PropTypes.string.isRequired,
@@ -92,20 +69,11 @@ export default function PatientForm() {
             fullWidth
             size="small"
             label="اسم المريض"
-            {...getFieldProps('description')}
-            error={Boolean(errors.description)}
-            helperText={errors.description}
+            {...getFieldProps('Name')}
+            error={Boolean(errors.Name)}
+            helperText={errors.Name}
           />
-          <TextField
-            fullWidth
-            multiline
-            maxRows={4}
-            size="small"
-            label="وصف حالة المريض"
-            {...getFieldProps('description')}
-            error={Boolean(errors.description)}
-            helperText={errors.description}
-          />
+          <TextField fullWidth multiline maxRows={4} size="small" label="وصف حالة المريض" />
           <TextField
             fullWidth
             size="small"
@@ -113,6 +81,9 @@ export default function PatientForm() {
             InputProps={{
               inputComponent: NumberFormatCustom
             }}
+            {...getFieldProps('Age')}
+            error={Boolean(errors.Age)}
+            helperText={errors.Age}
           />
           <Autocomplete
             id="size-small-outlined"
@@ -122,11 +93,12 @@ export default function PatientForm() {
               { title: 'انثى', value: 2 }
             ]}
             getOptionLabel={(option) => option.title}
+            onChange={(e, value) => setFieldValue('Sex', value?.title || '')}
             renderInput={(params) => (
               <TextField
-                {...getFieldProps('Service')}
-                error={Boolean(errors.Service)}
-                helperText={errors.Service}
+                {...getFieldProps('Sex')}
+                error={Boolean(errors.Sex)}
+                helperText={errors.Sex}
                 {...params}
                 label="جنس المريض"
               />

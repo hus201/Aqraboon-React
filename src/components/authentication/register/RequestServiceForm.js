@@ -32,20 +32,17 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 
 export default function RequestServiceForm() {
   const navigate = useNavigate();
-  const [valueDate, setvalueDate] = React.useState(new Date('2014-08-18T21:11:54'));
+  const [valueDate, setvalueDate] = React.useState(new Date(Date.now() + 12 * 3600 * 1000));
   const [open, setOpen] = React.useState(false);
   const handleChangeTime = (newValue) => {
     setvalueDate(newValue);
   };
 
   const RegisterSchema = Yup.object().shape({
-    Service: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Service is required'),
-    description: Yup.string()
-      .email('description must be a valid description address')
-      .required('description is required'),
+    Service: Yup.string().required('اختيار نوع الخدمة اجباري'),
     Location: Yup.object().shape({
-      lat: Yup.number().required('Password is required'),
-      lng: Yup.number().required('Password is required')
+      lat: Yup.number().required('يجب تحديد الموقع على الخريطة بشكل صحيح'),
+      lng: Yup.number().required('يجب تحديد الموقع على الخريطة بشكل صحيح')
     })
   });
 
@@ -68,13 +65,12 @@ export default function RequestServiceForm() {
   };
 
   const handleApiLoaded = (map, maps) => {
-    console.log('map', map.center.lat());
-    console.log('map', map.center.lng());
+    setFieldValue('Location', { lat: map.center.lat(), lng: map.center.lng() });
   };
 
   const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, setFieldValue, isSubmitting, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -82,12 +78,13 @@ export default function RequestServiceForm() {
         <Stack spacing={3}>
           <Autocomplete
             id="size-small-outlined"
+            onChange={(e, value) => setFieldValue('Service', value?.title || '')}
             size="small"
             options={[
-              { title: 'تغير ضماد جروح', year: 2002 },
-              { title: 'تغير ضماد حروق', year: 1995 },
-              { title: 'ابر في العضل', year: 1991 },
-              { title: 'كرسي متحرك', year: 1991 }
+              { title: 'تغير ضماد جروح', id: 2002 },
+              { title: 'تغير ضماد حروق', id: 1995 },
+              { title: 'ابر في العضل', id: 1991 },
+              { title: 'كرسي متحرك', id: 1991 }
             ]}
             getOptionLabel={(option) => option.title}
             renderInput={(params) => (
@@ -107,6 +104,7 @@ export default function RequestServiceForm() {
             type="description"
             multiline={Boolean(true)}
             maxRows={5}
+            onChange={(e) => setFieldValue('description', e.target.value)}
             label="اضافة وصف"
             {...getFieldProps('description')}
             error={Boolean(errors.description)}
@@ -152,26 +150,13 @@ export default function RequestServiceForm() {
                   size="small"
                   label="اقصى مدة زمنية يمكن للخدمة الوصول فيها "
                   value={valueDate}
-                  minDateTime={new Date(Date.now() + 12 * 3600 * 1000)}
-                  onClick={() => {
-                    console.log('f');
-                  }}
                   onChange={handleChangeTime}
+                  minDateTime={new Date(Date.now() + 11 * 3600 * 1000)}
                   renderInput={(params) => <TextField fullWidth size="small" {...params} />}
                 />
               </LocalizationProvider>
             </Box>
           </Tooltip>
-          <LoadingButton
-            fullWidth
-            size="large"
-            type="submit"
-            variant="contained"
-            loading={isSubmitting}
-            onClick={handleClickOpen}
-          >
-            تاكيد طلب الخدمة
-          </LoadingButton>
         </Stack>
       </Form>
     </FormikProvider>
