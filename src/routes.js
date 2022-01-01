@@ -9,6 +9,7 @@ import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
 import User from './pages/User';
+import Profile from './pages/Profile';
 import NotFound from './pages/Page404';
 
 export default function Router() {
@@ -31,6 +32,11 @@ export default function Router() {
         { path: 'RequestService', element: <RequestService /> },
         { path: 'AcceptedRequest', element: <AcceptedRequest /> }
       ]
+    },
+    {
+      path: '/User',
+      element: <MainLayout />,
+      children: [{ path: 'Profile', element: <Profile /> }]
     },
     {
       path: '/',
