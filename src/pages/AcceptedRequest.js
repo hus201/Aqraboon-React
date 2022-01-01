@@ -11,7 +11,11 @@ import { AcceptedReqForm } from '../components/authentication/login';
 
 const RootStyle = styled(Page)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
-    display: 'flex'
+    display: 'flex',
+    paddingTop: theme.spacing(8)
+  },
+  [theme.breakpoints.down('md')]: {
+    paddingTop: theme.spacing(8)
   }
 }));
 
@@ -31,7 +35,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
-  padding: theme.spacing(12, 0)
+  padding: theme.spacing(2, 0)
 }));
 
 // ----------------------------------------------------------------------
@@ -52,9 +56,9 @@ export default function AcceptedRequest() {
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
+              طلب خدمة
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلب </Typography>
           </Stack>
           <AcceptedReqForm />
         </ContentStyle>

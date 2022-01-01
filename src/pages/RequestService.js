@@ -28,6 +28,9 @@ import {
 const RootStyle = styled(Page)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     display: 'flex'
+  },
+  [theme.breakpoints.down('md')]: {
+    paddingTop: theme.spacing(10)
   }
 }));
 const steps = ['تفاصيل الخدمة', 'معلومات المريض', 'معلومات مقدم الخدمة'];
@@ -46,8 +49,8 @@ const ContentStyle = styled('div')(({ theme }) => ({
   display: 'flex',
   minHeight: '100vh',
   flexDirection: 'column',
-  justifyContent: 'center',
-  padding: theme.spacing(12, 0)
+  justifyContent: 'flex-start',
+  padding: theme.spacing(2, 0)
 }));
 
 const SpanStyled = styled('span')(({ theme }) => ({
