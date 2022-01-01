@@ -1,8 +1,7 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-// layouts
 import DashboardLayout from './layouts/dashboard';
+import MainLayout from './layouts/MainLayout';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-//
 import Login from './pages/Login';
 import AcceptedRequest from './pages/AcceptedRequest';
 import RequestService from './pages/RequestService';
@@ -11,8 +10,6 @@ import Products from './pages/Products';
 import Blog from './pages/Blog';
 import User from './pages/User';
 import NotFound from './pages/Page404';
-
-// ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
@@ -29,7 +26,7 @@ export default function Router() {
     },
     {
       path: '/Service',
-      element: <DashboardLayout />,
+      element: <MainLayout />,
       children: [
         { path: 'RequestService', element: <RequestService /> },
         { path: 'AcceptedRequest', element: <AcceptedRequest /> }
