@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Fragment } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import {
@@ -19,7 +17,11 @@ import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { RequestServiceForm } from '../components/authentication/register';
+import {
+  RequestServiceForm,
+  PatientForm,
+  VolunteerForm
+} from '../components/authentication/register';
 // import AuthSocial from '../components/authentication/AuthSocial';
 // ----------------------------------------------------------------------
 
@@ -28,7 +30,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
     display: 'flex'
   }
 }));
-const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+const steps = ['تفاصيل الخدمة', 'معلومات المريض', 'معلومات مقدم الخدمة'];
 const SectionStyle = styled(Card)(({ theme }) => ({
   width: '100%',
   maxWidth: 464,
@@ -62,8 +64,13 @@ const DescSpan = styled('span')(({ theme }) => ({
 export default function RequestService() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+  const [RenderComponent, setRenderComponent] = React.useState([
+    <RequestServiceForm />,
+    <PatientForm />,
+    <VolunteerForm />
+  ]);
 
-  const isStepOptional = (step) => step === 1;
+  const isStepOptional = (step) => step === 2;
   const isStepSkipped = (step) => skipped.has(step);
 
   const handleNext = () => {
@@ -123,7 +130,6 @@ export default function RequestService() {
             </Typography>
           </Box>
 
-          <RequestServiceForm />
           <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep}>
               {steps.map((label, index) => {
@@ -143,7 +149,7 @@ export default function RequestService() {
               })}
             </Stepper>
             {activeStep === steps.length ? (
-              <Fragment>
+              <Box>
                 <Typography sx={{ mt: 2, mb: 1 }}>
                   All steps completed - you&apos;re finishe
                 </Typography>
@@ -151,10 +157,10 @@ export default function RequestService() {
                   <Box sx={{ flex: '1 1 auto' }} />
                   <Button onClick={handleReset}>Reset</Button>
                 </Box>
-              </Fragment>
+              </Box>
             ) : (
-              <Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>Step yahhay {activeStep + 1}</Typography>
+              <Box>
+                {RenderComponent[activeStep]}
                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                   <Button
                     color="inherit"
@@ -175,7 +181,7 @@ export default function RequestService() {
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </Box>
-              </Fragment>
+              </Box>
             )}
           </Box>
         </ContentStyle>

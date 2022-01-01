@@ -39,7 +39,7 @@ const NumberFormatCustom = forwardRef((props, ref) => {
   );
 });
 
-export default function PatientForm() {
+export default function VolunteerForm() {
   const navigate = useNavigate();
   const [valueDate, setvalueDate] = useState(new Date('2014-08-18T21:11:54'));
 
@@ -88,32 +88,6 @@ export default function PatientForm() {
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate style={{ minWidth: '500px' }} onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          <TextField
-            fullWidth
-            size="small"
-            label="اسم المريض"
-            {...getFieldProps('description')}
-            error={Boolean(errors.description)}
-            helperText={errors.description}
-          />
-          <TextField
-            fullWidth
-            multiline
-            maxRows={4}
-            size="small"
-            label="وصف حالة المريض"
-            {...getFieldProps('description')}
-            error={Boolean(errors.description)}
-            helperText={errors.description}
-          />
-          <TextField
-            fullWidth
-            size="small"
-            label="العمر"
-            InputProps={{
-              inputComponent: NumberFormatCustom
-            }}
-          />
           <Autocomplete
             id="size-small-outlined"
             size="small"
