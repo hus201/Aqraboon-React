@@ -63,7 +63,7 @@ export default function PatientForm() {
 
   return (
     <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate style={{ minWidth: '500px' }} onSubmit={handleSubmit}>
+      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <TextField
             fullWidth
