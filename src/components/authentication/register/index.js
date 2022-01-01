@@ -1,4 +1,4 @@
 import RegisterForm from './RegisterForm';
-import AskService from './AskService';
+import RequestServiceForm from './RequestServiceForm';
 
-export { RegisterForm, AskService };
+export { RegisterForm, RequestServiceForm };

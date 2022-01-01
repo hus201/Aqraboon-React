@@ -1,13 +1,25 @@
+import * as React from 'react';
+import { Fragment } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Box, Card, Link, Container, Typography } from '@mui/material';
+import {
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Card,
+  Link,
+  Container,
+  Typography
+} from '@mui/material';
 // layouts
 import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { AskService } from '../components/authentication/register';
+import { RequestServiceForm } from '../components/authentication/register';
 // import AuthSocial from '../components/authentication/AuthSocial';
 // ----------------------------------------------------------------------
 
@@ -16,7 +28,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
     display: 'flex'
   }
 }));
-
+const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 const SectionStyle = styled(Card)(({ theme }) => ({
   width: '100%',
   maxWidth: 464,
@@ -48,6 +60,45 @@ const DescSpan = styled('span')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function RequestService() {
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [skipped, setSkipped] = React.useState(new Set());
+
+  const isStepOptional = (step) => step === 1;
+  const isStepSkipped = (step) => skipped.has(step);
+
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      // You probably want to guard against something like this,
+      // it should never occur unless someone's actively trying to break something.
+      throw new Error("You can't skip a step that isn't optional.");
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values());
+      newSkipped.add(activeStep);
+      return newSkipped;
+    });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
   return (
     <RootStyle title="Register | Minimal-UI">
       <MHidden width="mdDown">
@@ -72,9 +123,61 @@ export default function RequestService() {
             </Typography>
           </Box>
 
-          {/* <AuthSocial /> */}
+          <RequestServiceForm />
+          <Box sx={{ width: '100%' }}>
+            <Stepper activeStep={activeStep}>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
+                if (isStepOptional(index)) {
+                  labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                }
+                if (isStepSkipped(index)) {
+                  stepProps.completed = false;
+                }
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+            {activeStep === steps.length ? (
+              <Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>
+                  All steps completed - you&apos;re finishe
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Box sx={{ flex: '1 1 auto' }} />
+                  <Button onClick={handleReset}>Reset</Button>
+                </Box>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <Typography sx={{ mt: 2, mb: 1 }}>Step yahhay {activeStep + 1}</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                  <Box sx={{ flex: '1 1 auto' }} />
+                  {isStepOptional(activeStep) && (
+                    <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                      Skip
+                    </Button>
+                  )}
 
-          <AskService />
+                  <Button onClick={handleNext}>
+                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  </Button>
+                </Box>
+              </Fragment>
+            )}
+          </Box>
         </ContentStyle>
       </Container>
     </RootStyle>
