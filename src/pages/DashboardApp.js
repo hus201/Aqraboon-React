@@ -1,7 +1,19 @@
 // material
-import { Box, Grid, Container, Typography } from '@mui/material';
+import {
+  Paper,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  CardActionArea,
+  Container
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+
 // components
+import LandindPage from '../components/landingPage';
 import Page from '../components/Page';
+
 import {
   AppTasks,
   AppNewUsers,
@@ -16,13 +28,13 @@ import {
   AppCurrentSubject,
   AppConversionRates
 } from '../components/_dashboard/app';
-
+// import styled from '@emotion/styled/types/base';
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
   return (
     <Page title="Dashboard | Minimal-UI">
-      <Container maxWidth="xl"> DashboardApp </Container>
+      <LandindPage />
     </Page>
   );
 }
