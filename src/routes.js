@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import MainLayout from './layouts/MainLayout';
@@ -12,12 +13,15 @@ import Blog from './pages/Blog';
 import User from './pages/User';
 import Profile from './pages/Profile';
 import NotFound from './pages/Page404';
+import { AuthContext } from './utils/ContextProvider';
 
 export default function Router() {
+  const authContext = useContext(AuthContext);
+
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: <MainLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
@@ -43,8 +47,14 @@ export default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        {
+          path: 'login',
+          element: authContext.User.IsLogedIn ? <Navigate to="/dashboard" /> : <Login />
+        },
+        {
+          path: 'register',
+          element: authContext.User.IsLogedIn ? <Navigate to="/dashboard" /> : <Register />
+        },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/dashboard" /> },
         { path: '*', element: <Navigate to="/404" /> }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 // material
 import { MenuItem, TextField } from '@mui/material';
@@ -10,8 +11,14 @@ Menu.propTypes = {
 };
 
 export default function Menu({ options, onSort }) {
+  const [val, setVal] = useState(null);
+  const change = (e) => {
+    onSort(e);
+    setVal(e.target.value);
+  };
+
   return (
-    <TextField select size="small" value="latest" onChange={onSort}>
+    <TextField select size="small" value={val} label="sex" onChange={change}>
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}

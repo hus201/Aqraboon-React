@@ -45,12 +45,14 @@ const sidebarConfig = [
   {
     title: 'Accepted Request',
     path: '/Service/AcceptedRequest',
-    icon: getIcon(fileTextFill)
+    icon: getIcon(fileTextFill),
+    ISVolunteer: true
   },
   {
     title: 'Request Service',
     path: '/Service/RequestService',
-    icon: getIcon(personAddFill)
+    icon: getIcon(personAddFill),
+    ISVolunteer: false
   }
   // {
   //   title: 'Not found',

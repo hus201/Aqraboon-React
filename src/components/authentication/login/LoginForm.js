@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
@@ -13,13 +13,15 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  Avatar,
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
 // ----------------------------------------------------------------------
+import { AuthContext } from '../../../utils/ContextProvider';
 
 export default function LoginForm() {
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -35,11 +37,53 @@ export default function LoginForm() {
       remember: true
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: (values) => {
+      SubmitForm(values);
     }
   });
 
+  const SubmitForm = async (values) => {
+    const { email, password } = values;
+
+    const body = {
+      password,
+      email
+    };
+
+    if (email === 'Admin@me.com') {
+      const User = {
+        email,
+        token: 'test404test_Token',
+        Name: 'Admin',
+        ID: '8546-5543-5555-634-655',
+        IsAdmin: false,
+        ISVolunteer: true,
+        IsLogedIn: true
+      };
+      authContext.setUser(User);
+    }
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
+    const url = '/api/authenticate';
+    try {
+      /* const response = await fetch(url, options);
+      // const text = await response.text();
+      console.log('response', response);
+      if (response.ok && response.status === 200) {
+        console.log('success authorization');
+        authContext.setAuth({ token: 'Admin' });
+      } */
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   const handleShowPassword = () => {
@@ -50,7 +94,13 @@ export default function LoginForm() {
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
+          <Avatar
+            variant="square"
+            style={{ width: '100%', height: 'auto' }}
+            src="https://image.freepik.com/free-vector/sign-page-abstract-concept-illustration_335657-3875.jpg"
+          />
           <TextField
+            size="small"
             fullWidth
             autoComplete="username"
             type="email"
@@ -61,6 +111,7 @@ export default function LoginForm() {
           />
 
           <TextField
+            size="small"
             fullWidth
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}

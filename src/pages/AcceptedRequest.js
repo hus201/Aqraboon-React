@@ -1,11 +1,22 @@
+import * as React from 'react';
 // material
 import { styled } from '@mui/material/styles';
-import { Card, Stack, Link, Container, Typography } from '@mui/material';
+import {
+  Card,
+  Stack,
+  Stepper,
+  Box,
+  StepLabel,
+  Button,
+  Step,
+  Container,
+  Typography
+} from '@mui/material';
 // layouts
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { AcceptedReqForm } from '../components/serviceRequest';
+import { AcceptedReqForm, PatientReqForm } from '../components/serviceRequest';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +52,36 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AcceptedRequest() {
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [skipped, setSkipped] = React.useState(new Set());
+  const [RenderComponent, setRenderComponent] = React.useState([
+    <AcceptedReqForm />,
+    <PatientReqForm />
+  ]);
+
+  const steps = ['تفاصيل الخدمة', 'معلومات المريض'];
+
+  const isStepSkipped = (step) => skipped.has(step);
+
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
   return (
     <RootStyle title="Login | Minimal-UI">
       <MHidden width="mdDown">
@@ -60,7 +101,54 @@ export default function AcceptedRequest() {
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلب </Typography>
           </Stack>
-          <AcceptedReqForm />
+
+          <Box sx={{ width: '100%' }}>
+            <Stack spacing={3}>
+              <Stepper activeStep={activeStep}>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+
+                  if (isStepSkipped(index)) {
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+
+              {activeStep === steps.length ? (
+                <Box>
+                  <Typography sx={{ mt: 2, mb: 1 }}>سيتم التواصل معك من قبل طالب الخدمة</Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Button onClick={handleReset}>اغلاق</Button>
+                  </Box>
+                </Box>
+              ) : (
+                <Box>
+                  {RenderComponent[activeStep]}
+                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      رجوع
+                    </Button>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Button onClick={handleNext}>
+                      {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+            </Stack>
+          </Box>
         </ContentStyle>
       </Container>
     </RootStyle>

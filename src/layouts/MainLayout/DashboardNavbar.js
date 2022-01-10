@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
@@ -5,7 +6,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, Button, AppBar, Toolbar, IconButton } from '@mui/material';
 // components
 import { MHidden } from '../../components/@material-extend';
 //
@@ -17,7 +18,7 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import MainLayNavSection from '../../components/MainLayNavSection';
 import sidebarConfig from './SidebarConfig';
-
+import { AuthContext } from '../../utils/ContextProvider';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -43,6 +44,12 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   }
 }));
 
+const BoxStyled = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: 20
+}));
+
 // ----------------------------------------------------------------------
 
 DashboardNavbar.propTypes = {
@@ -57,6 +64,7 @@ const DivStyle = styled(Box)({
 });
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  const authContext = useContext(AuthContext);
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -67,7 +75,25 @@ export default function DashboardNavbar({ onOpenSidebar }) {
                 <Logo />
               </Box>
             </Box>
-            <MainLayNavSection navConfig={sidebarConfig} />
+            {authContext.User.IsLogedIn && (
+              <MainLayNavSection
+                navConfig={sidebarConfig.filter((item) =>
+                  Boolean(!item.ISVolunteer || authContext.User.ISVolunteer)
+                )}
+              />
+            )}
+            {!authContext.User.IsLogedIn && (
+              <MHidden width="lgDown">
+                <BoxStyled>
+                  <Button component={RouterLink} to="/login" size="medium">
+                    login
+                  </Button>
+                  <Button component={RouterLink} to="/register" size="medium">
+                    register
+                  </Button>
+                </BoxStyled>
+              </MHidden>
+            )}
             <Box sx={{ flexGrow: 1 }} />
           </DivStyle>
         </MHidden>
@@ -81,8 +107,12 @@ export default function DashboardNavbar({ onOpenSidebar }) {
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <LanguagePopover />
-          <NotificationsPopover />
-          <AccountPopover />
+          {authContext.User.IsLogedIn && (
+            <>
+              <NotificationsPopover />
+              <AccountPopover />
+            </>
+          )}
         </Stack>
       </ToolbarStyle>
     </RootStyle>

@@ -6,10 +6,12 @@ import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { useNavigate } from 'react-router-dom';
 // material
-import { Stack, TextField, IconButton, Autocomplete, InputAdornment } from '@mui/material';
+import { Stack, TextField, IconButton, Autocomplete, Chip, InputAdornment } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { LoadingButton } from '@mui/lab';
 import Mune from './Menu';
+
+import Services from '../../../Test/Services';
 // ----------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   iconClass: {
@@ -17,10 +19,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function RegisterForm() {
+export default function RegisterVolunteerForm() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [valueServices, setvalueServices] = useState();
   const [showConfPassword, setShowConfPassword] = useState(false);
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -100,7 +103,7 @@ export default function RegisterForm() {
           />
           <TextField
             fullWidth
-            autoComplete="username"
+            autoComplete="phone"
             type="tel"
             label="phone number"
             {...getFieldProps('phone')}
@@ -108,7 +111,16 @@ export default function RegisterForm() {
             error={Boolean(touched.phone && errors.phone)}
             helperText={touched.phone && errors.phone}
           />
-
+          <TextField
+            fullWidth
+            autoComplete="email"
+            type="email"
+            label="email"
+            {...getFieldProps('email')}
+            size="small"
+            error={Boolean(touched.email && errors.email)}
+            helperText={touched.email && errors.email}
+          />
           <TextField
             fullWidth
             autoComplete="current-password"
@@ -148,6 +160,25 @@ export default function RegisterForm() {
             helperText={touched.confPassword && errors.confPassword}
           />
 
+          <Autocomplete
+            multiple
+            id="fixed-tags-demo"
+            value={valueServices}
+            onChange={(event, newValue) => {
+              setvalueServices([...newValue]);
+            }}
+            options={[...Services]}
+            getOptionLabel={(option) => option.Title}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip label={option.Title} {...getTagProps({ index })} />
+              ))
+            }
+            size="small"
+            renderInput={(params) => (
+              <TextField size="small" {...params} label="Services you provieded" />
+            )}
+          />
           <LoadingButton
             fullWidth
             size="large"

@@ -1,13 +1,14 @@
 import { Link as RouterLink } from 'react-router-dom';
+import { useState } from 'react';
 // material
 import { styled } from '@mui/material/styles';
-import { Box, Card, Link, Container, Typography } from '@mui/material';
+import { Box, Card, Link, Container, Typography, Stack, Button } from '@mui/material';
 // layouts
 import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { RegisterForm } from '../components/authentication/register';
+import { RegisterForm, RegisterVolunteerForm } from '../components/authentication/register';
 import AuthSocial from '../components/authentication/AuthSocial';
 
 // ----------------------------------------------------------------------
@@ -40,6 +41,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Register() {
+  const [AsVolunteer, setAsVolunteer] = useState(false);
   return (
     <RootStyle title="Register | Minimal-UI">
       <MHidden width="mdDown">
@@ -61,9 +63,17 @@ export default function Register() {
               Free forever. No credit card needed.
             </Typography>
           </Box>
-
-          <RegisterForm />
-
+          <Stack spacing={3}>
+            {AsVolunteer ? <RegisterForm /> : <RegisterVolunteerForm />}
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setAsVolunteer((val) => !val);
+              }}
+            >
+              {!AsVolunteer ? 'Register As Service-Needed' : 'Register As Volenteer'}
+            </Button>
+          </Stack>
           <MHidden width="smUp">
             <Typography variant="subtitle2" sx={{ mt: 3, textAlign: 'center' }}>
               Already have an account?&nbsp;

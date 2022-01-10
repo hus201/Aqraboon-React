@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
@@ -5,6 +6,9 @@ import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, Link, AppBar, Toolbar, IconButton, Button } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+
+import { AuthContext } from '../../utils/ContextProvider';
+
 // components
 import { MHidden } from '../../components/@material-extend';
 //
@@ -12,7 +16,6 @@ import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
-
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 0;
@@ -37,12 +40,6 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   }
 }));
 
-const BoxStyled = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  gap: 20
-}));
-
 // ----------------------------------------------------------------------
 
 DashboardNavbar.propTypes = {
@@ -50,6 +47,7 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  const authContext = useContext(AuthContext);
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -58,19 +56,9 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
-        <BoxStyled>
-          <Searchbar />
-          <MHidden width="lgDown">
-            <BoxStyled>
-              <Button component={RouterLink} to="/login" size="medium">
-                login
-              </Button>
-              <Button component={RouterLink} to="/register" size="medium">
-                register
-              </Button>
-            </BoxStyled>
-          </MHidden>
-        </BoxStyled>
+
+        <Searchbar />
+
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>

@@ -103,14 +103,14 @@ function LandingPage(props) {
       <div>
         <Slide easing="ease">
           {slideImages.map((item, index) => (
-            <div className="each-slide">
+            <div className="each-slide" key={index.toString()}>
               <PaperStyled style={{ backgroundImage: `url(${item})` }}>this card</PaperStyled>
             </div>
           ))}
         </Slide>
       </div>
       <RowFlex className="container">
-        <svg viewBox="0 0 500 500" preserveAspectRatio="xMinYMin meet">
+        <svg className="svgClass" viewBox="0 0 500 500" preserveAspectRatio="xMinYMin meet">
           <path
             d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"
             style={{ stroke: 'none', fill: '#00AB55' }}
@@ -156,7 +156,7 @@ function LandingPage(props) {
       </RowFlex>
       <RowCard>
         {slideImages.map((item, index) => (
-          <Card Key={index}>
+          <Card Key={index.toString()}>
             <CardActionArea>
               <CardMedia component="img" height="140" image={item} alt="green iguana" />
               <CardContent>

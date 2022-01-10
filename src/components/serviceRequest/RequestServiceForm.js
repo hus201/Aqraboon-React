@@ -28,9 +28,11 @@ import GoogleMapReact from 'google-map-react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
+import services from '../../Test/Services';
+
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-export default function RequestServiceForm() {
+export default function RequestServiceForm({ handleValidation, formikRef }) {
   const navigate = useNavigate();
   const [valueDate, setvalueDate] = React.useState(new Date(Date.now() + 12 * 3600 * 1000));
   const [open, setOpen] = React.useState(false);
@@ -53,8 +55,8 @@ export default function RequestServiceForm() {
       Location: { lat: 23.222, lng: 32 }
     },
     validationSchema: RegisterSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: (value) => {
+      console.log('RegisterSchema', value);
     }
   });
   const handleClickOpen = () => {
@@ -74,19 +76,14 @@ export default function RequestServiceForm() {
 
   return (
     <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <Form autoComplete="off" onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <Autocomplete
             id="size-small-outlined"
-            onChange={(e, value) => setFieldValue('Service', value?.title || '')}
+            onChange={(e, value) => setFieldValue('Service', value?.Title || '')}
             size="small"
-            options={[
-              { title: 'تغير ضماد جروح', id: 2002 },
-              { title: 'تغير ضماد حروق', id: 1995 },
-              { title: 'ابر في العضل', id: 1991 },
-              { title: 'كرسي متحرك', id: 1991 }
-            ]}
-            getOptionLabel={(option) => option.title}
+            options={[...services]}
+            getOptionLabel={(option) => option.Title}
             renderInput={(params) => (
               <TextField
                 {...getFieldProps('Service')}
@@ -158,6 +155,9 @@ export default function RequestServiceForm() {
             </Box>
           </Tooltip>
         </Stack>
+        <Button ref={formikRef} style={{ display: 'none' }} type="submit" variant="contained">
+          submit
+        </Button>
       </Form>
     </FormikProvider>
   );

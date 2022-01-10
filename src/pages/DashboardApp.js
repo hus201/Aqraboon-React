@@ -35,7 +35,6 @@ import {
 export default function DashboardApp() {
   return (
     <Page title="Dashboard | Minimal-UI">
-      {/* <LandindPage /> */}
       <LandindPage />
     </Page>
   );
