@@ -1,35 +1,45 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import { useNavigate } from 'react-router-dom';
 // material
-import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Stack, TextField, IconButton, Autocomplete, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
+import Mune from './Menu';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
+  const [showConfPassword, setShowConfPassword] = useState(false);
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
       .max(50, 'Too Long!')
       .required('First name required'),
     lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required')
+    sex: Yup.string().required('sex required'),
+    age: Yup.string().required('age required'),
+    phone: Yup.string()
+      .matches(phoneRegExp, 'Phone number must be a valid Phone number')
+      .required('Phone number is required'),
+    password: Yup.string().required('Password is required'),
+    confPassword: Yup.string().required('Password is required')
   });
 
   const formik = useFormik({
     initialValues: {
       firstName: '',
       lastName: '',
-      email: '',
+      phone: '',
+      sex: '',
+      age: '',
+      confPassword: '',
       password: ''
     },
     validationSchema: RegisterSchema,
@@ -37,7 +47,9 @@ export default function RegisterForm() {
       navigate('/dashboard', { replace: true });
     }
   });
-
+  const onChangeSex = (e) => {
+    console.log('ee', e.target.value);
+  };
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
   return (
@@ -49,6 +61,7 @@ export default function RegisterForm() {
               fullWidth
               label="First name"
               {...getFieldProps('firstName')}
+              size="small"
               error={Boolean(touched.firstName && errors.firstName)}
               helperText={touched.firstName && errors.firstName}
             />
@@ -57,19 +70,36 @@ export default function RegisterForm() {
               fullWidth
               label="Last name"
               {...getFieldProps('lastName')}
+              size="small"
               error={Boolean(touched.lastName && errors.lastName)}
               helperText={touched.lastName && errors.lastName}
             />
           </Stack>
 
+          <Mune
+            options={[
+              { label: 'male', value: 0 },
+              { label: 'female', value: 1 }
+            ]}
+            onSort={onChangeSex}
+          />
+          <TextField
+            fullWidth
+            label="age"
+            {...getFieldProps('age')}
+            size="small"
+            error={Boolean(touched.age && errors.age)}
+            helperText={touched.age && errors.age}
+          />
           <TextField
             fullWidth
             autoComplete="username"
-            type="email"
-            label="Email address"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
+            type="tel"
+            label="phone number"
+            {...getFieldProps('phone')}
+            size="small"
+            error={Boolean(touched.phone && errors.phone)}
+            helperText={touched.phone && errors.phone}
           />
 
           <TextField
@@ -87,8 +117,28 @@ export default function RegisterForm() {
                 </InputAdornment>
               )
             }}
+            size="small"
             error={Boolean(touched.password && errors.password)}
             helperText={touched.password && errors.password}
+          />
+          <TextField
+            fullWidth
+            autoComplete="current-password"
+            type={showConfPassword ? 'text' : 'password'}
+            label="confirm Password"
+            {...getFieldProps('confPassword')}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={() => setShowConfPassword((prev) => !prev)}>
+                    <Icon icon={showConfPassword ? eyeFill : eyeOffFill} />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            size="small"
+            error={Boolean(touched.confPassword && errors.confPassword)}
+            helperText={touched.confPassword && errors.confPassword}
           />
 
           <LoadingButton

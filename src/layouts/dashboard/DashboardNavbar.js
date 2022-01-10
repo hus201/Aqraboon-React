@@ -3,7 +3,8 @@ import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, Link, AppBar, Toolbar, IconButton, Button } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 // components
 import { MHidden } from '../../components/@material-extend';
 //
@@ -36,6 +37,12 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   }
 }));
 
+const BoxStyled = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: 20
+}));
+
 // ----------------------------------------------------------------------
 
 DashboardNavbar.propTypes = {
@@ -51,8 +58,19 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
-
-        <Searchbar />
+        <BoxStyled>
+          <Searchbar />
+          <MHidden width="lgDown">
+            <BoxStyled>
+              <Button component={RouterLink} to="/login" size="medium">
+                login
+              </Button>
+              <Button component={RouterLink} to="/register" size="medium">
+                register
+              </Button>
+            </BoxStyled>
+          </MHidden>
+        </BoxStyled>
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>

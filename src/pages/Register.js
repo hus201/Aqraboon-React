@@ -1,21 +1,20 @@
+import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Card, Stack, Link, Container, Typography } from '@mui/material';
+import { Box, Card, Link, Container, Typography } from '@mui/material';
 // layouts
+import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import { AcceptedReqForm } from '../components/serviceRequest';
+import { RegisterForm } from '../components/authentication/register';
+import AuthSocial from '../components/authentication/AuthSocial';
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
-    display: 'flex',
-    paddingTop: theme.spacing(8)
-  },
-  [theme.breakpoints.down('md')]: {
-    paddingTop: theme.spacing(8)
+    display: 'flex'
   }
 }));
 
@@ -35,32 +34,44 @@ const ContentStyle = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
-  padding: theme.spacing(2, 0)
+  padding: theme.spacing(12, 0)
 }));
 
 // ----------------------------------------------------------------------
 
-export default function AcceptedRequest() {
+export default function Register() {
   return (
-    <RootStyle title="Login | Minimal-UI">
+    <RootStyle title="Register | Minimal-UI">
       <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            لقد تلقيت طلبا جديدا
+            Manage the job more effectively with Minimal
           </Typography>
-          <img src="/static/illustrations/illustration_login.png" alt="login" />
+          <img alt="register" src="/static/illustrations/illustration_register.png" />
         </SectionStyle>
       </MHidden>
 
-      <Container maxWidth="sm">
+      <Container>
         <ContentStyle>
-          <Stack sx={{ mb: 5 }}>
+          <Box sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              طلب خدمة
+              Get started absolutely free.
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلب </Typography>
-          </Stack>
-          <AcceptedReqForm />
+            <Typography sx={{ color: 'text.secondary' }}>
+              Free forever. No credit card needed.
+            </Typography>
+          </Box>
+
+          <RegisterForm />
+
+          <MHidden width="smUp">
+            <Typography variant="subtitle2" sx={{ mt: 3, textAlign: 'center' }}>
+              Already have an account?&nbsp;
+              <Link to="/login" component={RouterLink}>
+                Login
+              </Link>
+            </Typography>
+          </MHidden>
         </ContentStyle>
       </Container>
     </RootStyle>

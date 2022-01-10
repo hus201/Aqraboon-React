@@ -1,6 +1,4 @@
-import PatientForm from './PatientForm';
-import VolunteerForm from './VolunteerForm';
 import RegisterForm from './RegisterForm';
-import RequestServiceForm from './RequestServiceForm';
+import Menu from './Menu';
 
-export { RegisterForm, PatientForm, VolunteerForm, RequestServiceForm };
+export { RegisterForm, Menu };

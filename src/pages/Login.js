@@ -69,7 +69,12 @@ export default function Login() {
           <AuthSocial />
 
           <LoginForm />
-
+          <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
+            هل نسيت كلمة المرور &nbsp;
+            <Link underline="always" sx={{ color: 'text.primary' }}>
+              استعادة كلمة المرور
+            </Link>
+          </Typography>
           <MHidden width="smUp">
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Don’t have an account?&nbsp;

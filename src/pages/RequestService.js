@@ -12,16 +12,10 @@ import {
   Container,
   Typography
 } from '@mui/material';
-// layouts
-import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
-import {
-  RequestServiceForm,
-  PatientForm,
-  VolunteerForm
-} from '../components/authentication/register';
+import { RequestServiceForm, PatientForm, VolunteerForm } from '../components/serviceRequest';
 // import AuthSocial from '../components/authentication/AuthSocial';
 // ----------------------------------------------------------------------
 

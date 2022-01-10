@@ -30,12 +30,11 @@ const RowFlex = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  height: 350,
+  height: '100%',
   padding: '40px',
   [theme.breakpoints.down('lg')]: {
     flexDirection: 'column-reverse',
-    gap: 50,
-    height: '100%'
+    gap: 50
   }
 }));
 
@@ -45,9 +44,9 @@ const RowCard = styled('div')(({ theme }) => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   padding: '40px',
+  gap: 20,
   [theme.breakpoints.down('lg')]: {
-    flexDirection: 'column',
-    gap: 20
+    flexDirection: 'column'
   }
 }));
 
@@ -64,6 +63,7 @@ const ColText = styled('div')(({ theme }) => ({
 
 const CardCustom = styled(Card)(({ theme }) => ({
   width: '50%',
+  height: '100%',
   [theme.breakpoints.down('lg')]: {
     width: '100%'
   }
@@ -109,8 +109,13 @@ function LandingPage(props) {
           ))}
         </Slide>
       </div>
-
-      <RowFlex>
+      <RowFlex className="container">
+        <svg viewBox="0 0 500 500" preserveAspectRatio="xMinYMin meet">
+          <path
+            d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"
+            style={{ stroke: 'none', fill: '#00AB55' }}
+          />
+        </svg>
         <ColText>
           <Typography variant="h2" className={classes.textCenter} gutterBottom component="div">
             h4. Heading
@@ -172,7 +177,6 @@ function LandingPage(props) {
           </Card>
         ))}
       </RowCard>
-
       <Footer>
         <p>dsssssssssssssss</p>
       </Footer>

@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles';
 
 // components
 import LandindPage from '../components/landingPage';
+
 import Page from '../components/Page';
 
 import {
@@ -34,6 +35,7 @@ import {
 export default function DashboardApp() {
   return (
     <Page title="Dashboard | Minimal-UI">
+      {/* <LandindPage /> */}
       <LandindPage />
     </Page>
   );

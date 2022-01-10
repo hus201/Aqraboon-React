@@ -44,12 +44,24 @@
 
     /* Handle */
     ::-webkit-scrollbar-thumb {
-      background: #00AB55;
+      background: #00ab55;
     }
 
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
       background: #20ff90;
+    }
+    svg {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      z-index: -1;
+      left: 0;
+    }
+    .container {
+      position: relative;
+      vertical-align: middle;
+      overflow: hidden;
     }
   </style>
   <body>
