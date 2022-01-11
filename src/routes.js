@@ -49,11 +49,11 @@ export default function Router() {
       children: [
         {
           path: 'login',
-          element: authContext.User.IsLogedIn ? <Navigate to="/dashboard" /> : <Login />
+          element: authContext.User?.IsLogedIn ? <Navigate to="/dashboard" /> : <Login />
         },
         {
           path: 'register',
-          element: authContext.User.IsLogedIn ? <Navigate to="/dashboard" /> : <Register />
+          element: authContext.User?.IsLogedIn ? <Navigate to="/dashboard" /> : <Register />
         },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/dashboard" /> },

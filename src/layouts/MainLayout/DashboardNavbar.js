@@ -75,14 +75,14 @@ export default function DashboardNavbar({ onOpenSidebar }) {
                 <Logo />
               </Box>
             </Box>
-            {authContext.User.IsLogedIn && (
+            {authContext.User?.IsLogedIn && (
               <MainLayNavSection
                 navConfig={sidebarConfig.filter((item) =>
-                  Boolean(!item.ISVolunteer || authContext.User.ISVolunteer)
+                  Boolean(!item.ISVolunteer || authContext.User?.ISVolunteer)
                 )}
               />
             )}
-            {!authContext.User.IsLogedIn && (
+            {!authContext.User?.IsLogedIn && (
               <MHidden width="lgDown">
                 <BoxStyled>
                   <Button component={RouterLink} to="/login" size="medium">
@@ -107,7 +107,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <LanguagePopover />
-          {authContext.User.IsLogedIn && (
+          {authContext.User?.IsLogedIn && (
             <>
               <NotificationsPopover />
               <AccountPopover />
