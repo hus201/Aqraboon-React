@@ -12,12 +12,13 @@ import Products from './pages/Products';
 import Blog from './pages/Blog';
 import User from './pages/User';
 import Profile from './pages/Profile';
+import AddService from './pages/AddService';
 import NotFound from './pages/Page404';
 import { AuthContext } from './utils/ContextProvider';
 
 export default function Router() {
   const authContext = useContext(AuthContext);
-
+  const User = authContext.getUser();
   return useRoutes([
     {
       path: '/dashboard',
@@ -35,13 +36,22 @@ export default function Router() {
       element: <MainLayout />,
       children: [
         { path: 'RequestService', element: <RequestService /> },
-        { path: 'AcceptedRequest', element: <AcceptedRequest /> }
+        { path: 'AcceptedRequest', element: <AcceptedRequest /> },
+        {
+          path: 'AddService',
+          element: User?.IsVolenteer ? <AddService /> : <Navigate to="/dashboard" />
+        }
       ]
     },
     {
       path: '/User',
       element: <MainLayout />,
-      children: [{ path: 'Profile', element: <Profile /> }]
+      children: [
+        {
+          path: 'Profile',
+          element: User?.IsLogedIn ? <Profile /> : <Navigate to="/dashboard" />
+        }
+      ]
     },
     {
       path: '/',
@@ -49,11 +59,11 @@ export default function Router() {
       children: [
         {
           path: 'login',
-          element: authContext.User?.IsLogedIn ? <Navigate to="/dashboard" /> : <Login />
+          element: User?.IsLogedIn ? <Navigate to="/dashboard" /> : <Login />
         },
         {
           path: 'register',
-          element: authContext.User?.IsLogedIn ? <Navigate to="/dashboard" /> : <Register />
+          element: User?.IsLogedIn ? <Navigate to="/dashboard" /> : <Register />
         },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/dashboard" /> },

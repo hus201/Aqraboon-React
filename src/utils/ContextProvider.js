@@ -4,8 +4,15 @@ const AuthContext = React.createContext();
 
 function AuthProvider(Props) {
   const setUser = (User) => {
-    localStorage.setItem('User', JSON.stringify(User || { IsLogedIn: false }));
-    _setUser(User || { IsLogedIn: false });
+    localStorage.setItem(
+      'User',
+      JSON.stringify(
+        User
+          ? { ...User, IsLogedIn: true, IsVolenteer: User.role !== 'User' }
+          : { IsLogedIn: false }
+      )
+    );
+    _setUser(User ? { ...User, IsLogedIn: true } : { IsLogedIn: false });
   };
 
   const getUser = () => {

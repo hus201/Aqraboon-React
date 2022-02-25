@@ -11,7 +11,6 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 import MenuPopover from '../../components/MenuPopover';
 import { AuthContext } from '../../utils/ContextProvider';
 //
-import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +26,12 @@ const MENU_OPTIONS = [
     linkTo: '/User/Profile'
   },
   {
+    label: 'Add Service',
+    icon: personFill,
+    linkTo: '/Service/AddService',
+    IsVolenteer: true
+  },
+  {
     label: 'Settings',
     icon: settings2Fill,
     linkTo: '#'
@@ -39,8 +44,13 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const authContext = useContext(AuthContext);
+  const User = authContext.getUser();
+  const MenuOptionsFilterd = User?.IsVolenteer
+    ? [...MENU_OPTIONS.filter((x) => (!User.IsVolenteer ? x?.IsVolenteer : true))]
+    : [...MENU_OPTIONS];
   const handleOpen = () => {
     setOpen(true);
+    console.log(User);
   };
   const handleClose = () => {
     setOpen(false);
@@ -68,7 +78,7 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={`/content/UserAvatar/${User.id}.JPG`} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
@@ -79,16 +89,16 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {account.displayName}
+            {User.name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {User.phone || User.email}
           </Typography>
         </Box>
 
         <Divider sx={{ my: 1 }} />
 
-        {MENU_OPTIONS.map((option) => (
+        {MenuOptionsFilterd.map((option) => (
           <MenuItem
             key={option.label}
             to={option.linkTo}

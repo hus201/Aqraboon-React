@@ -14,16 +14,21 @@ import {
   IconButton,
   InputAdornment,
   Avatar,
-  FormControlLabel
+  FormControlLabel,
+  FormControl,
+  FormHelperText
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // ----------------------------------------------------------------------
 import { AuthContext } from '../../../utils/ContextProvider';
+import ApiRoot from '../../../Test/APiRoot';
 
 export default function LoginForm() {
   const authContext = useContext(AuthContext);
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState('Choose wisely');
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -45,46 +50,42 @@ export default function LoginForm() {
   const SubmitForm = async (values) => {
     const { email, password } = values;
 
-    const body = {
-      password,
-      email
-    };
-
-    if (email === 'Admin@me.com') {
-      const User = {
-        email,
-        token: 'test404test_Token',
-        Name: 'Admin',
-        ID: '8546-5543-5555-634-655',
-        IsAdmin: false,
-        ISVolunteer: true,
-        IsLogedIn: true
-      };
-      authContext.setUser(User);
-    }
+    const data = new FormData();
+    data.append('Password', password);
+    data.append('Email', email);
 
     const options = {
       method: 'POST',
+      mode: 'cors',
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(body)
+      body: data
     };
-    const url = '/api/authenticate';
+
+    const url = `${ApiRoot}/Login/Login`;
+
     try {
-      /* const response = await fetch(url, options);
-      // const text = await response.text();
-      console.log('response', response);
+      const response = await fetch(url, options);
+      setSubmitting(false);
       if (response.ok && response.status === 200) {
-        console.log('success authorization');
-        authContext.setAuth({ token: 'Admin' });
-      } */
+        const result = await response.json();
+        const _user = { ...result.value.user, token: result.value.token };
+        authContext.setUser(_user);
+        return <Navigate to="/" />;
+      }
+      setSubmitting(false);
+      setHelperText('Sorry, wrong answer!');
+      setError(true);
+      return <></>;
     } catch (error) {
       console.error(error);
     }
   };
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+
+  const { errors, touched, values, isSubmitting, setSubmitting, handleSubmit, getFieldProps } =
+    formik;
 
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
@@ -141,16 +142,19 @@ export default function LoginForm() {
             Forgot password?
           </Link>
         </Stack>
-
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-        >
-          Login
-        </LoadingButton>
+        <FormControl fullWidth error={error} variant="standard">
+          <LoadingButton
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          >
+            Login
+          </LoadingButton>
+          <FormHelperText>{helperText}</FormHelperText>
+        </FormControl>
       </Form>
     </FormikProvider>
   );

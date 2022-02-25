@@ -6,11 +6,6 @@ import { useNavigate } from 'react-router-dom';
 // material
 import {
   Slide,
-  DialogTitle,
-  DialogContentText,
-  DialogContent,
-  DialogActions,
-  Dialog,
   Button,
   Stack,
   TextField,
@@ -19,7 +14,6 @@ import {
   Tooltip,
   Checkbox,
   FormControlLabel,
-  useMediaQuery,
   FormHelperText
 } from '@mui/material';
 import { LoadingButton, DateTimePicker } from '@mui/lab';
@@ -27,15 +21,41 @@ import GoogleMapReact from 'google-map-react';
 // ----------------------------------------------------------------------
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-
-import services from '../../Test/Services';
+import ApiRoot from '../../Test/APiRoot';
+import { AuthContext } from '../../utils/ContextProvider';
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default function RequestServiceForm({ handleValidation, formikRef }) {
+  React.useEffect(async () => {
+    const options = {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      }
+    };
+
+    const url = `${ApiRoot}/Service/GetServicesType`;
+    try {
+      const response = await fetch(url, options);
+      if (response.ok && response.status === 200) {
+        const result = await response.json();
+        setServices([...result.services]);
+      }
+    } catch (ex) {
+      alert(ex);
+    }
+  }, [0]);
+
+  const authContext = React.useContext(AuthContext);
+  const User = authContext.getUser();
   const navigate = useNavigate();
   const [valueDate, setvalueDate] = React.useState(new Date(Date.now() + 12 * 3600 * 1000));
   const [open, setOpen] = React.useState(false);
+  const [services, setServices] = React.useState([]);
   const handleChangeTime = (newValue) => {
     setvalueDate(newValue);
   };
@@ -80,10 +100,10 @@ export default function RequestServiceForm({ handleValidation, formikRef }) {
         <Stack spacing={3}>
           <Autocomplete
             id="size-small-outlined"
-            onChange={(e, value) => setFieldValue('Service', value?.Title || '')}
+            onChange={(e, value) => setFieldValue('Service', value?.title || '')}
             size="small"
             options={[...services]}
-            getOptionLabel={(option) => option.Title}
+            getOptionLabel={(option) => option.title}
             renderInput={(params) => (
               <TextField
                 {...getFieldProps('Service')}
