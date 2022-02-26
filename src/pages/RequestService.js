@@ -9,14 +9,17 @@ import {
   StepLabel,
   Button,
   Card,
-  Link,
   Container,
   Typography
 } from '@mui/material';
+import { useFormik, Form, FormikProvider } from 'formik';
+import * as Yup from 'yup';
+
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
 import { RequestServiceForm, PatientForm, VolunteerForm } from '../components/serviceRequest';
+import { AuthContext } from '../utils/ContextProvider';
 // import AuthSocial from '../components/authentication/AuthSocial';
 // ----------------------------------------------------------------------
 
@@ -60,7 +63,8 @@ const DescSpan = styled('span')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function RequestService() {
-  const FormikRef = React.useRef();
+  const authContext = React.useContext(AuthContext);
+  const User = authContext.getUser();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const [Images, setImages] = React.useState([
@@ -69,25 +73,67 @@ export default function RequestService() {
     'https://image.freepik.com/free-vector/group-doctors-standing-hospital-building-team-practitioners-ambulance-car_74855-14034.jpg'
   ]);
   const [Validation, setValidation] = React.useState({ FirstStep: false, SecondStep: false });
-  const handleValidation = (name) => {
-    setRenderComponent({
-      ...Validation,
-      [name]: true
-    });
-  };
+
+  /// ------------- formik
+  const RegisterSchema = Yup.object().shape({
+    Name: Yup.string()
+      .min(2, 'الاسم قصير جدا!')
+      .max(50, 'الاسم طويل جدا!')
+      .required('الاسم اجباري'),
+    Age: Yup.number().required('العمر اجباري'),
+    Sex: Yup.string().required('تحديد جنس المريض اجباري'),
+    SeviceTypeId: Yup.number().required(),
+    description: Yup.string().nullable(),
+    Lat: Yup.string().required(),
+    Lng: Yup.string().required(),
+    UserLocation: Yup.boolean().required()
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      Sex: '',
+      Name: User.name,
+      Age: '',
+      SeviceTypeId: '',
+      description: '',
+      Lat: User.lat,
+      Lng: User.lng,
+      UserLocation: true
+    },
+    validationSchema: RegisterSchema,
+    onSubmit: (valuse) => {}
+  });
+
+  const { handleSubmit, validateField } = formik;
+  //  --------------end formik
+
   const [RenderComponent, setRenderComponent] = React.useState([
-    <RequestServiceForm handleValidation={handleValidation} formikRef={FormikRef} />,
-    <PatientForm handleValidation={handleValidation} />,
-    <VolunteerForm />
+    <RequestServiceForm formik={formik} />,
+    <PatientForm formik={formik} />,
+    <VolunteerForm formik={formik} />
   ]);
 
   const isStepOptional = (step) => step === 2;
   const isStepSkipped = (step) => skipped.has(step);
 
-  const handleNext = () => {
-    if (activeStep === 0) {
-      FormikRef.current.click();
+  const handleNext = async () => {
+    // const validated = await Promise.all([
+    //   validateField('SeviceTypeId'),
+    //   validateField('UserLocation'),
+    //   validateField('Lng'),
+    //   validateField('Lat'),
+    //   validateField('description')
+    // ]);
+    // const invalidFields = validated.filter((v) => v === undefined);
+    // if (invalidFields.length !== 0) return;
+
+    if (activeStep === 1) {
+      const validFlag = validateField('Age') && validateField('Name') && validateField('Sex');
+      if (!validFlag) {
+        return;
+      }
     }
+
     let newSkipped = skipped;
 
     if (isStepSkipped(activeStep)) {
@@ -160,23 +206,27 @@ export default function RequestService() {
                   </Box>
                 </Box>
               ) : (
-                <Box>
-                  {RenderComponent[activeStep]}
-                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      رجوع
-                    </Button>
-                    <Box sx={{ flex: '1 1 auto' }} />
-                    <Button onClick={handleNext}>
-                      {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
-                    </Button>
-                  </Box>
-                </Box>
+                <FormikProvider value={formik}>
+                  <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+                    <Box>
+                      {RenderComponent[activeStep]}
+                      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                        <Button
+                          color="inherit"
+                          disabled={activeStep === 0}
+                          onClick={handleBack}
+                          sx={{ mr: 1 }}
+                        >
+                          رجوع
+                        </Button>
+                        <Box sx={{ flex: '1 1 auto' }} />
+                        <Button onClick={handleNext}>
+                          {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Form>
+                </FormikProvider>
               )}
             </Stack>
           </Box>

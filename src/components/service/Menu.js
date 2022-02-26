@@ -10,7 +10,7 @@ Menu.propTypes = {
   onSort: PropTypes.func
 };
 
-export default function Menu({ options, onSort }) {
+export default function Menu({ options, onSort, error, helperText }) {
   const [val, setVal] = useState(null);
   const change = (e) => {
     onSort(e);
@@ -18,7 +18,15 @@ export default function Menu({ options, onSort }) {
   };
 
   return (
-    <TextField select size="small" value={val} label="sex" onChange={change}>
+    <TextField
+      select
+      size="small"
+      value={val}
+      label="sex"
+      onChange={change}
+      error={error}
+      helperText={helperText}
+    >
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}

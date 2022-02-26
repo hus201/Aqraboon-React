@@ -23,11 +23,15 @@ const MainStyle = styled('div')(({ theme }) => ({
   overflow: 'auto',
   minHeight: '100%',
   paddingTop: APP_BAR_MOBILE,
-  paddingBottom: theme.spacing(3),
+  paddingBottom: APP_BAR_MOBILE,
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: 0,
+    paddingRight: 0
+  },
   [theme.breakpoints.up('lg')]: {
-    paddingTop: APP_BAR_DESKTOP + 24,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
+    paddingTop: APP_BAR_DESKTOP + 24
+    //  paddingLeft: theme.spacing(2),
+    //  paddingRight: theme.spacing(2)
   }
 }));
 

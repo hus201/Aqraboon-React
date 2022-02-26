@@ -38,6 +38,7 @@
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.3.0",
+    "@googlemaps/js-api-loader": "^1.13.7",
     "@iconify/icons-ant-design": "^1.1.0",
     "@iconify/icons-eva": "^1.1.0",
     "@iconify/icons-ic": "^1.1.10",
@@ -58,6 +59,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
     "google-map-react": "^2.1.10",
+    "google-maps-react": "^2.0.6",
     "history": "^5.0.1",
     "jss-rtl": "^0.3.0",
     "lodash": "^4.17.21",

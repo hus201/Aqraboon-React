@@ -46,7 +46,7 @@ const sidebarConfig = [
     title: 'Accepted Request',
     path: '/Service/AcceptedRequest',
     icon: getIcon(fileTextFill),
-    ISVolunteer: true
+    ISVolunteer: false
   },
   {
     title: 'Request Service',

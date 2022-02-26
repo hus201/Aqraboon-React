@@ -11,58 +11,80 @@ import {
   TextField,
   Stack,
   Autocomplete,
-  Tooltip,
   ImageList,
   ImageListItem,
-  ImageListItemBar
+  ImageListItemBar,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormHelperText
 } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ApiRoot from '../../Test/APiRoot';
 import { DatePeriod } from '../../Test/DatePeriod';
 import { AuthContext } from '../../utils/ContextProvider';
+import { GetLocationMap } from '../../utils/Maps';
 import Mune from './Menu';
 
 export const AddServiceForm = (props) => {
   useEffect(async () => {
-    const options = {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        Authorization: `Bearer ${User.token}`
+    if (User?.id) {
+      const options = {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${User.token}`
+        }
+      };
+      try {
+        const url = `${ApiRoot}/Service/GetServicesType`;
+        const response = await fetch(url, options);
+
+        if (response.ok && response.status === 200) {
+          const result = await response.json();
+          setServices([...result.services]);
+        }
+      } catch (ex) {
+        console.log(ex);
       }
-    };
-
-    const url = `${ApiRoot}/Service/GetServicesType`;
-    const response = await fetch(url, options);
-
-    if (response.ok && response.status === 200) {
-      const result = await response.json();
-      setServices([...result.services]);
     }
   }, [0]);
-  const [values, setValues] = useState({
-    Service: '',
-    Gender: 0
-  });
+
+  const [services, setServices] = useState([]);
+  const [imagesData, setImagesData] = useState([]);
+  const authContext = useContext(AuthContext);
+  const User = authContext.getUser();
+
   const RegisterSchema = Yup.object().shape({
-    Service: Yup.string().nullable()
+    TypeId: Yup.number().required(),
+    Gender: Yup.number().required(),
+    AgeFrom: Yup.number().required(),
+    AgeTo: Yup.number().required(),
+    Lng: Yup.string().required('Loication is required'),
+    Lat: Yup.string().required('Loication is required'),
+    UserLocation: Yup.boolean().required()
   });
   const formik = useFormik({
     initialValues: {
-      Service: '',
-      Gender: 0
+      TypeId: '',
+      Gender: '',
+      AgeFrom: '',
+      AgeTo: '',
+      Lat: User.lat,
+      Lng: User.lng,
+      UserLocation: true
     },
     validationSchema: RegisterSchema,
     onSubmit: (values) => {
-      SubmitForm(setValues);
+      SubmitForm(values);
     }
   });
 
   const SubmitForm = async (values) => {
-    const { Gender, Service } = values;
+    const { TypeId, Gender, AgeFrom, AgeTo, Lat, Lng } = values;
 
     const data = new FormData();
 
@@ -70,16 +92,8 @@ export const AddServiceForm = (props) => {
       data.append('battlePlans', file, file.name);
     });
 
-    const ServiceType = 5;
-    data.append(
-      'ServiceType',
-      JSON.stringify({
-        TypeId: 5,
-        Gender: 2,
-        AgeFrom: 0,
-        AgeTo: 77
-      })
-    );
+    const Service = JSON.stringify({ TypeId, Gender, AgeFrom, AgeTo, Lat, Lng });
+    data.append('service', Service);
 
     const options = {
       method: 'POST',
@@ -100,14 +114,15 @@ export const AddServiceForm = (props) => {
     }
   };
 
-  const { errors, touched, handleSubmit, setFieldValue, isSubmitting, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, setFieldValue, isSubmitting, getFieldProps, values } =
+    formik;
 
-  const [services, setServices] = useState([]);
-  const [imagesData, setImagesData] = useState([]);
-  const authContext = useContext(AuthContext);
-  const User = authContext.getUser();
   const onChangeGender = (e) => {
     setFieldValue('Gender', e.target.value);
+  };
+  const handleChangeLocation = (lat, lng) => {
+    setFieldValue('Lng', lat);
+    setFieldValue('Lat', lng);
   };
 
   return (
@@ -122,15 +137,15 @@ export const AddServiceForm = (props) => {
                 <Stack spacing={3}>
                   <Autocomplete
                     id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('Service', value?.title || '')}
+                    onChange={(e, value) => setFieldValue('TypeId', value?.id || '')}
                     size="small"
                     options={[...services]}
                     getOptionLabel={(option) => option?.title}
                     renderInput={(params) => (
                       <TextField
-                        {...getFieldProps('Service')}
-                        error={Boolean(errors?.Service)}
-                        helperText={errors?.Service}
+                        {...getFieldProps('TypeId')}
+                        error={Boolean(errors?.TypeId)}
+                        helperText={errors?.TypeId}
                         {...params}
                         label="نوع الخدمة المطلوبة"
                       />
@@ -147,42 +162,44 @@ export const AddServiceForm = (props) => {
                       { label: 'male', value: 1 },
                       { label: 'female', value: 2 }
                     ]}
+                    error={Boolean(errors?.Gender)}
+                    helperText={errors?.Gender}
                     onSort={onChangeGender}
                   />
                 </Stack>
               </Grid>
 
               <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <Grid md={6} xs={12} space={1}>
+                <Grid item md={6} xs={12} space={1}>
                   <Autocomplete
                     id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('Service', value || '')}
+                    onChange={(e, value) => setFieldValue('AgeFrom', value.value)}
                     size="small"
                     options={[...DatePeriod]}
-                    getOptionLabel={(option) => option}
+                    getOptionLabel={(option) => option.title}
                     renderInput={(params) => (
                       <TextField
-                        {...getFieldProps('Service')}
-                        error={Boolean(errors?.Service)}
-                        helperText={errors?.Service}
+                        {...getFieldProps('AgeFrom')}
+                        error={Boolean(errors?.AgeFrom)}
+                        helperText={errors?.AgeFrom}
                         {...params}
                         label="نوع الخدمة المطلوبة"
                       />
                     )}
                   />
                 </Grid>
-                <Grid md={6} xs={12} space={1}>
+                <Grid item md={6} xs={12} space={1}>
                   <Autocomplete
                     id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('Service', value || '')}
+                    onChange={(e, value) => setFieldValue('AgeTo', value.value)}
                     size="small"
                     options={[...DatePeriod]}
-                    getOptionLabel={(option) => option}
+                    getOptionLabel={(option) => option.title}
                     renderInput={(params) => (
                       <TextField
-                        {...getFieldProps('Service')}
-                        error={Boolean(errors?.Service)}
-                        helperText={errors?.Service}
+                        {...getFieldProps('AgeTo')}
+                        error={Boolean(errors?.AgeTo)}
+                        helperText={errors?.AgeTo}
                         {...params}
                         label="نوع الخدمة المطلوبة"
                       />
@@ -190,7 +207,25 @@ export const AddServiceForm = (props) => {
                   />
                 </Grid>
               </Grid>
-
+              <Grid item md={12} xs={12}>
+                {!values.UserLocation && (
+                  <Box style={{ height: '300px' }}>
+                    <GetLocationMap setLocation={handleChangeLocation} />
+                    {Boolean(errors.Lat) && (
+                      <FormHelperText style={{ color: 'red' }}>{errors.Lat}</FormHelperText>
+                    )}
+                  </Box>
+                )}
+                <FormGroup>
+                  <FormControlLabel
+                    {...getFieldProps('UserLocation')}
+                    error={Boolean(errors?.UserLocation)}
+                    helperText={errors?.UserLocation}
+                    control={<Checkbox defaultChecked />}
+                    label="Use Current Acount Location"
+                  />
+                </FormGroup>
+              </Grid>
               <Grid item md={12} xs={12}>
                 <label htmlFor="contained-button-file">
                   <input
@@ -203,6 +238,7 @@ export const AddServiceForm = (props) => {
                       setImagesData([...imagesData, ...e.target.files]);
                     }}
                   />
+
                   <Button disabled={imagesData.length > 2} variant="contained" component="span">
                     Upload
                   </Button>

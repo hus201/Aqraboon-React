@@ -11,7 +11,7 @@ import {
 import { styled } from '@mui/material/styles';
 
 // components
-import LandindPage from '../components/landingPage';
+import LandindPage from '../components/LandingPage/landingPage';
 
 import Page from '../components/Page';
 

@@ -1,7 +1,7 @@
 import faker from 'faker';
 import PropTypes from 'prop-types';
 import { noCase } from 'change-case';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { set, sub, formatDistanceToNow } from 'date-fns';
 import { Icon } from '@iconify/react';
@@ -30,7 +30,8 @@ import { mockImgAvatar } from '../../utils/mockImages';
 // components
 import Scrollbar from '../../components/Scrollbar';
 import MenuPopover from '../../components/MenuPopover';
-
+import APIRoot from '../../Test/APiRoot';
+import { AuthContext } from '../../utils/ContextProvider';
 // ----------------------------------------------------------------------
 
 const NOTIFICATIONS = [
@@ -171,7 +172,33 @@ export default function NotificationsPopover() {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const authContext = useContext(AuthContext);
+  const User = authContext.getUser();
 
+  useEffect(async () => {
+    if (User?.id) {
+      const url = `${APIRoot}/Service/GetVolunteerRequest`;
+      const options = {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${User.token}`
+        }
+      };
+
+      try {
+        const response = await fetch(url, options);
+        if (response.ok && response.status === 200) {
+          const result = await response.json();
+          setNotifications([...result.value.Services]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [0]);
   const handleOpen = () => {
     setOpen(true);
   };

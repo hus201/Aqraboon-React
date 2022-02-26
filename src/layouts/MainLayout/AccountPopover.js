@@ -32,6 +32,17 @@ const MENU_OPTIONS = [
     IsVolenteer: true
   },
   {
+    label: 'Request Service',
+    icon: personFill,
+    linkTo: '/Service/RequestService'
+  },
+  {
+    label: 'Accepted Request',
+    icon: personFill,
+    linkTo: '/Service/AcceptedRequest',
+    IsVolenteer: true
+  },
+  {
     label: 'Settings',
     icon: settings2Fill,
     linkTo: '#'

@@ -1,12 +1,12 @@
 const DatePeriod = [
-  'All',
-  '0 year',
-  '1 year',
-  '5 year',
-  '10 year',
-  '18 year',
-  '40 year',
-  '60 year'
+  { title: 'All', value: 999 },
+  { title: '0 year', value: 0 },
+  { title: '1 year', value: 1 },
+  { title: '5 year', value: 5 },
+  { title: '10 year', value: 10 },
+  { title: '18 year', value: 18 },
+  { title: '40 year', value: 40 },
+  { title: '60 year', value: 60 }
 ];
 
 export { DatePeriod };

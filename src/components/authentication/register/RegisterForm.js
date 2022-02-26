@@ -101,7 +101,6 @@ export default function RegisterForm() {
 
     try {
       const response = await fetch(url, options);
-      setSubmitting(false);
       if (response.ok && response.status === 200) {
         const result = await response.json();
         const _user = { ...result.value.user, token: result.value.token };
@@ -113,6 +112,7 @@ export default function RegisterForm() {
       setError(true);
       return <></>;
     } catch (error) {
+      setSubmitting(false);
       console.error(error);
     }
   };
