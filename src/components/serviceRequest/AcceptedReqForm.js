@@ -42,15 +42,15 @@ function IconContainer(props) {
 
 // ------------------------------- ---------------------------------------
 
-export default function AcceptedReqForm() {
+export default function AcceptedReqForm({ request }) {
   const [Service, setService] = useState({
-    service: 'ابرة عضل ',
-    desc: 'هذا بعض الوصف حول ما اريده ضمن الخدمة التي طلبتها',
+    service: request.seviceTypeId,
+    desc: request.description,
     location: {
-      lat: 25.3,
-      lng: 21.3
+      lat: request.lattiud,
+      lng: request.longtiud
     },
-    date: new Date().toLocaleString()
+    date: new Date(request.expireTime).toLocaleString()
   });
   const AnyReactComponent = ({ text }) => <div>{text}</div>;
 

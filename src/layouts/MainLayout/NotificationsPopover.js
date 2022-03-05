@@ -85,25 +85,31 @@ const NOTIFICATIONS = [
 function renderContent(notification) {
   const title = (
     <Typography variant="subtitle2">
-      {notification.title}
+      {notification?.seviceTypeId}
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
+        &nbsp; {noCase(notification?.description || ' 00 ')}
       </Typography>
     </Typography>
   );
 
-  if (notification.type === 'order_placed') {
+  if (notification?.isAccepted) {
     return {
-      avatar: <img alt={notification.title} src="/static/icons/ic_notification_package.svg" />,
+      avatar: (
+        <img alt={notification?.description} src="/static/icons/ic_notification_package.svg" />
+      ),
       title
     };
   }
-  if (notification.type === 'order_shipped') {
+
+  if (!notification?.isAccepted) {
     return {
-      avatar: <img alt={notification.title} src="/static/icons/ic_notification_shipping.svg" />,
+      avatar: (
+        <img alt={notification?.description} src="/static/icons/ic_notification_shipping.svg" />
+      ),
       title
     };
   }
+
   if (notification.type === 'mail') {
     return {
       avatar: <img alt={notification.title} src="/static/icons/ic_notification_mail.svg" />,
@@ -131,14 +137,14 @@ function NotificationItem({ notification }) {
 
   return (
     <ListItemButton
-      to="#"
+      to={`/Service/AcceptedRequest?id=${notification.id}`}
       disableGutters
       component={RouterLink}
       sx={{
         py: 1.5,
         px: 2.5,
         mt: '1px',
-        ...(notification.isUnRead && {
+        ...(notification?.isUnRead && {
           bgcolor: 'action.selected'
         })
       }}
@@ -159,7 +165,7 @@ function NotificationItem({ notification }) {
             }}
           >
             <Box component={Icon} icon={clockFill} sx={{ mr: 0.5, width: 16, height: 16 }} />
-            {formatDistanceToNow(new Date(notification.createdAt))}
+            {formatDistanceToNow(new Date(notification.date))}
           </Typography>
         }
       />
@@ -192,7 +198,8 @@ export default function NotificationsPopover() {
         const response = await fetch(url, options);
         if (response.ok && response.status === 200) {
           const result = await response.json();
-          setNotifications([...result.value.Services]);
+          //  [...result.value.aroundScopeRequests]
+          setNotifications([...result.value.inScopeRequests]);
         }
       } catch (error) {
         console.error(error);
@@ -268,7 +275,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(0, 2).map((notification) => (
+            {notifications.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>

@@ -1,12 +1,11 @@
 import { Stack, TextField } from '@mui/material';
 
-export default function PatientReqForm() {
+export default function PatientReqForm({ request }) {
   const Patient = {
-    Name: 'Jaydon Frankie',
-    Age: 25,
-    Sex: 'ذكر',
-    Description:
-      'المريض من اصحاب الحالات الخاصة يصعب عليه المشي يعاني من امراض سكر و ضغط و معاه جلطة'
+    Name: request.pName,
+    Age: request.pAge,
+    Sex: request.pGender,
+    Description: request.pDescription
   };
   return (
     <Stack spacing={3}>

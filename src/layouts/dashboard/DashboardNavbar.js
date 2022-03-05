@@ -12,7 +12,6 @@ import { AuthContext } from '../../utils/ContextProvider';
 // components
 import { MHidden } from '../../components/@material-extend';
 //
-import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
@@ -56,8 +55,6 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
-
-        <Searchbar />
 
         <Box sx={{ flexGrow: 1 }} />
 

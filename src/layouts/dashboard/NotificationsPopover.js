@@ -193,7 +193,8 @@ export default function NotificationsPopover() {
         const response = await fetch(url, options);
         if (response.ok && response.status === 200) {
           const result = await response.json();
-          setNotifications([...result.value.Services]);
+          setNotifications([...result.value.inScopeRequests]);
+          //  [...result.value.aroundScopeRequests]
         }
       } catch (error) {
         console.error(error);

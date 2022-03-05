@@ -17,7 +17,8 @@ import {
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
 import { AcceptedReqForm, PatientReqForm } from '../components/serviceRequest';
-
+import ApiRoot from '../Test/APiRoot';
+import { AuthContext } from '../utils/ContextProvider';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -52,12 +53,31 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AcceptedRequest() {
+  React.useEffect(async () => {
+    const Url = new window.URL(window.location.href);
+    const id = Url.searchParams.get('id');
+
+    const url = `${ApiRoot}/Service/GetRequest?id=${id}`;
+    const options = {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      }
+    };
+    const response = await fetch(url, options);
+    if (response.ok && response.status === 200) {
+      const result = await response.json();
+      setRequest({ ...result.value.request });
+    }
+  }, [0]);
+  const authContext = React.useContext(AuthContext);
+  const User = authContext.getUser();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [request, setRequest] = React.useState({});
   const [skipped, setSkipped] = React.useState(new Set());
-  const [RenderComponent, setRenderComponent] = React.useState([
-    <AcceptedReqForm />,
-    <PatientReqForm />
-  ]);
 
   const steps = ['تفاصيل الخدمة', 'معلومات المريض'];
 
@@ -119,8 +139,7 @@ export default function AcceptedRequest() {
                   );
                 })}
               </Stepper>
-
-              {activeStep === steps.length ? (
+              {activeStep === steps.length && (
                 <Box>
                   <Typography sx={{ mt: 2, mb: 1 }}>سيتم التواصل معك من قبل طالب الخدمة</Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -128,25 +147,26 @@ export default function AcceptedRequest() {
                     <Button onClick={handleReset}>اغلاق</Button>
                   </Box>
                 </Box>
-              ) : (
-                <Box>
-                  {RenderComponent[activeStep]}
-                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      رجوع
-                    </Button>
-                    <Box sx={{ flex: '1 1 auto' }} />
-                    <Button onClick={handleNext}>
-                      {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
-                    </Button>
-                  </Box>
-                </Box>
               )}
+              <Box>
+                {activeStep === 0 && <AcceptedReqForm request={request} />}
+                {activeStep === 1 && <PatientReqForm request={request} />}
+
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    رجوع
+                  </Button>
+                  <Box sx={{ flex: '1 1 auto' }} />
+                  <Button onClick={handleNext}>
+                    {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
+                  </Button>
+                </Box>
+              </Box>
             </Stack>
           </Box>
         </ContentStyle>

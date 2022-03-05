@@ -1,7 +1,6 @@
 import * as React from 'react';
 // material
 import {
-  Slide,
   Stack,
   TextField,
   Box,
@@ -22,9 +21,8 @@ import ApiRoot from '../../Test/APiRoot';
 import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap } from '../../utils/Maps';
 
-export default function RequestServiceForm({ formik }) {
+export default function RequestServiceForm({ errors, values, setObjValues }) {
   React.useEffect(async () => {
-    console.log('formik  ', formik.values);
     const options = {
       method: 'GET',
       mode: 'cors',
@@ -52,29 +50,26 @@ export default function RequestServiceForm({ formik }) {
   const [valueDate, setvalueDate] = React.useState(new Date(Date.now() + 12 * 3600 * 1000));
   const [services, setServices] = React.useState([]);
   const handleChangeTime = (newValue) => {
-    setvalueDate(newValue);
+    setObjValues('ExpTime', newValue);
   };
 
   const handleChangeLocation = (lat, lng) => {
-    setFieldValue('Lng', lat);
-    setFieldValue('Lat', lng);
+    const loc = { lat, lng };
+    setObjValues('loc', loc);
   };
-
-  const { errors, setFieldValue, getFieldProps, values } = formik;
 
   return (
     <Stack spacing={3}>
       <Autocomplete
         id="size-small-outlined"
-        onChange={(e, value) => setFieldValue('SeviceTypeId', value?.title || '')}
+        onChange={(e, value) => setObjValues('SeviceTypeId', value?.id || '')}
         size="small"
         options={[...services]}
         getOptionLabel={(option) => option.title}
         renderInput={(params) => (
           <TextField
-            {...getFieldProps('SeviceTypeId')}
-            error={Boolean(errors.SeviceTypeId)}
-            helperText={errors.SeviceTypeId}
+            error={Boolean(errors?.SeviceTypeId)}
+            helperText={errors?.ms?.SeviceTypeId}
             {...params}
             label="نوع الخدمة المطلوبة"
           />
@@ -87,30 +82,31 @@ export default function RequestServiceForm({ formik }) {
         type="text"
         multiline={Boolean(true)}
         maxRows={5}
-        onChange={(e) => setFieldValue('description', e.target.value)}
-        value={values.description}
+        onChange={(e) => setObjValues('description', e.target.value)}
+        value={values?.description}
         label="اضافة وصف"
-        {...getFieldProps('description')}
-        error={Boolean(errors.description)}
-        helperText={errors.description}
+        error={Boolean(errors?.description)}
+        helperText={errors?.ms?.description}
       />
       <Grid item md={12} xs={12}>
-        {!values.UserLocation && (
+        {!values?.UserLocation && (
           <Box style={{ height: '300px' }}>
             <GetLocationMap setLocation={handleChangeLocation} />
-            {Boolean(errors.Lat) && (
-              <FormHelperText style={{ color: 'red' }}>{errors.Lat}</FormHelperText>
-            )}
           </Box>
         )}
         <FormGroup>
           <FormControlLabel
-            {...getFieldProps('UserLocation')}
+            onChange={() => {
+              setObjValues('UserLocation', !values?.UserLocation);
+            }}
             error={Boolean(errors?.UserLocation)}
-            helperText={errors?.UserLocation}
-            control={<Checkbox defaultChecked />}
+            helperText={errors?.ms?.UserLocation}
+            control={<Checkbox />}
             label="Use Current Acount Location"
           />
+          {Boolean(errors?.Loc) && (
+            <FormHelperText style={{ color: 'red' }}>{errors?.ms?.Loc}</FormHelperText>
+          )}
         </FormGroup>
       </Grid>
       <Tooltip
@@ -124,12 +120,15 @@ export default function RequestServiceForm({ formik }) {
               fullWidth
               size="small"
               label="اقصى مدة زمنية يمكن للخدمة الوصول فيها "
-              value={valueDate}
+              value={values.ExpTime}
               onChange={handleChangeTime}
               minDateTime={new Date(Date.now() + 11 * 3600 * 1000)}
               renderInput={(params) => <TextField fullWidth size="small" {...params} />}
             />
           </LocalizationProvider>
+          {Boolean(errors?.ExpTime) && (
+            <FormHelperText style={{ color: 'red' }}>{errors?.ms?.ExpTime}</FormHelperText>
+          )}
         </Box>
       </Tooltip>
     </Stack>

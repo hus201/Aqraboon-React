@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 // material
 import { alpha, styled } from '@mui/material/styles';
@@ -10,18 +10,17 @@ import { Box, Stack, Button, AppBar, Toolbar, IconButton } from '@mui/material';
 // components
 import { MHidden } from '../../components/@material-extend';
 //
-import Searchbar from './Searchbar';
+
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
 import Logo from '../../components/Logo';
-import Scrollbar from '../../components/Scrollbar';
 import MainLayNavSection from '../../components/MainLayNavSection';
 import sidebarConfig from './SidebarConfig';
 import { AuthContext } from '../../utils/ContextProvider';
 // ----------------------------------------------------------------------
 
-const DRAWER_WIDTH = 280;
+//  const DRAWER_WIDTH = 280;
 const APPBAR_MOBILE = 64;
 const APPBAR_DESKTOP = 92;
 
@@ -44,7 +43,7 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   }
 }));
 
-const BoxStyled = styled(Box)(({ theme }) => ({
+const BoxStyled = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'row',
   gap: 20
@@ -102,7 +101,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
-        <Searchbar />
+
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>

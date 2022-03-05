@@ -34,49 +34,74 @@ const NumberFormatCustom = forwardRef((props, ref) => {
   );
 });
 
-export default function PatientForm({ formik }) {
-  const { errors, setFieldValue, getFieldProps } = formik;
+export default function PatientForm({ User, errors, values, setObjValues }) {
   NumberFormatCustom.propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired
   };
+  const Genders = [
+    { title: 'ذكر', value: 1 },
+    { title: 'انثى', value: 2 }
+  ];
 
   return (
     <Stack spacing={3}>
       <TextField
         fullWidth
+        disabled={values?.CurrentInfo}
+        InputLabelProps={{ shrink: values?.CurrentInfo || values?.Name }}
         size="small"
         label="اسم المريض"
-        {...getFieldProps('Name')}
-        error={Boolean(errors.Name)}
-        helperText={errors.Name}
+        value={values?.CurrentInfo ? User.name : values?.Name}
+        onChange={(e) => setObjValues('Name', e.target.value)}
+        error={Boolean(errors?.Name)}
+        helperText={errors?.ms?.Name}
       />
-      <TextField fullWidth multiline maxRows={4} size="small" label="وصف حالة المريض" />
+
       <TextField
         fullWidth
+        multiline
+        value={values?.Pdescription}
+        onChange={(e) => setObjValues('Pdescription', e.target.value)}
+        error={Boolean(errors?.Pdescription)}
+        helperText={errors?.ms?.Pdescription}
+        maxRows={4}
+        size="small"
+        label="وصف حالة المريض"
+      />
+
+      <TextField
+        fullWidth
+        disabled={values?.CurrentInfo}
         size="small"
         label="العمر"
-        InputProps={{
-          inputComponent: NumberFormatCustom
-        }}
-        {...getFieldProps('Age')}
-        error={Boolean(errors.Age)}
-        helperText={errors.Age}
+        value={
+          values?.CurrentInfo
+            ? new Date(User.birthDate).getFullYear() - new Date().getFullYear()
+            : values?.Age
+        }
+        onChange={(e) => setObjValues('Age', e.target.value + 0)}
+        // InputProps={{
+        //   inputComponent: NumberFormatCustom
+        // }}
+        type="number"
+        error={Boolean(errors?.Age)}
+        helperText={errors?.ms?.Age}
       />
+
       <Autocomplete
         id="size-small-outlined"
         size="small"
-        options={[
-          { title: 'ذكر', value: 1 },
-          { title: 'انثى', value: 2 }
-        ]}
+        disabled={values?.CurrentInfo}
+        value={values?.CurrentInfo ? Genders[User.gender] : Genders[values?.Sex || 1]}
+        options={[...Genders]}
         getOptionLabel={(option) => option.title}
-        onChange={(e, value) => setFieldValue('Sex', value?.title || '')}
+        onChange={(e, value) => setObjValues('Sex', value?.value || '')}
         renderInput={(params) => (
           <TextField
-            {...getFieldProps('Sex')}
-            error={Boolean(errors.Sex)}
-            helperText={errors.Sex}
+            error={Boolean(errors?.Sex)}
+            disabled={values?.CurrentInfo}
+            helperText={errors?.ms?.Sex}
             {...params}
             label="جنس المريض"
           />
@@ -85,10 +110,10 @@ export default function PatientForm({ formik }) {
 
       <FormGroup>
         <FormControlLabel
-          {...getFieldProps('UserLocation')}
-          error={Boolean(errors?.UserLocation)}
-          helperText={errors?.UserLocation}
-          control={<Checkbox defaultChecked />}
+          onChange={(e) => setObjValues('CurrentInfo', !values?.CurrentInfo)}
+          error={Boolean(errors?.CurrentInfo)}
+          helperText={errors?.ms?.CurrentInfo}
+          control={<Checkbox checked={values?.CurrentInfo} />}
           label="Use Current Acount info"
         />
       </FormGroup>

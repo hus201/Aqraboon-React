@@ -12,14 +12,13 @@ import {
   Container,
   Typography
 } from '@mui/material';
-import { useFormik, Form, FormikProvider } from 'formik';
-import * as Yup from 'yup';
 
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
 import { RequestServiceForm, PatientForm, VolunteerForm } from '../components/serviceRequest';
 import { AuthContext } from '../utils/ContextProvider';
+import ApiRoot from '../Test/APiRoot';
 // import AuthSocial from '../components/authentication/AuthSocial';
 // ----------------------------------------------------------------------
 
@@ -72,65 +71,102 @@ export default function RequestService() {
     'https://image.freepik.com/free-vector/person-with-cold-concept-illustration_114360-1594.jpg',
     'https://image.freepik.com/free-vector/group-doctors-standing-hospital-building-team-practitioners-ambulance-car_74855-14034.jpg'
   ]);
-  const [Validation, setValidation] = React.useState({ FirstStep: false, SecondStep: false });
 
-  /// ------------- formik
-  const RegisterSchema = Yup.object().shape({
-    Name: Yup.string()
-      .min(2, 'الاسم قصير جدا!')
-      .max(50, 'الاسم طويل جدا!')
-      .required('الاسم اجباري'),
-    Age: Yup.number().required('العمر اجباري'),
-    Sex: Yup.string().required('تحديد جنس المريض اجباري'),
-    SeviceTypeId: Yup.number().required(),
-    description: Yup.string().nullable(),
-    Lat: Yup.string().required(),
-    Lng: Yup.string().required(),
-    UserLocation: Yup.boolean().required()
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      Sex: '',
-      Name: User.name,
-      Age: '',
-      SeviceTypeId: '',
-      description: '',
-      Lat: User.lat,
-      Lng: User.lng,
-      UserLocation: true
-    },
-    validationSchema: RegisterSchema,
-    onSubmit: (valuse) => {}
-  });
-
-  const { handleSubmit, validateField } = formik;
-  //  --------------end formik
-
-  const [RenderComponent, setRenderComponent] = React.useState([
-    <RequestServiceForm formik={formik} />,
-    <PatientForm formik={formik} />,
-    <VolunteerForm formik={formik} />
-  ]);
+  /// ------------- form
+  const [values, setValues] = React.useState({});
+  const [errors, setErrors] = React.useState({});
+  //  --------------end form
+  const setObjValues = (name, val) => {
+    console.log('[name]', [name], val);
+    console.log('[values]', values);
+    setValues({ ...values, [name]: val });
+  };
 
   const isStepOptional = (step) => step === 2;
   const isStepSkipped = (step) => skipped.has(step);
-
+  const handleSubmit = () => {
+    const request = {
+      Description: values?.description,
+      Lattiud: values?.loc?.lat,
+      Longtiud: values?.loc?.lng,
+      SeviceTypeId: values?.SeviceTypeId,
+      PAge: values?.Age,
+      PDescription: values?.Pdescription,
+      PName: values?.Name,
+      VGender: values?.VolunteerSex,
+      PGender: values?.Sex,
+      ExpireTime: values?.ExpTime
+    };
+    console.log('request => ', request);
+    const data = new FormData();
+    data.append('request', JSON.stringify(request));
+    data.append('CurrentInfo', Boolean(values?.CurrentInfo));
+    data.append('CurrentLocation', Boolean(values?.UserLocation));
+    const url = `${ApiRoot}/Service/SaveRequest`;
+    const options = {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      },
+      body: data
+    };
+    const response = fetch(url, options);
+    if (response.ok && response.state === 200) {
+      const result = response.json();
+      console.log('result', result);
+    }
+  };
   const handleNext = async () => {
-    // const validated = await Promise.all([
-    //   validateField('SeviceTypeId'),
-    //   validateField('UserLocation'),
-    //   validateField('Lng'),
-    //   validateField('Lat'),
-    //   validateField('description')
-    // ]);
-    // const invalidFields = validated.filter((v) => v === undefined);
-    // if (invalidFields.length !== 0) return;
-
-    if (activeStep === 1) {
-      const validFlag = validateField('Age') && validateField('Name') && validateField('Sex');
-      if (!validFlag) {
+    if (activeStep === 0) {
+      if (!(values.SeviceTypeId && values.description && values?.Loc?.lat && values?.Loc?.lng)) {
+        const errs = {
+          SeviceTypeId: true,
+          description: true,
+          Loc: true,
+          ExpTime: true,
+          ms: {
+            SeviceTypeId: 'this field is required',
+            description: 'this field is required',
+            ExpTime: 'this field is required',
+            Loc: 'this field is required'
+          }
+        };
+        setErrors({ ...errs });
+        //  return;
+      }
+    } else if (activeStep === 1) {
+      if (!(values.Name && values.Pdescription && values.Age && values.Sex)) {
+        const errs = {
+          Name: true,
+          Pdescription: true,
+          Age: true,
+          Sex: true,
+          ms: {
+            Name: 'this field is required',
+            Pdescription: 'this field is required',
+            Age: 'this field is required',
+            Sex: 'this field is required'
+          }
+        };
+        setErrors({ ...errs });
+        // return;
+      }
+    } else if (activeStep === 2) {
+      if (!values.VolunteerSex) {
+        const errs = {
+          VolunteerSex: true,
+          ms: {
+            VolunteerSex: 'this field is required'
+          }
+        };
+        setErrors({ ...errs });
         return;
+      }
+      if (values.VolunteerSex) {
+        handleSubmit();
       }
     }
 
@@ -206,27 +242,41 @@ export default function RequestService() {
                   </Box>
                 </Box>
               ) : (
-                <FormikProvider value={formik}>
-                  <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-                    <Box>
-                      {RenderComponent[activeStep]}
-                      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Button
-                          color="inherit"
-                          disabled={activeStep === 0}
-                          onClick={handleBack}
-                          sx={{ mr: 1 }}
-                        >
-                          رجوع
-                        </Button>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleNext}>
-                          {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Form>
-                </FormikProvider>
+                <Box>
+                  {activeStep === 0 && (
+                    <RequestServiceForm
+                      values={values}
+                      setObjValues={setObjValues}
+                      errors={errors}
+                    />
+                  )}
+                  {activeStep === 1 && (
+                    <PatientForm
+                      User={User}
+                      values={values}
+                      setObjValues={setObjValues}
+                      errors={errors}
+                    />
+                  )}
+                  {activeStep === 2 && (
+                    <VolunteerForm values={values} setObjValues={setObjValues} errors={errors} />
+                  )}
+
+                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      رجوع
+                    </Button>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Button onClick={handleNext}>
+                      {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
+                    </Button>
+                  </Box>
+                </Box>
               )}
             </Stack>
           </Box>

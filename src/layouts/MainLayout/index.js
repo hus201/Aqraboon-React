@@ -9,8 +9,8 @@ import { MHidden } from '../../components/@material-extend';
 
 // ----------------------------------------------------------------------
 
-const APP_BAR_MOBILE = 1;
-const APP_BAR_DESKTOP = 1;
+const APP_BAR_MOBILE = 65;
+const APP_BAR_DESKTOP = 75;
 
 const RootStyle = styled('div')({
   display: 'flex',
@@ -23,7 +23,7 @@ const MainStyle = styled('div')(({ theme }) => ({
   overflow: 'auto',
   minHeight: '100%',
   paddingTop: APP_BAR_MOBILE,
-  paddingBottom: APP_BAR_MOBILE,
+  paddingBottom: 1,
   [theme.breakpoints.down('md')]: {
     paddingLeft: 0,
     paddingRight: 0

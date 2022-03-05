@@ -10,7 +10,6 @@ import RequestService from './pages/RequestService';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
-import User from './pages/User';
 import Profile from './pages/Profile';
 import AddService from './pages/AddService';
 import NotFound from './pages/Page404';

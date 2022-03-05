@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
+import PropTypes from 'prop-types';
 
 const GetLocationMap = ({ setLocation }) => {
   useEffect(() => {
@@ -73,6 +74,10 @@ const GetLocationMap = ({ setLocation }) => {
   };
 
   return <div id="GetLocationMap" style={{ height: '100%', width: '100%' }} />;
+};
+
+GetLocationMap.propTypes = {
+  setLocation: PropTypes.func
 };
 
 export { GetLocationMap };

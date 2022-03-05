@@ -120,16 +120,15 @@ function LandingPage(props) {
   const cards = [card, card, card];
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <Slide easing="ease">
+        {slideImages.map((item, index) => (
+          <div className="each-slide" key={index.toString()}>
+            <PaperStyled style={{ backgroundImage: `url(${item})` }}>this card</PaperStyled>
+          </div>
+        ))}
+      </Slide>
       <Container maxWidth="lg">
-        <Slide easing="ease">
-          {slideImages.map((item, index) => (
-            <div className="each-slide" key={index.toString()}>
-              <PaperStyled style={{ backgroundImage: `url(${item})` }}>this card</PaperStyled>
-            </div>
-          ))}
-        </Slide>
-
         <RowFlex className="container">
           <svg className="svgClass" viewBox="0 0 500 500" preserveAspectRatio="xMinYMin meet">
             <path
@@ -184,7 +183,7 @@ function LandingPage(props) {
       <Footer>
         <p>Footer</p>
       </Footer>
-    </>
+    </div>
   );
 }
 
