@@ -31,7 +31,7 @@ export default function LoginForm() {
   const [helperText, setHelperText] = useState('Choose wisely');
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    email: Yup.string().required('Email or Phone number is required'),
     password: Yup.string().required('Password is required')
   });
 
@@ -103,9 +103,15 @@ export default function LoginForm() {
           <TextField
             size="small"
             fullWidth
-            autoComplete="username"
+            autoComplete="email or phone number"
             type="email"
-            label="Email address"
+            inputProps={{
+              autocomplete: 'new-email',
+              form: {
+                autocomplete: 'off'
+              }
+            }}
+            label="Email or phone number"
             {...getFieldProps('email')}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}

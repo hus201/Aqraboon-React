@@ -37,6 +37,23 @@ const MENU_OPTIONS = [
     linkTo: '/Service/RequestService'
   },
   {
+    label: 'Accepted List',
+    icon: personFill,
+    linkTo: '/Service/AcceptedList',
+    IsVolenteer: true
+  },
+  {
+    label: 'Need Requests List',
+    icon: personFill,
+    linkTo: '/Service/NeedRequestsList'
+  },
+  {
+    label: 'Provided service List',
+    icon: personFill,
+    linkTo: '/Service/ProvidedList',
+    IsVolenteer: true
+  },
+  {
     label: 'Accepted Request',
     icon: personFill,
     linkTo: '/Service/AcceptedRequest',

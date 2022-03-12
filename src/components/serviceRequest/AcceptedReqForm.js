@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 // material
 
@@ -11,6 +11,7 @@ import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import { DisplayPoint } from '../../utils/Maps';
 
 const customIcons = {
   1: {
@@ -42,43 +43,50 @@ function IconContainer(props) {
 
 // ------------------------------- ---------------------------------------
 
-export default function AcceptedReqForm({ request }) {
+export default function AcceptedReqForm({ request, rate }) {
+  useEffect(() => {
+    setRate(rate);
+    setService({
+      service: request?.seviceType?.title,
+      desc: request.description,
+      lat: request.lattiud || '31.963158',
+      lng: request.longtiud || '35.930359',
+      date: new Date(request.expireTime).toLocaleString()
+    });
+  }, [request]);
+
   const [Service, setService] = useState({
-    service: request.seviceTypeId,
+    service: request?.seviceType?.title,
     desc: request.description,
-    location: {
-      lat: request.lattiud,
-      lng: request.longtiud
-    },
+    lat: request.lattiud || '31.963158',
+    lng: request.longtiud || '35.930359',
     date: new Date(request.expireTime).toLocaleString()
   });
-  const AnyReactComponent = ({ text }) => <div>{text}</div>;
+  const [Rate, setRate] = useState(0);
 
   return (
     <div>
       <Stack spacing={3}>
-        <TextField fullWidth disabled size="small" label="Sevice" value={Service.service} />
         <TextField
+          InputLabelProps={{ shrink: 1 }}
           fullWidth
           disabled
           size="small"
+          label="Sevice"
+          value={Service.service}
+        />
+        <TextField
+          fullWidth
+          disabled
+          InputLabelProps={{ shrink: 1 }}
+          size="small"
           multiline={Boolean(true)}
           maxRows={5}
-          label="Sevice"
+          label="description"
           value={Service.desc}
         />
         <Box style={{ height: '300px' }}>
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyC4EGFc_Y4wOspdDUmgEUu_76dBP2v6RD4' }}
-            defaultCenter={{
-              lat: Service.location.lat,
-              lng: Service.location.lng
-            }}
-            defaultZoom={4}
-            yesIWantToUseGoogleMapApiInternals
-          >
-            <AnyReactComponent text="My Marker" />
-          </GoogleMapReact>
+          <DisplayPoint Lat={Service.lat} Lng={Service.lng} />
         </Box>
         <TextField fullWidth disabled size="small" label="الوقت المطلوب" value={Service.date} />
         <Box
@@ -88,32 +96,28 @@ export default function AcceptedReqForm({ request }) {
             justifyContent: 'space-evenly'
           }}
         >
-          <Box sx={{ ml: 2 }}>تقييم طالب الخدمة</Box>
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-evenly'
-            }}
-          >
-            <Box sx={{ ml: 2 }}>(5) </Box>
-            <Rating
-              name="highlight-selected-only"
-              defaultValue={2}
-              IconContainerComponent={IconContainer}
-              highlightSelectedOnly
-            />
-          </Box>
+          {Boolean(Rate) && (
+            <>
+              <Box sx={{ ml: 2 }}>تقييم طالب الخدمة</Box>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly'
+                }}
+              >
+                <Box sx={{ ml: 2 }}>(5) </Box>
+                <Rating
+                  name="highlight-selected-only"
+                  defaultValue={Rate}
+                  readOnly
+                  IconContainerComponent={IconContainer}
+                  highlightSelectedOnly
+                />
+              </Box>
+            </>
+          )}
         </Box>
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={Boolean(false)}
-        >
-          موافقة
-        </LoadingButton>{' '}
       </Stack>
     </div>
   );

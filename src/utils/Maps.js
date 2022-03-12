@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import PropTypes from 'prop-types';
 
+// /* Begin GetLocationMap*/
 const GetLocationMap = ({ setLocation }) => {
   useEffect(() => {
     let map;
@@ -80,4 +81,46 @@ GetLocationMap.propTypes = {
   setLocation: PropTypes.func
 };
 
-export { GetLocationMap };
+// /* END GetLocationMap*/
+
+// /* Begin DisplayPoint*/
+
+const DisplayPoint = ({ Lat, Lng }) => {
+  useEffect(() => {
+    let map;
+    const additionalOptions = {};
+    try {
+      const loader = new Loader({
+        apiKey: 'AIzaSyC4EGFc_Y4wOspdDUmgEUu_76dBP2v6RD4',
+        version: 'weekly',
+        ...additionalOptions
+      });
+
+      loader.load().then(() => {
+        map = new window.google.maps.Map(document.getElementById('GetLocationMap'), {
+          center: { lat: parseFloat(Lat), lng: parseFloat(Lng) },
+          zoom: 8,
+          mapTypeId: window.google.maps.MapTypeId.HYBRID
+        });
+
+        map.data.setStyle((feature) => ({
+          title: feature.getProperty('name'),
+          optimized: false
+        }));
+
+        const marker = new window.google.maps.Marker({
+          position: { lat: parseFloat(Lat), lng: parseFloat(Lng) }
+        });
+        marker.setMap(map);
+      });
+    } catch (ex) {
+      console.log(ex);
+    }
+  }, [0]);
+
+  return <div id="GetLocationMap" style={{ height: '100%', width: '100%' }} />;
+};
+
+// /* END DisplayPoint*/
+
+export { GetLocationMap, DisplayPoint };

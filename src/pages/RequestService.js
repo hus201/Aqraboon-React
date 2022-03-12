@@ -16,6 +16,7 @@ import {
 // components
 import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
+import SnackBar from '../components/SnackBar';
 import { RequestServiceForm, PatientForm, VolunteerForm } from '../components/serviceRequest';
 import { AuthContext } from '../utils/ContextProvider';
 import ApiRoot from '../Test/APiRoot';
@@ -66,6 +67,7 @@ export default function RequestService() {
   const User = authContext.getUser();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+  const [Message, setMessage] = React.useState('');
   const [Images, setImages] = React.useState([
     'https://image.freepik.com/free-vector/flat-hand-drawn-patient-taking-medical-examination_52683-57828.jpg',
     'https://image.freepik.com/free-vector/person-with-cold-concept-illustration_114360-1594.jpg',
@@ -75,20 +77,20 @@ export default function RequestService() {
   /// ------------- form
   const [values, setValues] = React.useState({});
   const [errors, setErrors] = React.useState({});
+  const [Loc, setLoc] = React.useState({});
   //  --------------end form
   const setObjValues = (name, val) => {
-    console.log('[name]', [name], val);
-    console.log('[values]', values);
     setValues({ ...values, [name]: val });
+    console.log(values);
   };
 
   const isStepOptional = (step) => step === 2;
   const isStepSkipped = (step) => skipped.has(step);
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const request = {
       Description: values?.description,
-      Lattiud: values?.loc?.lat,
-      Longtiud: values?.loc?.lng,
+      Lattiud: Loc?.lat,
+      Longtiud: Loc?.lng,
       SeviceTypeId: values?.SeviceTypeId,
       PAge: values?.Age,
       PDescription: values?.Pdescription,
@@ -97,7 +99,7 @@ export default function RequestService() {
       PGender: values?.Sex,
       ExpireTime: values?.ExpTime
     };
-    console.log('request => ', request);
+
     const data = new FormData();
     data.append('request', JSON.stringify(request));
     data.append('CurrentInfo', Boolean(values?.CurrentInfo));
@@ -113,15 +115,23 @@ export default function RequestService() {
       },
       body: data
     };
-    const response = fetch(url, options);
-    if (response.ok && response.state === 200) {
-      const result = response.json();
-      console.log('result', result);
+    const response = await fetch(url, options);
+    if (response.ok && response.status === 200) {
+      setMessage('تم حفظ المعلومات بنجاح');
+      window.location.href = '/Service/NeedRequestsList';
+    } else {
+      setMessage('فشل حفظ المعلومات ');
     }
   };
   const handleNext = async () => {
     if (activeStep === 0) {
-      if (!(values.SeviceTypeId && values.description && values?.Loc?.lat && values?.Loc?.lng)) {
+      if (
+        !(
+          values.SeviceTypeId &&
+          values.description &&
+          ((Loc?.lat && Loc?.lng) || values?.UserLocation)
+        )
+      ) {
         const errs = {
           SeviceTypeId: true,
           description: true,
@@ -135,7 +145,7 @@ export default function RequestService() {
           }
         };
         setErrors({ ...errs });
-        //  return;
+        return;
       }
     } else if (activeStep === 1) {
       if (!(values.Name && values.Pdescription && values.Age && values.Sex)) {
@@ -152,10 +162,11 @@ export default function RequestService() {
           }
         };
         setErrors({ ...errs });
-        // return;
+        return;
       }
+      setErrors({});
     } else if (activeStep === 2) {
-      if (!values.VolunteerSex) {
+      if (values.VolunteerSex || values.VolunteerSex === 0) {
         const errs = {
           VolunteerSex: true,
           ms: {
@@ -165,6 +176,7 @@ export default function RequestService() {
         setErrors({ ...errs });
         return;
       }
+      setErrors({});
       if (values.VolunteerSex) {
         handleSubmit();
       }
@@ -188,6 +200,11 @@ export default function RequestService() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const handleChangeLocation = (lat, lng) => {
+    setLoc({ lat, lng });
+  };
+
   return (
     <RootStyle title="Register | Minimal-UI">
       <MHidden width="mdDown">
@@ -231,57 +248,47 @@ export default function RequestService() {
                   );
                 })}
               </Stepper>
-              {activeStep === steps.length ? (
-                <Box>
-                  <Typography sx={{ mt: 2, mb: 1 }}>
-                    All steps completed - you&apos;re finishe
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <Box sx={{ flex: '1 1 auto' }} />
-                    <Button onClick={handleReset}>Reset</Button>
-                  </Box>
-                </Box>
-              ) : (
-                <Box>
-                  {activeStep === 0 && (
-                    <RequestServiceForm
-                      values={values}
-                      setObjValues={setObjValues}
-                      errors={errors}
-                    />
-                  )}
-                  {activeStep === 1 && (
-                    <PatientForm
-                      User={User}
-                      values={values}
-                      setObjValues={setObjValues}
-                      errors={errors}
-                    />
-                  )}
-                  {activeStep === 2 && (
-                    <VolunteerForm values={values} setObjValues={setObjValues} errors={errors} />
-                  )}
+              <Box>
+                {activeStep === 0 && (
+                  <RequestServiceForm
+                    handleChangeLocation={handleChangeLocation}
+                    values={values}
+                    setObjValues={setObjValues}
+                    errors={errors}
+                  />
+                )}
+                {activeStep === 1 && (
+                  <PatientForm
+                    User={User}
+                    values={values}
+                    setObjValues={setObjValues}
+                    errors={errors}
+                  />
+                )}
+                {activeStep === 2 && (
+                  <VolunteerForm values={values} setObjValues={setObjValues} errors={errors} />
+                )}
 
-                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      رجوع
-                    </Button>
-                    <Box sx={{ flex: '1 1 auto' }} />
-                    <Button onClick={handleNext}>
-                      {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
-                    </Button>
-                  </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    رجوع
+                  </Button>
+                  <Box sx={{ flex: '1 1 auto' }} />
+                  <Button onClick={activeStep !== steps.length - 1 ? handleNext : handleSubmit}>
+                    {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
+                  </Button>
                 </Box>
-              )}
+              </Box>
             </Stack>
           </Box>
         </ContentStyle>
       </Container>
+      <SnackBar message={Message} />
     </RootStyle>
   );
 }

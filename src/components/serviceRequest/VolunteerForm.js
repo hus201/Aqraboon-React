@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack, TextField, Autocomplete } from '@mui/material';
+import { values } from 'lodash';
 
-export default function VolunteerForm({ errors, setObjValues }) {
+export default function VolunteerForm({ errors, values, setObjValues }) {
   const options = [
     { title: 'كلاهما', value: 3 },
-    { title: 'ذكر', value: 0 },
-    { title: 'انثى', value: 1 }
+    { title: 'ذكر', value: 1 },
+    { title: 'انثى', value: 2 }
   ];
+  useEffect(() => {
+    setVolunteerSex(options[values.VolunteerSex]);
+  }, [values]);
   const [VolunteerSex, setVolunteerSex] = useState(options[0]);
 
   return (
@@ -20,7 +24,7 @@ export default function VolunteerForm({ errors, setObjValues }) {
           setVolunteerSex(NewVal);
           setObjValues('VolunteerSex', NewVal.value);
         }}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={(option) => option?.title || ''}
         renderInput={(params) => (
           <TextField
             error={Boolean(errors?.VolunteerSex)}

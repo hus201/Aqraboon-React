@@ -177,33 +177,36 @@ export default function NotificationsPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const [totalUnRead, setTotalUnRead] = useState(0);
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
 
-  useEffect(async () => {
+  useEffect(() => {
     if (User?.id) {
-      const url = `${APIRoot}/Service/GetVolunteerRequest`;
-      const options = {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          Accept: 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          Authorization: `Bearer ${User.token}`
-        }
-      };
+      setInterval(async () => {
+        const url = `${APIRoot}/Service/GetVolunteerRequest`;
+        const options = {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${User.token}`
+          }
+        };
 
-      try {
-        const response = await fetch(url, options);
-        if (response.ok && response.status === 200) {
-          const result = await response.json();
-          //  [...result.value.aroundScopeRequests]
-          setNotifications([...result.value.inScopeRequests]);
+        try {
+          const response = await fetch(url, options);
+          if (response.ok && response.status === 200) {
+            const result = await response.json();
+            //  [...result.value.aroundScopeRequests]
+            setNotifications([...result.value.inScopeRequests]);
+            setTotalUnRead(result.value.inScopeRequests.length);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
+      }, [5000]);
     }
   }, [0]);
   const handleOpen = () => {

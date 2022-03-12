@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 // material
 import { MenuItem, TextField } from '@mui/material';
@@ -10,7 +10,10 @@ Menu.propTypes = {
   onSort: PropTypes.func
 };
 
-export default function Menu({ options, onSort, error, helperText }) {
+export default function Menu({ options, onSort, error, helperText, CurrentValue }) {
+  useEffect(() => {
+    setVal(CurrentValue);
+  }, [CurrentValue]);
   const [val, setVal] = useState(null);
   const change = (e) => {
     onSort(e);
@@ -21,8 +24,9 @@ export default function Menu({ options, onSort, error, helperText }) {
     <TextField
       select
       size="small"
+      InputLabelProps={{ shrink: val }}
       value={val}
-      label="sex"
+      label="جنس طالب الخدمة"
       onChange={change}
       error={error}
       helperText={helperText}

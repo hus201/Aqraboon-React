@@ -1,6 +1,5 @@
 import { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import NumberFormat from 'react-number-format';
 import {
   Stack,
   TextField,
@@ -10,35 +9,7 @@ import {
   FormControlLabel
 } from '@mui/material';
 
-const NumberFormatCustom = forwardRef((props, ref) => {
-  const { onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={ref}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: props.name,
-            value: values.value
-          }
-        });
-      }}
-      // thousandSeparator
-      isNumericString
-      max={100}
-      min={1}
-      // prefix="$"
-    />
-  );
-});
-
 export default function PatientForm({ User, errors, values, setObjValues }) {
-  NumberFormatCustom.propTypes = {
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
-  };
   const Genders = [
     { title: 'ذكر', value: 1 },
     { title: 'انثى', value: 2 }
@@ -75,15 +46,13 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
         disabled={values?.CurrentInfo}
         size="small"
         label="العمر"
+        InputLabelProps={{ shrink: values?.CurrentInfo || values?.Age }}
         value={
           values?.CurrentInfo
             ? new Date(User.birthDate).getFullYear() - new Date().getFullYear()
             : values?.Age
         }
-        onChange={(e) => setObjValues('Age', e.target.value + 0)}
-        // InputProps={{
-        //   inputComponent: NumberFormatCustom
-        // }}
+        onChange={(e) => setObjValues('Age', e.target.valueAsNumber)}
         type="number"
         error={Boolean(errors?.Age)}
         helperText={errors?.ms?.Age}
@@ -93,9 +62,9 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
         id="size-small-outlined"
         size="small"
         disabled={values?.CurrentInfo}
-        value={values?.CurrentInfo ? Genders[User.gender] : Genders[values?.Sex || 1]}
+        value={values?.CurrentInfo ? Genders[User.gender - 1] : Genders[values?.Sex]}
         options={[...Genders]}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={(option) => option?.title || ''}
         onChange={(e, value) => setObjValues('Sex', value?.value || '')}
         renderInput={(params) => (
           <TextField

@@ -6,6 +6,9 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AcceptedRequest from './pages/AcceptedRequest';
+import AcceptedList from './pages/AcceptedList';
+import NeedRequestsList from './pages/NeedRequestsList';
+import ProvidedList from './pages/ProvidedList';
 import RequestService from './pages/RequestService';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
@@ -35,6 +38,9 @@ export default function Router() {
       element: <MainLayout />,
       children: [
         { path: 'RequestService', element: <RequestService /> },
+        { path: 'AcceptedList', element: <AcceptedList /> },
+        { path: 'NeedRequestsList', element: <NeedRequestsList /> },
+        { path: 'ProvidedList', element: <ProvidedList /> },
         { path: 'AcceptedRequest', element: <AcceptedRequest /> },
         {
           path: 'AddService',

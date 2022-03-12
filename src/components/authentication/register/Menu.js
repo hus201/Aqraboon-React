@@ -18,7 +18,7 @@ export default function Menu({ options, onSort }) {
   };
 
   return (
-    <TextField select size="small" value={val} label="sex" onChange={change}>
+    <TextField select size="small" value={val} label="Gender" onChange={change}>
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}

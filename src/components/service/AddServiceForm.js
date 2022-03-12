@@ -26,8 +26,36 @@ import { DatePeriod } from '../../Test/DatePeriod';
 import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap } from '../../utils/Maps';
 import Mune from './Menu';
+import SnackBar from '../SnackBar';
 
 export const AddServiceForm = (props) => {
+  useEffect(async () => {
+    const Url = new window.URL(window.location.href);
+    const id = Url.searchParams.get('id');
+    setId(id);
+    const url = `${ApiRoot}/Service/GetService?id=${id}`;
+    const options = {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      }
+    };
+    const response = await fetch(url, options);
+    if (response.ok && response.status === 200) {
+      const result = await response.json();
+      const { service } = result.value;
+      console.log('service', service);
+      setFieldValue('Lng', service.lat);
+      setFieldValue('Lat', service.lng);
+      setFieldValue('Gender', service.gender);
+      setFieldValue('AgeTo', service.ageTo);
+      setFieldValue('AgeFrom', service.ageFrom);
+      setFieldValue('TypeId', service.typeId);
+    }
+  }, [0]);
   useEffect(async () => {
     if (User?.id) {
       const options = {
@@ -55,16 +83,18 @@ export const AddServiceForm = (props) => {
 
   const [services, setServices] = useState([]);
   const [imagesData, setImagesData] = useState([]);
+  const [message, setMessage] = useState('');
+  const [id, setId] = useState(0);
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
 
   const RegisterSchema = Yup.object().shape({
-    TypeId: Yup.number().required(),
-    Gender: Yup.number().required(),
-    AgeFrom: Yup.number().required(),
-    AgeTo: Yup.number().required(),
-    Lng: Yup.string().required('Loication is required'),
-    Lat: Yup.string().required('Loication is required'),
+    TypeId: Yup.number().required('بجب تحديد توع الخدمة'),
+    Gender: Yup.number().required('بجب تحديد جنس المريض'),
+    AgeFrom: Yup.number().required('بجب تحديد فترة العمر'),
+    AgeTo: Yup.number().required('بجب تحديد فترة العمر'),
+    Lng: Yup.string().required('يجب تحديد منطة تقديم الخدمة'),
+    Lat: Yup.string().required('يجب تحديد منطة تقديم الخدمة'),
     UserLocation: Yup.boolean().required()
   });
   const formik = useFormik({
@@ -75,7 +105,7 @@ export const AddServiceForm = (props) => {
       AgeTo: '',
       Lat: User.lat,
       Lng: User.lng,
-      UserLocation: true
+      UserLocation: false
     },
     validationSchema: RegisterSchema,
     onSubmit: (values) => {
@@ -94,6 +124,7 @@ export const AddServiceForm = (props) => {
 
     const Service = JSON.stringify({ TypeId, Gender, AgeFrom, AgeTo, Lat, Lng });
     data.append('service', Service);
+    data.append('Id', id);
 
     const options = {
       method: 'POST',
@@ -110,7 +141,11 @@ export const AddServiceForm = (props) => {
     const response = await fetch(url, options);
 
     if (response?.ok && response?.status === 200) {
-      console.log(response);
+      setMessage('تم الحفظ بنجاح');
+      formik.resetForm();
+      window.location.href = '/Service/ProvidedList';
+    } else {
+      setMessage('فشل الحفظ');
     }
   };
 
@@ -129,7 +164,7 @@ export const AddServiceForm = (props) => {
     <FormikProvider value={formik}>
       <Form autoComplete="off" onSubmit={handleSubmit}>
         <Card>
-          <CardHeader subheader="The information can be edited" title="Profile" />
+          <CardHeader subheader="تفاصيل الخدمة" title="تقديم خدمة كمتطوع" />
           <Divider />
           <CardContent>
             <Grid container spacing={3}>
@@ -139,13 +174,16 @@ export const AddServiceForm = (props) => {
                     id="size-small-outlined"
                     onChange={(e, value) => setFieldValue('TypeId', value?.id || '')}
                     size="small"
+                    value={{
+                      ...services.filter((x) => x.id === values.TypeId)[0]
+                    }}
                     options={[...services]}
-                    getOptionLabel={(option) => option?.title}
+                    getOptionLabel={(option) => option?.title || ''}
                     renderInput={(params) => (
                       <TextField
                         {...getFieldProps('TypeId')}
-                        error={Boolean(errors?.TypeId)}
-                        helperText={errors?.TypeId}
+                        error={Boolean(touched?.TypeId && errors?.TypeId)}
+                        helperText={touched?.TypeId && errors?.TypeId}
                         {...params}
                         label="نوع الخدمة المطلوبة"
                       />
@@ -158,12 +196,13 @@ export const AddServiceForm = (props) => {
                 <Stack spacing={3}>
                   <Mune
                     options={[
-                      { label: 'All', value: 0 },
-                      { label: 'male', value: 1 },
-                      { label: 'female', value: 2 }
+                      { label: 'كلاهما', value: 3 },
+                      { label: 'ذكر', value: 1 },
+                      { label: 'انثى', value: 2 }
                     ]}
-                    error={Boolean(errors?.Gender)}
-                    helperText={errors?.Gender}
+                    CurrentValue={values?.Gender}
+                    error={Boolean(touched?.Gender && errors?.Gender)}
+                    helperText={touched?.Gender && errors?.Gender}
                     onSort={onChangeGender}
                   />
                 </Stack>
@@ -173,17 +212,27 @@ export const AddServiceForm = (props) => {
                 <Grid item md={6} xs={12} space={1}>
                   <Autocomplete
                     id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('AgeFrom', value.value)}
+                    onChange={(e, value) => {
+                      if (value?.value === -1) {
+                        setFieldValue('AgeTo', -1);
+                      } else if (value?.value >= values.AgeFrom) {
+                        setFieldValue('AgeTo', '');
+                      }
+                      setFieldValue('AgeFrom', value?.value);
+                    }}
+                    value={{
+                      ...DatePeriod.filter((x) => x.value === values.AgeFrom)[0]
+                    }}
                     size="small"
                     options={[...DatePeriod]}
-                    getOptionLabel={(option) => option.title}
+                    getOptionLabel={(option) => option?.title || ''}
                     renderInput={(params) => (
                       <TextField
                         {...getFieldProps('AgeFrom')}
-                        error={Boolean(errors?.AgeFrom)}
-                        helperText={errors?.AgeFrom}
+                        error={Boolean(touched?.AgeFrom && errors?.AgeFrom)}
+                        helperText={touched?.AgeFrom && errors?.AgeFrom}
                         {...params}
-                        label="نوع الخدمة المطلوبة"
+                        label="العمر من"
                       />
                     )}
                   />
@@ -191,17 +240,21 @@ export const AddServiceForm = (props) => {
                 <Grid item md={6} xs={12} space={1}>
                   <Autocomplete
                     id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('AgeTo', value.value)}
+                    onChange={(e, value) => setFieldValue('AgeTo', value?.value)}
                     size="small"
-                    options={[...DatePeriod]}
-                    getOptionLabel={(option) => option.title}
+                    value={{
+                      ...DatePeriod.filter((x) => x.value === values.AgeTo)[0]
+                    }}
+                    disabled={Boolean(!(typeof values.AgeFrom === 'number'))}
+                    options={[...DatePeriod.filter((x) => x.value > values?.AgeFrom)]}
+                    getOptionLabel={(option) => option?.title || ''}
                     renderInput={(params) => (
                       <TextField
                         {...getFieldProps('AgeTo')}
-                        error={Boolean(errors?.AgeTo)}
-                        helperText={errors?.AgeTo}
+                        error={Boolean(touched?.AgeTo && errors?.AgeTo)}
+                        helperText={touched?.AgeTo && errors?.AgeTo}
                         {...params}
-                        label="نوع الخدمة المطلوبة"
+                        label="الى عمر"
                       />
                     )}
                   />
@@ -219,10 +272,10 @@ export const AddServiceForm = (props) => {
                 <FormGroup>
                   <FormControlLabel
                     {...getFieldProps('UserLocation')}
-                    error={Boolean(errors?.UserLocation)}
-                    helperText={errors?.UserLocation}
-                    control={<Checkbox defaultChecked />}
-                    label="Use Current Acount Location"
+                    error={Boolean(touched?.UserLocation && errors?.UserLocation)}
+                    helperText={touched?.UserLocation && errors?.UserLocation}
+                    control={<Checkbox checked={Boolean(values?.UserLocation)} />}
+                    label="استخدم موقع الحساب الحالي"
                   />
                 </FormGroup>
               </Grid>
@@ -240,7 +293,7 @@ export const AddServiceForm = (props) => {
                   />
 
                   <Button disabled={imagesData.length > 2} variant="contained" component="span">
-                    Upload
+                    تحميل ملحقات
                   </Button>
                 </label>
               </Grid>
@@ -259,13 +312,14 @@ export const AddServiceForm = (props) => {
                         title={item.name}
                         subtitle={
                           <Button
+                            color="error"
                             onClick={() => {
                               setImagesData([...imagesData.filter((x, i) => i !== index)]);
                             }}
                             variant="outlined"
                             startIcon={<DeleteIcon />}
                           >
-                            Delete
+                            حذف
                           </Button>
                         }
                         position="below"
@@ -285,11 +339,12 @@ export const AddServiceForm = (props) => {
             }}
           >
             <Button color="primary" variant="contained" type="submit">
-              Saveservice
+              حفظ
             </Button>
           </Box>
         </Card>
       </Form>
+      <SnackBar message={message} />
     </FormikProvider>
   );
 };

@@ -176,29 +176,31 @@ export default function NotificationsPopover() {
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
 
-  useEffect(async () => {
+  useEffect(() => {
     if (User?.id) {
-      const url = `${ApiRoot}/Service/GetVolunteerRequest`;
-      const options = {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          Accept: 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          Authorization: `Bearer ${User.token}`
-        }
-      };
+      setInterval(async () => {
+        const url = `${ApiRoot}/Service/GetVolunteerRequest`;
+        const options = {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${User.token}`
+          }
+        };
 
-      try {
-        const response = await fetch(url, options);
-        if (response.ok && response.status === 200) {
-          const result = await response.json();
-          setNotifications([...result.value.inScopeRequests]);
-          //  [...result.value.aroundScopeRequests]
+        try {
+          const response = await fetch(url, options);
+          if (response.ok && response.status === 200) {
+            const result = await response.json();
+            setNotifications([...result.value.inScopeRequests]);
+            //  [...result.value.aroundScopeRequests]
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
+      }, [5000]);
     }
   }, [0]);
   const handleOpen = () => {

@@ -18,6 +18,7 @@ import Page from '../components/Page';
 import { MHidden } from '../components/@material-extend';
 import { AcceptedReqForm, PatientReqForm } from '../components/serviceRequest';
 import ApiRoot from '../Test/APiRoot';
+import SnackBar from '../components/SnackBar';
 import { AuthContext } from '../utils/ContextProvider';
 // ----------------------------------------------------------------------
 
@@ -56,7 +57,7 @@ export default function AcceptedRequest() {
   React.useEffect(async () => {
     const Url = new window.URL(window.location.href);
     const id = Url.searchParams.get('id');
-
+    setId(id);
     const url = `${ApiRoot}/Service/GetRequest?id=${id}`;
     const options = {
       method: 'GET',
@@ -70,6 +71,7 @@ export default function AcceptedRequest() {
     const response = await fetch(url, options);
     if (response.ok && response.status === 200) {
       const result = await response.json();
+      setRate(result.value.rate);
       setRequest({ ...result.value.request });
     }
   }, [0]);
@@ -77,13 +79,20 @@ export default function AcceptedRequest() {
   const User = authContext.getUser();
   const [activeStep, setActiveStep] = React.useState(0);
   const [request, setRequest] = React.useState({});
+  const [rate, setRate] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
-
+  const [id, setId] = React.useState(0);
   const steps = ['تفاصيل الخدمة', 'معلومات المريض'];
+  const [Message, setMessage] = React.useState('');
 
   const isStepSkipped = (step) => skipped.has(step);
 
   const handleNext = () => {
+    if (activeStep === 1) {
+      hadleAcceptService();
+      return;
+    }
+
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
@@ -100,6 +109,31 @@ export default function AcceptedRequest() {
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+  const hadleAcceptService = async () => {
+    const url = `${ApiRoot}/Service/AcceptRequest`;
+
+    const data = new FormData();
+    data.append('Id', id);
+
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      },
+      body: data
+    };
+
+    const response = await fetch(url, options);
+    if (response.ok && response.status === 200) {
+      setMessage('تم حفظ المعلومات بنجاح');
+      window.location.href = '/Service/AcceptedList';
+    } else {
+      setMessage('فشل حفظ المعلومات ');
+    }
   };
 
   return (
@@ -149,9 +183,8 @@ export default function AcceptedRequest() {
                 </Box>
               )}
               <Box>
-                {activeStep === 0 && <AcceptedReqForm request={request} />}
+                {activeStep === 0 && <AcceptedReqForm rate={rate} request={request} />}
                 {activeStep === 1 && <PatientReqForm request={request} />}
-
                 <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                   <Button
                     color="inherit"
@@ -162,15 +195,18 @@ export default function AcceptedRequest() {
                     رجوع
                   </Button>
                   <Box sx={{ flex: '1 1 auto' }} />
-                  <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
-                  </Button>
+                  {!(request.status !== 0 && activeStep !== 0) && (
+                    <Button onClick={handleNext}>
+                      {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
+                    </Button>
+                  )}
                 </Box>
               </Box>
             </Stack>
           </Box>
         </ContentStyle>
       </Container>
+      <SnackBar message={Message} />
     </RootStyle>
   );
 }

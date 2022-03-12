@@ -13,6 +13,11 @@ import {
   TextField,
   IconButton,
   Autocomplete,
+  Grid,
+  Box,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
   InputAdornment,
   FormControl,
   FormHelperText
@@ -20,6 +25,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import { AuthContext } from '../../../utils/ContextProvider';
 import ApiRoot from '../../../Test/APiRoot';
+import { GetLocationMap } from '../../../utils/Maps';
 import Mune from './Menu';
 // ----------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -47,13 +53,15 @@ export default function RegisterForm() {
       .max(50, 'Too Long!')
       .required('First name required'),
     lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
-    birthDate: Yup.date().required('birthDate required'),
+    birthDate: Yup.date().required('birthDate required').min('1940-01-01').max('2005-1-1'),
     email: Yup.string().email('Email must be a valid email address').nullable(),
     phone: Yup.string()
       .matches(phoneRegExp, 'Phone number must be a valid Phone number')
       .required('Phone number is required'),
     password: Yup.string().required('Password is required'),
-    confPassword: Yup.string().required('Password is required')
+    confPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    lat: Yup.string().required('location is required'),
+    lng: Yup.string().required('location is required')
   });
 
   const formik = useFormik({
@@ -62,26 +70,32 @@ export default function RegisterForm() {
       lastName: '',
       phone: '',
       email: '',
-      birthDate: new Date(),
+      birthDate: '0000-00-00',
       confPassword: '',
-      password: ''
+      password: '',
+      lat: '',
+      lng: ''
     },
     validationSchema: RegisterSchema,
     onSubmit: (values) => {
       SubmitForm(values);
     }
   });
+
   const SubmitForm = async (values) => {
-    const { firstName, lastName, phone, email, confPassword, password } = values;
+    const { firstName, lat, lng, lastName, phone, email, confPassword, password, birthDate } =
+      values;
 
     const User = {
       Name: `${firstName} ${lastName}`,
       Email: email,
       Password: password,
       ConfirmPassword: confPassword,
-      BirthDate: new Date(),
+      BirthDate: birthDate,
       Phone: phone,
-      Gender
+      Gender,
+      Lng: lng,
+      Lat: lat
     };
 
     const data = new FormData();
@@ -121,6 +135,11 @@ export default function RegisterForm() {
     setGender(e.target.value);
   };
 
+  const handleChangeLocation = (lat, lng) => {
+    setFieldValue('lat', lat);
+    setFieldValue('lng', lng);
+  };
+
   const {
     errors,
     touched,
@@ -157,21 +176,39 @@ export default function RegisterForm() {
 
           <Mune
             options={[
-              { label: 'male', value: 0 },
-              { label: 'female', value: 1 }
+              { label: 'male', value: 1 },
+              { label: 'female', value: 2 }
             ]}
             onSort={onChangeGender}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
+              maxDate={new Date('2005-01-01')}
+              minDate={new Date('1940-01-01')}
               fullWidth
               label="birthDate"
+              inputProps={{
+                autocomplete: 'new-date',
+                form: {
+                  autocomplete: 'off'
+                }
+              }}
               value={formik.values.birthDate}
               inputFormat="MM/dd/yyyy"
               onChange={(value) => {
                 setFieldValue('birthDate', value);
               }}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField
+                  inputProps={{
+                    autocomplete: 'new-date',
+                    form: {
+                      autocomplete: 'off'
+                    }
+                  }}
+                  {...params}
+                />
+              )}
             />
           </LocalizationProvider>
           <TextField
@@ -179,6 +216,12 @@ export default function RegisterForm() {
             autoComplete="username"
             type="tel"
             label="phone number"
+            inputProps={{
+              autocomplete: 'new-phone',
+              form: {
+                autocomplete: 'off'
+              }
+            }}
             {...getFieldProps('phone')}
             size="small"
             error={Boolean(touched.phone && errors.phone)}
@@ -189,6 +232,12 @@ export default function RegisterForm() {
             autoComplete="email"
             type="email"
             label="email"
+            inputProps={{
+              autocomplete: 'new-phone',
+              form: {
+                autocomplete: 'off'
+              }
+            }}
             {...getFieldProps('email')}
             size="small"
             error={Boolean(touched.email && errors.email)}
@@ -201,6 +250,10 @@ export default function RegisterForm() {
             label="Password"
             {...getFieldProps('password')}
             InputProps={{
+              autocomplete: 'new-phone',
+              form: {
+                autocomplete: 'off'
+              },
               endAdornment: (
                 <InputAdornment position="end" className={classes.iconClass}>
                   <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
@@ -232,7 +285,18 @@ export default function RegisterForm() {
             error={Boolean(touched.confPassword && errors.confPassword)}
             helperText={touched.confPassword && errors.confPassword}
           />
-
+          <Grid item md={12} xs={12}>
+            <Box style={{ height: '300px' }}>
+              <GetLocationMap setLocation={handleChangeLocation} />
+            </Box>
+            <FormGroup>
+              {Boolean(touched.lat && errors.lat) && (
+                <FormHelperText style={{ color: 'red' }}>
+                  {touched.lat && errors.lat}
+                </FormHelperText>
+              )}
+            </FormGroup>
+          </Grid>
           <FormControl fullWidth error={error} variant="standard">
             <LoadingButton
               fullWidth
@@ -242,21 +306,6 @@ export default function RegisterForm() {
               loading={isSubmitting}
             >
               Register
-            </LoadingButton>
-            <FormHelperText>{helperText}</FormHelperText>
-          </FormControl>
-          <FormControl fullWidth error={error} variant="standard">
-            <LoadingButton
-              fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-              loading={isSubmitting}
-              onClick={() => {
-                setAsVolunteer((val) => !val);
-              }}
-            >
-              Register As Volenteer
             </LoadingButton>
             <FormHelperText>{helperText}</FormHelperText>
           </FormControl>

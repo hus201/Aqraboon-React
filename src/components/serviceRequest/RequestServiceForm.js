@@ -21,7 +21,7 @@ import ApiRoot from '../../Test/APiRoot';
 import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap } from '../../utils/Maps';
 
-export default function RequestServiceForm({ errors, values, setObjValues }) {
+export default function RequestServiceForm({ errors, values, setObjValues, handleChangeLocation }) {
   React.useEffect(async () => {
     const options = {
       method: 'GET',
@@ -47,15 +47,9 @@ export default function RequestServiceForm({ errors, values, setObjValues }) {
 
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
-  const [valueDate, setvalueDate] = React.useState(new Date(Date.now() + 12 * 3600 * 1000));
   const [services, setServices] = React.useState([]);
   const handleChangeTime = (newValue) => {
     setObjValues('ExpTime', newValue);
-  };
-
-  const handleChangeLocation = (lat, lng) => {
-    const loc = { lat, lng };
-    setObjValues('loc', loc);
   };
 
   return (
@@ -64,6 +58,9 @@ export default function RequestServiceForm({ errors, values, setObjValues }) {
         id="size-small-outlined"
         onChange={(e, value) => setObjValues('SeviceTypeId', value?.id || '')}
         size="small"
+        value={{
+          ...services.filter((x) => x.id === values.SeviceTypeId)[0]
+        }}
         options={[...services]}
         getOptionLabel={(option) => option.title}
         renderInput={(params) => (
@@ -120,9 +117,10 @@ export default function RequestServiceForm({ errors, values, setObjValues }) {
               fullWidth
               size="small"
               label="اقصى مدة زمنية يمكن للخدمة الوصول فيها "
-              value={values.ExpTime}
+              value={values?.ExpTime || new Date(Date.now() + 11 * 3600 * 1000)}
               onChange={handleChangeTime}
-              minDateTime={new Date(Date.now() + 11 * 3600 * 1000)}
+              minDate={new Date(Date.now() + 11 * 3600 * 1000)}
+              maxDate={new Date(Date.now() + 11 * 3600 * 1000 * 5)}
               renderInput={(params) => <TextField fullWidth size="small" {...params} />}
             />
           </LocalizationProvider>
