@@ -1,3 +1,3 @@
-const ApiRoot = 'https://localhost:44327/api';
+const ApiRoot = 'http://yahhya-001-site1.htempurl.com/api';
 
 export default ApiRoot;
