@@ -113,6 +113,8 @@ export default function ProvidedList() {
     } catch (error) {
       console.error(error);
     }
+
+    handleClose();
   };
   const removeArrayObj = (id, arr = [...Requestlist]) => {
     const newArray = [...arr.filter((x) => x.id !== id)];
@@ -130,7 +132,7 @@ export default function ProvidedList() {
               size="small"
               style={{ width: 150 }}
               variant="outlined"
-              href="/Service/AcceptedRequest"
+              href="/Service/AddService"
             >
               اضافة خدمة
             </Button>

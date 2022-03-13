@@ -9,6 +9,7 @@ import {
   Grid,
   TextField
 } from '@mui/material';
+import { GetLocationMap } from '../../utils/Maps';
 
 const states = [
   {
@@ -41,6 +42,7 @@ export const AcountDetails = (props) => {
       [event.target.name]: event.target.value
     });
   };
+  const handleChangeLocation = (lat, lng) => {};
 
   return (
     <form autoComplete="off" noValidate {...props}>
@@ -123,6 +125,9 @@ export const AcountDetails = (props) => {
                   </option>
                 ))}
               </TextField>
+            </Grid>
+            <Grid item md={12} xs={12} style={{ height: 300 }}>
+              <GetLocationMap setLocation={handleChangeLocation} />
             </Grid>
           </Grid>
         </CardContent>

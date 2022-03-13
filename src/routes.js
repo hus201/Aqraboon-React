@@ -38,14 +38,17 @@ export default function Router() {
       element: <MainLayout />,
       children: [
         { path: 'RequestService', element: <RequestService /> },
-        { path: 'AcceptedList', element: <AcceptedList /> },
-        { path: 'NeedRequestsList', element: <NeedRequestsList /> },
-        { path: 'ProvidedList', element: <ProvidedList /> },
-        { path: 'AcceptedRequest', element: <AcceptedRequest /> },
         {
-          path: 'AddService',
-          element: User?.IsVolenteer ? <AddService /> : <Navigate to="/dashboard" />
-        }
+          path: 'AcceptedList',
+          element: User?.IsVolenteer ? <AcceptedList /> : <Navigate to="/dashboard" />
+        },
+        { path: 'NeedRequestsList', element: <NeedRequestsList /> },
+        {
+          path: 'ProvidedList',
+          element: User?.IsVolenteer ? <ProvidedList /> : <Navigate to="/dashboard" />
+        },
+        { path: 'AcceptedRequest', element: <AcceptedRequest /> },
+        { path: 'AddService', element: <AddService /> }
       ]
     },
     {

@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react';
 // import pieChart2Fill from '@iconify/icons-eva/pie-chart-2-fill';
 // import peopleFill from '@iconify/icons-eva/people-fill';
-// import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
-import fileTextFill from '@iconify/icons-eva/file-text-fill';
+// import fileTextFill from '@iconify/icons-eva/file-text-fill';
 // import lockFill from '@iconify/icons-eva/lock-fill';
-import personAddFill from '@iconify/icons-eva/person-add-fill';
 // import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
+import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
+import personAddFill from '@iconify/icons-eva/person-add-fill';
 
 // ----------------------------------------------------------------------
 
@@ -43,15 +43,15 @@ const sidebarConfig = [
   //   icon: getIcon(personAddFill)
   // },
   {
-    title: 'Accepted Request',
-    path: '/Service/AcceptedRequest',
-    icon: getIcon(fileTextFill),
+    title: 'طلب خدمة',
+    path: '/Service/RequestService',
+    icon: getIcon(personAddFill),
     ISVolunteer: false
   },
   {
-    title: 'Request Service',
-    path: '/Service/RequestService',
-    icon: getIcon(personAddFill),
+    title: 'طلباتي',
+    path: '/Service/NeedRequestsList',
+    icon: getIcon(shoppingBagFill),
     ISVolunteer: false
   }
   // {

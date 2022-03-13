@@ -2,7 +2,10 @@ import { Icon } from '@iconify/react';
 import { useRef, useState, useContext } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
+import giftOutline from '@iconify/icons-eva/gift-outline';
+import listOutline from '@iconify/icons-eva/list-outline';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
+import checkmarkSquareFill from '@iconify/icons-eva/checkmark-square-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { alpha } from '@mui/material/styles';
@@ -16,51 +19,36 @@ import { AuthContext } from '../../utils/ContextProvider';
 
 const MENU_OPTIONS = [
   {
-    label: 'Home',
+    label: 'الرئيسية',
     icon: homeFill,
     linkTo: '/'
   },
   {
-    label: 'Profile',
+    label: 'الملف الشخصي',
     icon: personFill,
     linkTo: '/User/Profile'
   },
   {
-    label: 'Add Service',
-    icon: personFill,
-    linkTo: '/Service/AddService',
-    IsVolenteer: true
+    label: 'تقديم خدمة',
+    icon: giftOutline,
+    linkTo: '/Service/AddService'
   },
+
   {
-    label: 'Request Service',
-    icon: personFill,
-    linkTo: '/Service/RequestService'
-  },
-  {
-    label: 'Accepted List',
-    icon: personFill,
+    label: 'لائحة الطلبات',
+    icon: listOutline,
     linkTo: '/Service/AcceptedList',
     IsVolenteer: true
   },
+
   {
-    label: 'Need Requests List',
-    icon: personFill,
-    linkTo: '/Service/NeedRequestsList'
-  },
-  {
-    label: 'Provided service List',
-    icon: personFill,
+    label: 'خدماتي',
+    icon: checkmarkSquareFill,
     linkTo: '/Service/ProvidedList',
     IsVolenteer: true
   },
   {
-    label: 'Accepted Request',
-    icon: personFill,
-    linkTo: '/Service/AcceptedRequest',
-    IsVolenteer: true
-  },
-  {
-    label: 'Settings',
+    label: 'الاعدادات',
     icon: settings2Fill,
     linkTo: '#'
   }
@@ -73,9 +61,8 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(false);
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
-  const MenuOptionsFilterd = User?.IsVolenteer
-    ? [...MENU_OPTIONS.filter((x) => (!User.IsVolenteer ? x?.IsVolenteer : true))]
-    : [...MENU_OPTIONS];
+  const MenuOptionsFilterd =
+    User?.role !== 'User' ? [...MENU_OPTIONS] : [...MENU_OPTIONS.filter((x) => !x?.IsVolenteer)];
   const handleOpen = () => {
     setOpen(true);
     console.log(User);
@@ -157,7 +144,7 @@ export default function AccountPopover() {
             }}
             variant="outlined"
           >
-            Logout
+            تسجيل الخروج
           </Button>
         </Box>
       </MenuPopover>

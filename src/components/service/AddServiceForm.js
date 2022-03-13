@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import {
   Box,
   Button,
@@ -25,6 +25,7 @@ import ApiRoot from '../../Test/APiRoot';
 import { DatePeriod } from '../../Test/DatePeriod';
 import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap } from '../../utils/Maps';
+import { UpdateUser } from '../../utils/UpdateUserInfo';
 import Mune from './Menu';
 import SnackBar from '../SnackBar';
 
@@ -43,17 +44,21 @@ export const AddServiceForm = (props) => {
         Authorization: `Bearer ${User.token}`
       }
     };
-    const response = await fetch(url, options);
-    if (response.ok && response.status === 200) {
-      const result = await response.json();
-      const { service } = result.value;
-      console.log('service', service);
-      setFieldValue('Lng', service.lat);
-      setFieldValue('Lat', service.lng);
-      setFieldValue('Gender', service.gender);
-      setFieldValue('AgeTo', service.ageTo);
-      setFieldValue('AgeFrom', service.ageFrom);
-      setFieldValue('TypeId', service.typeId);
+    try {
+      const response = await fetch(url, options);
+      if (response.ok && response.status === 200) {
+        const result = await response.json();
+        const { service } = result.value;
+        console.log('service', service);
+        //   setFieldValue('Lng', service.lat);
+        //   setFieldValue('Lat', service.lng);
+        setFieldValue('Gender', service.gender);
+        setFieldValue('AgeTo', service.ageTo);
+        setFieldValue('AgeFrom', service.ageFrom);
+        setFieldValue('TypeId', service.typeId);
+      }
+    } catch (e) {
+      console.log(e);
     }
   }, [0]);
   useEffect(async () => {
@@ -93,8 +98,8 @@ export const AddServiceForm = (props) => {
     Gender: Yup.number().required('بجب تحديد جنس المريض'),
     AgeFrom: Yup.number().required('بجب تحديد فترة العمر'),
     AgeTo: Yup.number().required('بجب تحديد فترة العمر'),
-    Lng: Yup.string().required('يجب تحديد منطة تقديم الخدمة'),
-    Lat: Yup.string().required('يجب تحديد منطة تقديم الخدمة'),
+    //  Lng: Yup.string().required('يجب تحديد منطة تقديم الخدمة'),
+    //  Lat: Yup.string().required('يجب تحديد منطة تقديم الخدمة'),
     UserLocation: Yup.boolean().required()
   });
   const formik = useFormik({
@@ -103,8 +108,8 @@ export const AddServiceForm = (props) => {
       Gender: '',
       AgeFrom: '',
       AgeTo: '',
-      Lat: User.lat,
-      Lng: User.lng,
+      //  Lat: User.lat,
+      //  Lng: User.lng,
       UserLocation: false
     },
     validationSchema: RegisterSchema,
@@ -114,7 +119,7 @@ export const AddServiceForm = (props) => {
   });
 
   const SubmitForm = async (values) => {
-    const { TypeId, Gender, AgeFrom, AgeTo, Lat, Lng } = values;
+    const { TypeId, Gender, AgeFrom, AgeTo } = values; // , Lat, Lng
 
     const data = new FormData();
 
@@ -122,7 +127,7 @@ export const AddServiceForm = (props) => {
       data.append('battlePlans', file, file.name);
     });
 
-    const Service = JSON.stringify({ TypeId, Gender, AgeFrom, AgeTo, Lat, Lng });
+    const Service = JSON.stringify({ TypeId, Gender, AgeFrom, AgeTo }); // , Lat, Lng
     data.append('service', Service);
     data.append('Id', id);
 
@@ -155,10 +160,10 @@ export const AddServiceForm = (props) => {
   const onChangeGender = (e) => {
     setFieldValue('Gender', e.target.value);
   };
-  const handleChangeLocation = (lat, lng) => {
-    setFieldValue('Lng', lat);
-    setFieldValue('Lat', lng);
-  };
+  // const handleChangeLocation = (lat, lng) => {
+  //   setFieldValue('Lng', lat);
+  //   setFieldValue('Lat', lng);
+  // };
 
   return (
     <FormikProvider value={formik}>
@@ -172,7 +177,9 @@ export const AddServiceForm = (props) => {
                 <Stack spacing={3}>
                   <Autocomplete
                     id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('TypeId', value?.id || '')}
+                    onChange={(e, value) => {
+                      setFieldValue('TypeId', value?.id || '');
+                    }}
                     size="small"
                     value={{
                       ...services.filter((x) => x.id === values.TypeId)[0]
@@ -260,7 +267,7 @@ export const AddServiceForm = (props) => {
                   />
                 </Grid>
               </Grid>
-              <Grid item md={12} xs={12}>
+              {/* <Grid item md={12} xs={12}>
                 {!values.UserLocation && (
                   <Box style={{ height: '300px' }}>
                     <GetLocationMap setLocation={handleChangeLocation} />
@@ -278,7 +285,8 @@ export const AddServiceForm = (props) => {
                     label="استخدم موقع الحساب الحالي"
                   />
                 </FormGroup>
-              </Grid>
+              </Grid> */}
+
               <Grid item md={12} xs={12}>
                 <label htmlFor="contained-button-file">
                   <input

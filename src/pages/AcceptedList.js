@@ -196,6 +196,7 @@ export default function AcceptedList() {
     } catch (error) {
       console.error(error);
     }
+    handleCloseDel();
   };
   const hadleAcceptService = async (id) => {
     const url = `${ApiRoot}/Service/AcceptRequest`;
@@ -217,7 +218,7 @@ export default function AcceptedList() {
     const response = await fetch(url, options);
     if (response.ok && response.status === 200) {
       setMessage('تم حفظ المعلومات بنجاح');
-      setScopeRequests([...updateArray(RequestId, 1, ScopeRequests)]);
+      setScopeRequests([...updateArray(id, 1, ScopeRequests)]);
     } else {
       setMessage('فشل حفظ المعلومات ');
     }
@@ -228,7 +229,9 @@ export default function AcceptedList() {
     const newArray = [...arr];
     if (index !== -1) {
       newArray[index][name] = val;
+      console.log('index ', index);
     }
+    console.log('newArray', newArray);
     return newArray;
   };
   return (
@@ -237,9 +240,9 @@ export default function AcceptedList() {
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              طلب خدمة
+              الطلبات
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلب </Typography>
+            <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلبات </Typography>
           </Stack>
 
           <Box sx={{ width: '100%' }}>
@@ -290,7 +293,7 @@ export default function AcceptedList() {
                                 <Badge
                                   variant="dot"
                                   color={
-                                    ['', 'info', 'success', 'error'][Requestlist[index].status]
+                                    ['info', 'info', 'error', 'success'][Requestlist[index].status]
                                   }
                                 >
                                   <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
@@ -326,9 +329,10 @@ export default function AcceptedList() {
                 <Stack spacing={3}>
                   <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                     {ScopeRequests.length > 0 &&
-                      ScopeRequests.slice((x) => x.status !== 1).map((item, index) => (
+                      ScopeRequests.slice((x) => x.status !== 0).map((item, index) => (
                         <>
                           <ListItem
+                            key={index}
                             secondaryAction={
                               <Button
                                 onClick={() => {
@@ -349,7 +353,7 @@ export default function AcceptedList() {
                               <ListItemAvatar>
                                 <Badge
                                   variant="dot"
-                                  color={['info', 'info', 'success', 'error'][item?.status]}
+                                  color={['info', 'info', 'error', 'success'][item?.status]}
                                 >
                                   <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
                                     <PersonIcon />
@@ -407,7 +411,7 @@ export default function AcceptedList() {
               </Button>
               <Button
                 color="error"
-                disiabled={Boolean(!Reason)}
+                disabled={Boolean(!Reason)}
                 onClick={async () => {
                   await handleFailedrequest();
                 }}
