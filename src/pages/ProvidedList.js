@@ -23,6 +23,7 @@ import Page from '../components/Page';
 import SnackBar from '../components/SnackBar';
 import ApiRoot from '../Test/APiRoot';
 import { AuthContext } from '../utils/ContextProvider';
+import { UpdateUser } from '../utils/UpdateUserInfo';
 
 // ------------------------------------------------------------------
 
@@ -107,6 +108,7 @@ export default function ProvidedList() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...removeArrayObj(RequestId)]);
+        UpdateUser(authContext);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }

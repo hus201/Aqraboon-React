@@ -30,7 +30,6 @@ import Page from '../components/Page';
 import SnackBar from '../components/SnackBar';
 import ApiRoot from '../Test/APiRoot';
 import { AuthContext } from '../utils/ContextProvider';
-
 // ------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({

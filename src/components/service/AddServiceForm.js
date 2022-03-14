@@ -49,7 +49,7 @@ export const AddServiceForm = (props) => {
       if (response.ok && response.status === 200) {
         const result = await response.json();
         const { service } = result.value;
-        console.log('service', service);
+
         //   setFieldValue('Lng', service.lat);
         //   setFieldValue('Lat', service.lng);
         setFieldValue('Gender', service.gender);
@@ -148,7 +148,10 @@ export const AddServiceForm = (props) => {
     if (response?.ok && response?.status === 200) {
       setMessage('تم الحفظ بنجاح');
       formik.resetForm();
-      window.location.href = '/Service/ProvidedList';
+      setMessage(UpdateUser(authContext));
+      setTimeout(() => {
+        window.location.href = '/Service/ProvidedList';
+      }, [500]);
     } else {
       setMessage('فشل الحفظ');
     }
