@@ -49,6 +49,12 @@ const sidebarConfig = [
     ISVolunteer: false
   },
   {
+    title: 'طلب ملحق ظبي',
+    path: '/Service/RequestAttatchment',
+    icon: getIcon(personAddFill),
+    ISVolunteer: false
+  },
+  {
     title: 'طلباتي',
     path: '/Service/NeedRequestsList',
     icon: getIcon(shoppingBagFill),

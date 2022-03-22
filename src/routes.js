@@ -10,6 +10,7 @@ import AcceptedList from './pages/AcceptedList';
 import NeedRequestsList from './pages/NeedRequestsList';
 import ProvidedList from './pages/ProvidedList';
 import RequestService from './pages/RequestService';
+import RequestAttatchment from './pages/RequestAttatchment';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
@@ -38,6 +39,7 @@ export default function Router() {
       element: <MainLayout />,
       children: [
         { path: 'RequestService', element: <RequestService /> },
+        { path: 'RequestAttatchment', element: <RequestAttatchment /> },
         {
           path: 'AcceptedList',
           element: User?.IsVolenteer ? <AcceptedList /> : <Navigate to="/dashboard" />

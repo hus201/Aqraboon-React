@@ -4,7 +4,7 @@ import { values } from 'lodash';
 
 export default function VolunteerForm({ errors, values, setObjValues }) {
   const options = [
-    { title: 'كلاهما', value: 3 },
+    { title: 'أي منهما', value: 3 },
     { title: 'ذكر', value: 1 },
     { title: 'انثى', value: 2 }
   ];

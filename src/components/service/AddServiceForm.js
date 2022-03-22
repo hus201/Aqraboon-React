@@ -206,7 +206,7 @@ export const AddServiceForm = (props) => {
                 <Stack spacing={3}>
                   <Mune
                     options={[
-                      { label: 'كلاهما', value: 3 },
+                      { label: 'أي منهما', value: 3 },
                       { label: 'ذكر', value: 1 },
                       { label: 'انثى', value: 2 }
                     ]}
