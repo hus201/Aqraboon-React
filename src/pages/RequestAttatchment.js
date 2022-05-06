@@ -37,14 +37,18 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   maxWidth: 464,
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
+  justifyContent: 'start',
+  paddingTop: 10,
+  position: 'fixed',
+  height: 600,
   margin: theme.spacing(2, 0, 2, 2)
 }));
 
 const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 680,
-  width: 680,
-  margin: 'auto',
+  maxWidth: 720,
+  width: 720,
+  marginLeft: '40%',
+  marginRight: 0,
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
@@ -80,7 +84,7 @@ export default function RequestAttachment() {
       const response = await fetch(url, options);
       if (response.ok && response.status === 200) {
         const result = await response.json();
-        setServices([...result.value.inScopeServices, ...result.value.aroundScopeServices]);
+        setServices([...result.value.inScopeServices]);
       }
     } catch (err) {
       console.log(err);
@@ -121,14 +125,14 @@ export default function RequestAttachment() {
           juastifyContent: 'center',
           gap: 10,
           width: '100%',
-          maxHeight: '100vh',
+          maxHeight: '85vh',
           maxWidth: '100%'
         }}
       >
         <ContentStyle>
           <Box sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              ألملحقات الظبية
+              الملحقاتالظبية
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>
               جميع الخدمات على هذا الموقع مجانية

@@ -82,7 +82,7 @@ export default function CardAttatchment({ Service }) {
     data.append('Id', id);
     data.append('Reason', Reason);
     axios
-      .post(`${ApiRoot}/Service/ReportService`, data)
+      .post(`${ApiRoot}/Service/SaveReport`, data)
       .then((res) => {
         if (res.data.Sccuess) {
           setMessage('تم قبول الطلب');
@@ -96,7 +96,7 @@ export default function CardAttatchment({ Service }) {
   };
 
   return (
-    <Card style={{ Width: '650px' }}>
+    <Card style={{ Width: '650px', overflow: 'visible' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -211,6 +211,8 @@ export default function CardAttatchment({ Service }) {
             disabled={Boolean(!Reason)}
             onClick={async () => {
               await hadleReportService(RequestId);
+              setReason('');
+              handleClose();
             }}
             autoFocus
           >

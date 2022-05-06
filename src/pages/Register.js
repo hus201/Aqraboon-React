@@ -24,7 +24,10 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   maxWidth: 464,
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
+  justifyContent: 'start',
+  paddingTop: '57px',
+  height: '713px',
+  position: 'fixed',
   margin: theme.spacing(2, 0, 2, 2)
 }));
 
@@ -35,6 +38,9 @@ const ContentStyle = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
+  marginRight: '0px !important',
+  marginLeft: '50% !important',
+  width: '100% !important',
   padding: theme.spacing(12, 0)
 }));
 
@@ -56,23 +62,12 @@ export default function Register() {
         <ContentStyle>
           <Box sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              Get started absolutely free.
-            </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>
-              Free forever. No credit card needed.
+              انشاء حساب جديد
             </Typography>
           </Box>
           <Stack spacing={3}>
             <RegisterForm />
           </Stack>
-          <MHidden width="smUp">
-            <Typography variant="subtitle2" sx={{ mt: 3, textAlign: 'center' }}>
-              Already have an account?&nbsp;
-              <Link to="/login" component={RouterLink}>
-                Login
-              </Link>
-            </Typography>
-          </MHidden>
         </ContentStyle>
       </Container>
     </RootStyle>

@@ -34,20 +34,26 @@ const RootStyle = styled(Page)(({ theme }) => ({
 const steps = ['تفاصيل الخدمة', 'معلومات المريض', 'معلومات مقدم الخدمة'];
 const SectionStyle = styled(Card)(({ theme }) => ({
   width: '100%',
-  maxWidth: 464,
+  maxWidth: 494,
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
+  justifyContent: 'start',
+  paddingTop: 15,
+  height: '600px !important',
+  position: 'fixed',
   margin: theme.spacing(2, 0, 2, 2)
 }));
 
 const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
+  maxWidth: 530,
   margin: 'auto',
   display: 'flex',
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'flex-start',
+  width: '100%',
+  marginRight: '0',
+  marginLeft: '50%',
   padding: theme.spacing(2, 0)
 }));
 
@@ -75,13 +81,12 @@ export default function RequestService() {
   ]);
 
   /// ------------- form
-  const [values, setValues] = React.useState({});
+  const [values, setValues] = React.useState({ Name: '', Age: NaN });
   const [errors, setErrors] = React.useState({});
   const [Loc, setLoc] = React.useState({});
   //  --------------end form
   const setObjValues = (name, val) => {
     setValues({ ...values, [name]: val });
-    console.log(values);
   };
 
   const isStepOptional = (step) => step === 2;
@@ -92,7 +97,7 @@ export default function RequestService() {
       Lattiud: Loc?.lat,
       Longtiud: Loc?.lng,
       SeviceTypeId: values?.SeviceTypeId,
-      PAge: values?.Age,
+      PAge: values?.Age || 0,
       PDescription: values?.Pdescription,
       PName: values?.Name,
       VGender: values?.VolunteerSex,
@@ -124,41 +129,55 @@ export default function RequestService() {
     }
   };
   const handleNext = async () => {
+    setErrors({});
     if (activeStep === 0) {
       if (
         !(
           values.SeviceTypeId &&
           values.description &&
-          ((Loc?.lat && Loc?.lng) || values?.UserLocation)
+          ((Loc?.lat && Loc?.lng) || values?.UserLocation) &&
+          values?.ExpTime?.toString() !== 'Invalid Date'
         )
       ) {
         const errs = {
-          SeviceTypeId: true,
-          description: true,
-          Loc: true,
-          ExpTime: true,
+          SeviceTypeId: !values.SeviceTypeId,
+          description: !values.description,
+          Loc: !((Loc?.lat && Loc?.lng) || values?.UserLocation),
+          ExpTime: values?.ExpTime?.toString() === 'Invalid Date',
           ms: {
-            SeviceTypeId: 'this field is required',
-            description: 'this field is required',
-            ExpTime: 'this field is required',
-            Loc: 'this field is required'
+            SeviceTypeId: 'هذه المعلومات مطلوبة',
+            description: 'هذه المعلومات مطلوبة',
+            ExpTime: 'هذه المعلومات مطلوبة',
+            Loc: 'هذه المعلومات مطلوبة'
           }
         };
         setErrors({ ...errs });
         return;
       }
-    } else if (activeStep === 1) {
-      if (!(values.Name && values.Pdescription && values.Age && values.Sex)) {
+    } else if (activeStep === 1 && !values?.CurrentInfo) {
+      if (!(values.Name && values.Pdescription && !!values.Age && values.Sex)) {
         const errs = {
-          Name: true,
-          Pdescription: true,
-          Age: true,
-          Sex: true,
+          Name: !values.Name,
+          Pdescription: !values.Pdescription,
+          Age: !values.Age,
+          Sex: !values.Sex,
           ms: {
-            Name: 'this field is required',
-            Pdescription: 'this field is required',
-            Age: 'this field is required',
-            Sex: 'this field is required'
+            Name: 'هذه المعلومات مطلوبة',
+            Pdescription: 'هذه المعلومات مطلوبة',
+            Age: 'هذه المعلومات مطلوبة',
+            Sex: 'هذه المعلومات مطلوبة'
+          }
+        };
+        setErrors({ ...errs });
+        return;
+      }
+      setErrors({});
+    } else if (activeStep === 1 && values?.CurrentInfo) {
+      if (!values.Pdescription) {
+        const errs = {
+          Pdescription: !values.Pdescription,
+          ms: {
+            Pdescription: 'هذه المعلومات مطلوبة'
           }
         };
         setErrors({ ...errs });
@@ -170,7 +189,7 @@ export default function RequestService() {
         const errs = {
           VolunteerSex: true,
           ms: {
-            VolunteerSex: 'this field is required'
+            VolunteerSex: 'هذه المعلومات مطلوبة'
           }
         };
         setErrors({ ...errs });
@@ -279,7 +298,10 @@ export default function RequestService() {
                     رجوع
                   </Button>
                   <Box sx={{ flex: '1 1 auto' }} />
-                  <Button onClick={activeStep !== steps.length - 1 ? handleNext : handleSubmit}>
+                  <Button
+                    disabled={activeStep === steps.length - 1 && !values?.VolunteerSex}
+                    onClick={activeStep !== steps.length - 1 ? handleNext : handleSubmit}
+                  >
                     {activeStep === steps.length - 1 ? 'تاكيد طلب الخدمة' : 'التالي'}
                   </Button>
                 </Box>

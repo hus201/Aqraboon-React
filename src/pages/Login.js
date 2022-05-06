@@ -1,4 +1,4 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Card, Stack, Button, Link, Container, Typography } from '@mui/material';
@@ -43,8 +43,8 @@ export default function Login() {
     <RootStyle title="Login | Minimal-UI">
       <MHidden width="mdDown">
         <SectionStyle>
-          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Hi, Welcome Back
+          <Typography variant="h3" style={{ textAlign: 'center' }} sx={{ px: 5, mt: 10, mb: 5 }}>
+            مرحبا بعودتك
           </Typography>
           <img src="/static/illustrations/illustration_login.png" alt="login" />
         </SectionStyle>
@@ -54,9 +54,15 @@ export default function Login() {
         <ContentStyle>
           <LoginForm />
           <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-            هل نسيت كلمة المرور &nbsp;
-            <Link underline="always" sx={{ color: 'text.primary' }}>
-              استعادة كلمة المرور
+            لبس لديك حساب ؟ &nbsp;
+            <Link
+              to="/register"
+              component={RouterLink}
+              underline="always"
+              style={{ cursor: 'pointer' }}
+              sx={{ color: 'text.primary' }}
+            >
+              سجل الان
             </Link>
           </Typography>
         </ContentStyle>

@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { LoadingButton, DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 // material
@@ -20,6 +20,8 @@ import {
   Checkbox,
   InputAdornment,
   FormControl,
+  Link,
+  Typography,
   FormHelperText
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -42,26 +44,30 @@ export default function RegisterForm() {
   const [showConfPassword, setShowConfPassword] = useState(false);
   const [error, setError] = useState(false);
   const [Gender, setGender] = useState(0);
-  const [helperText, setHelperText] = useState('Choose wisely');
+  const [GenderError, setGenderError] = useState(false);
+  const [helperText, setHelperText] = useState('');
   const [AsVolunteer, setAsVolunteer] = useState(false);
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('First name required'),
-    lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
-    birthDate: Yup.date().required('birthDate required').min('1940-01-01').max('2005-1-1'),
-    email: Yup.string().email('Email must be a valid email address').nullable(),
+    firstName: Yup.string().min(2, 'قصير جدا!').max(50, 'طويل جدا!').required('الاسم الأول مطلوب'),
+    lastName: Yup.string().min(2, 'قصير جدا!').max(50, 'طويل جدا!').required('اسم العائلة مطلوب'),
+    birthDate: Yup.date('تاريخ الميلاد مطلوب')
+      .typeError('تاريخ الميلاد مطلوب')
+      .required('تاريخ الميلاد مطلوب')
+      .min('1940-01-01')
+      .max('2005-1-1'),
+    email: Yup.string()
+      .email('يجب أن يكون البريد الإلكتروني عنوان بريد إلكتروني صالحًا')
+      .nullable(),
     phone: Yup.string()
-      .matches(phoneRegExp, 'Phone number must be a valid Phone number')
-      .required('Phone number is required'),
-    password: Yup.string().required('Password is required'),
-    confPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
-    lat: Yup.string().required('location is required'),
-    lng: Yup.string().required('location is required')
+      .matches(phoneRegExp, 'يجب أن يكون رقم الهاتف صالحًا')
+      .required('رقم الهاتف مطلوب'),
+    password: Yup.string().required('كلمة المرور مطلوبة'),
+    confPassword: Yup.string().oneOf([Yup.ref('password'), null], 'يجب أن تتطابق كلمات المرور'),
+    lat: Yup.string().required('الموقع مطلوب'),
+    lng: Yup.string().required('الموقع مطلوب')
   });
 
   const formik = useFormik({
@@ -70,7 +76,7 @@ export default function RegisterForm() {
       lastName: '',
       phone: '',
       email: '',
-      birthDate: '0000-00-00',
+      birthDate: null,
       confPassword: '',
       password: '',
       lat: '',
@@ -122,7 +128,7 @@ export default function RegisterForm() {
         return <Navigate to="/" />;
       }
       setSubmitting(false);
-      setHelperText('Sorry, wrong answer!');
+      setHelperText('عذرا حدث خطا ما!');
       setError(true);
       return <></>;
     } catch (error) {
@@ -133,6 +139,7 @@ export default function RegisterForm() {
 
   const onChangeGender = (e) => {
     setGender(e.target.value);
+    setGenderError(e.target.value === 0);
   };
 
   const handleChangeLocation = (lat, lng) => {
@@ -157,7 +164,7 @@ export default function RegisterForm() {
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               fullWidth
-              label="First name"
+              label="الاسم الأول"
               {...getFieldProps('firstName')}
               size="small"
               error={Boolean(touched.firstName && errors.firstName)}
@@ -166,7 +173,7 @@ export default function RegisterForm() {
 
             <TextField
               fullWidth
-              label="Last name"
+              label="اسم العائلة"
               {...getFieldProps('lastName')}
               size="small"
               error={Boolean(touched.lastName && errors.lastName)}
@@ -175,18 +182,29 @@ export default function RegisterForm() {
           </Stack>
 
           <Mune
+            style={{
+              border: GenderError ? '1px solid red' : '',
+              borderRadius: 10
+            }}
             options={[
               { label: 'male', value: 1 },
               { label: 'female', value: 2 }
             ]}
             onSort={onChangeGender}
           />
+          {!!GenderError && (
+            <FormGroup>
+              <FormHelperText style={{ color: 'red', marginTop: 1 }}>
+                تحديد الجنس مطلوب
+              </FormHelperText>
+            </FormGroup>
+          )}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
               maxDate={new Date('2005-01-01')}
               minDate={new Date('1940-01-01')}
               fullWidth
-              label="birthDate"
+              label="تاريخ الولادة"
               inputProps={{
                 autocomplete: 'new-date',
                 form: {
@@ -200,6 +218,10 @@ export default function RegisterForm() {
               }}
               renderInput={(params) => (
                 <TextField
+                  style={{
+                    border: touched.birthDate && errors.birthDate ? '1px solid red' : '',
+                    borderRadius: 10
+                  }}
                   inputProps={{
                     autocomplete: 'new-date',
                     form: {
@@ -211,11 +233,18 @@ export default function RegisterForm() {
               )}
             />
           </LocalizationProvider>
+          {Boolean(touched.birthDate && errors.birthDate) && (
+            <FormGroup>
+              <FormHelperText style={{ color: 'red', marginTop: 1 }}>
+                {touched.birthDate && errors.birthDate}
+              </FormHelperText>
+            </FormGroup>
+          )}
           <TextField
             fullWidth
             autoComplete="username"
             type="tel"
-            label="phone number"
+            label="رقم الهاتف"
             inputProps={{
               autocomplete: 'new-phone',
               form: {
@@ -231,7 +260,7 @@ export default function RegisterForm() {
             fullWidth
             autoComplete="email"
             type="email"
-            label="email"
+            label="البريد الإلكتروني"
             inputProps={{
               autocomplete: 'new-phone',
               form: {
@@ -247,7 +276,7 @@ export default function RegisterForm() {
             fullWidth
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
-            label="Password"
+            label="كلمه المرور"
             {...getFieldProps('password')}
             InputProps={{
               autocomplete: 'new-phone',
@@ -270,7 +299,7 @@ export default function RegisterForm() {
             fullWidth
             autoComplete="current-password"
             type={showConfPassword ? 'text' : 'password'}
-            label="confirm Password"
+            label="تأكيد كلمة المرور"
             {...getFieldProps('confPassword')}
             InputProps={{
               endAdornment: (
@@ -304,11 +333,26 @@ export default function RegisterForm() {
               type="submit"
               variant="contained"
               loading={isSubmitting}
+              onClick={() => {
+                setGenderError(Gender === 0);
+              }}
             >
-              Register
+              انشاء الحساب
             </LoadingButton>
             <FormHelperText>{helperText}</FormHelperText>
           </FormControl>
+          <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
+            لديك حساب بالفعل ؟ &nbsp;
+            <Link
+              to="/register"
+              component={RouterLink}
+              underline="always"
+              style={{ cursor: 'pointer' }}
+              sx={{ color: 'text.primary' }}
+            >
+              تسجيل الدخول
+            </Link>
+          </Typography>
         </Stack>
       </Form>
     </FormikProvider>

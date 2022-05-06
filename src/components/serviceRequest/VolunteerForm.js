@@ -9,7 +9,12 @@ export default function VolunteerForm({ errors, values, setObjValues }) {
     { title: 'انثى', value: 2 }
   ];
   useEffect(() => {
-    setVolunteerSex(options[values.VolunteerSex]);
+    console.log('dasd');
+    if (values.VolunteerSex === 3) {
+      setVolunteerSex(options[0]);
+    } else {
+      setVolunteerSex(options[values.VolunteerSex]);
+    }
   }, [values]);
   const [VolunteerSex, setVolunteerSex] = useState(options[0]);
 
@@ -22,7 +27,7 @@ export default function VolunteerForm({ errors, values, setObjValues }) {
         value={VolunteerSex}
         onChange={(e, NewVal) => {
           setVolunteerSex(NewVal);
-          setObjValues('VolunteerSex', NewVal.value);
+          setObjValues('VolunteerSex', NewVal?.value);
         }}
         getOptionLabel={(option) => option?.title || ''}
         renderInput={(params) => (

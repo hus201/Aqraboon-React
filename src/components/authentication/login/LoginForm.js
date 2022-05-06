@@ -28,11 +28,11 @@ export default function LoginForm() {
   const Navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
-  const [helperText, setHelperText] = useState('Choose wisely');
+  const [helperText, setHelperText] = useState('');
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().required('Email or Phone number is required'),
-    password: Yup.string().required('Password is required')
+    email: Yup.string().required(' البريد الإلكتروني أو رقم الهاتف مطلوب'),
+    password: Yup.string().required('كلمة المرور مطلوبة')
   });
 
   const formik = useFormik({
@@ -76,7 +76,7 @@ export default function LoginForm() {
         return <Navigate to="/" />;
       }
       setSubmitting(false);
-      setHelperText('Sorry, wrong answer!');
+      setHelperText('عذرا حدث خطا ما!');
       setError(true);
       return <></>;
     } catch (error) {
@@ -97,7 +97,10 @@ export default function LoginForm() {
         <Stack spacing={3}>
           <Avatar
             variant="square"
-            style={{ width: '100%', height: 'auto' }}
+            imgProps={{
+              style: { height: '100%', width: 'auto' }
+            }}
+            style={{ width: '100%', height: '300px' }}
             src="https://image.freepik.com/free-vector/sign-page-abstract-concept-illustration_335657-3875.jpg"
           />
           <TextField
@@ -111,7 +114,7 @@ export default function LoginForm() {
                 autocomplete: 'off'
               }
             }}
-            label="Email or phone number"
+            label="البريد الإلكتروني أو رقم الهاتف"
             {...getFieldProps('email')}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}
@@ -122,7 +125,7 @@ export default function LoginForm() {
             fullWidth
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
-            label="Password"
+            label=" كلمة المرور"
             {...getFieldProps('password')}
             InputProps={{
               endAdornment: (
@@ -141,12 +144,12 @@ export default function LoginForm() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
           <FormControlLabel
             control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
+            label="تذكرني"
           />
 
-          <Link component={RouterLink} variant="subtitle2" to="#">
+          {/* <Link component={RouterLink} variant="subtitle2" to="#">
             Forgot password?
-          </Link>
+          </Link> */}
         </Stack>
         <FormControl fullWidth error={error} variant="standard">
           <LoadingButton
@@ -157,7 +160,7 @@ export default function LoginForm() {
             loading={isSubmitting}
             disabled={isSubmitting}
           >
-            Login
+            تسجيل الدخول
           </LoadingButton>
           <FormHelperText>{helperText}</FormHelperText>
         </FormControl>

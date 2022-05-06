@@ -182,7 +182,7 @@ export default function NotificationsPopover() {
   const User = authContext.getUser();
 
   useEffect(() => {
-    if (User?.id) {
+    if (User?.id && User?.role !== 'User') {
       setInterval(async () => {
         const url = `${APIRoot}/Service/GetVolunteerRequest`;
         const options = {

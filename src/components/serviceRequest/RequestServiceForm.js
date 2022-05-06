@@ -62,11 +62,11 @@ export default function RequestServiceForm({ errors, values, setObjValues, handl
           ...services.filter((x) => x.id === values.SeviceTypeId)[0]
         }}
         options={[...services]}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={(option) => option?.title || ''}
         renderInput={(params) => (
           <TextField
             error={Boolean(errors?.SeviceTypeId)}
-            helperText={errors?.ms?.SeviceTypeId}
+            helperText={errors?.SeviceTypeId ? errors?.ms?.SeviceTypeId : ''}
             {...params}
             label="نوع الخدمة المطلوبة"
           />
@@ -83,7 +83,7 @@ export default function RequestServiceForm({ errors, values, setObjValues, handl
         value={values?.description}
         label="اضافة وصف"
         error={Boolean(errors?.description)}
-        helperText={errors?.ms?.description}
+        helperText={errors?.description ? errors?.ms?.description : ''}
       />
       <Grid item md={12} xs={12}>
         {!values?.UserLocation && (
@@ -99,7 +99,7 @@ export default function RequestServiceForm({ errors, values, setObjValues, handl
             error={Boolean(errors?.UserLocation)}
             helperText={errors?.ms?.UserLocation}
             control={<Checkbox />}
-            label="Use Current Acount Location"
+            label="استخدم موقع الحساب الحالي"
           />
           {Boolean(errors?.Loc) && (
             <FormHelperText style={{ color: 'red' }}>{errors?.ms?.Loc}</FormHelperText>
@@ -111,7 +111,7 @@ export default function RequestServiceForm({ errors, values, setObjValues, handl
         enterTouchDelay={0}
         placement="bottom"
       >
-        <Box style={{ marginTop: '65px' }}>
+        <Box style={{ marginTop: '12px' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               fullWidth

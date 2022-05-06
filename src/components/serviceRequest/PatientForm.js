@@ -26,7 +26,7 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
         value={values?.CurrentInfo ? User.name : values?.Name}
         onChange={(e) => setObjValues('Name', e.target.value)}
         error={Boolean(errors?.Name)}
-        helperText={errors?.ms?.Name}
+        helperText={errors?.Name ? errors?.ms?.Name : ''}
       />
 
       <TextField
@@ -35,7 +35,7 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
         value={values?.Pdescription}
         onChange={(e) => setObjValues('Pdescription', e.target.value)}
         error={Boolean(errors?.Pdescription)}
-        helperText={errors?.ms?.Pdescription}
+        helperText={errors?.Pdescription ? errors?.ms?.Pdescription : ''}
         maxRows={4}
         size="small"
         label="وصف حالة المريض"
@@ -46,23 +46,25 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
         disabled={values?.CurrentInfo}
         size="small"
         label="العمر"
-        InputLabelProps={{ shrink: values?.CurrentInfo || values?.Age }}
+        InputLabelProps={{ shrink: values?.CurrentInfo || values?.Age || values?.Age === 0 }}
         value={
           values?.CurrentInfo
-            ? new Date(User.birthDate).getFullYear() - new Date().getFullYear()
+            ? new Date().getFullYear() - new Date(User.birthDate).getFullYear()
             : values?.Age
         }
         onChange={(e) => setObjValues('Age', e.target.valueAsNumber)}
         type="number"
         error={Boolean(errors?.Age)}
-        helperText={errors?.ms?.Age}
+        helperText={errors?.Age ? errors?.ms?.Age : ''}
       />
 
       <Autocomplete
         id="size-small-outlined"
         size="small"
         disabled={values?.CurrentInfo}
-        value={values?.CurrentInfo ? Genders[User.gender - 1] : Genders[values?.Sex]}
+        value={
+          values?.CurrentInfo ? { ...Genders[User.gender - 1] } : { ...Genders[values?.Sex - 1] }
+        }
         options={[...Genders]}
         getOptionLabel={(option) => option?.title || ''}
         onChange={(e, value) => setObjValues('Sex', value?.value || '')}
@@ -70,7 +72,7 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
           <TextField
             error={Boolean(errors?.Sex)}
             disabled={values?.CurrentInfo}
-            helperText={errors?.ms?.Sex}
+            helperText={errors?.Sex ? errors?.ms?.Sex : ''}
             {...params}
             label="جنس المريض"
           />
@@ -79,11 +81,13 @@ export default function PatientForm({ User, errors, values, setObjValues }) {
 
       <FormGroup>
         <FormControlLabel
-          onChange={(e) => setObjValues('CurrentInfo', !values?.CurrentInfo)}
+          onChange={(e) => {
+            setObjValues('CurrentInfo', !values?.CurrentInfo);
+          }}
           error={Boolean(errors?.CurrentInfo)}
           helperText={errors?.ms?.CurrentInfo}
           control={<Checkbox checked={values?.CurrentInfo} />}
-          label="Use Current Acount info"
+          label="استخدم معلومات الحساب الحالي"
         />
       </FormGroup>
     </Stack>
