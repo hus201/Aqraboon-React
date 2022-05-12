@@ -27,6 +27,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ApiRoot from '../Test/APiRoot';
 import SnackBar from './SnackBar';
+import { AuthContext } from '../utils/ContextProvider';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -47,6 +48,8 @@ export default function CardAttatchment({ Service }) {
   const [RequestId, setRequestId] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const authContext = React.useContext(AuthContext);
+  const User = authContext.getUser();
 
   const handleClickOpen = (id) => {
     setRequestId(id);
@@ -79,10 +82,15 @@ export default function CardAttatchment({ Service }) {
 
   const hadleReportService = (id) => {
     const data = new FormData();
-    data.append('Id', id);
-    data.append('Reason', Reason);
+    data.append('reqId', id);
+    data.append('desc', Reason);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${User.token}`
+      }
+    };
     axios
-      .post(`${ApiRoot}/Service/SaveReport`, data)
+      .post(`${ApiRoot}/Service/UserReportAttatch`, data, config)
       .then((res) => {
         if (res.data.Sccuess) {
           setMessage('تم قبول الطلب');
