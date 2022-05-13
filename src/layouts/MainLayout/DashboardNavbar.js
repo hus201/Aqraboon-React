@@ -85,10 +85,10 @@ export default function DashboardNavbar({ onOpenSidebar }) {
               <MHidden width="lgDown">
                 <BoxStyled>
                   <Button component={RouterLink} to="/login" size="medium">
-                    login
+                    تسجيل الدخول
                   </Button>
                   <Button component={RouterLink} to="/register" size="medium">
-                    register
+                    تسجيل الاشتراك
                   </Button>
                 </BoxStyled>
               </MHidden>
@@ -105,7 +105,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
+          {/* <LanguagePopover /> */}
           {authContext.User?.IsLogedIn && (
             <>
               <NotificationsPopover />

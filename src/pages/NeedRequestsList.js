@@ -73,14 +73,16 @@ export default function NeedRequestsList() {
       console.log('result', result);
       setRequestlist([...result.value.requests]);
       setAcceptedRequests([...result.value.acceptedRequests]);
+      setRatings([...result.value.rating]);
     }
   }, [0]);
 
-  const authContext = React.useContext(AuthContext);
-  const User = authContext.getUser();
   const [Requestlist, setRequestlist] = React.useState([]);
+  const [Ratings, setRatings] = React.useState([]);
+  const authContext = React.useContext(AuthContext);
   const [AcceptedRequests, setAcceptedRequests] = React.useState([]);
   const theme = useTheme();
+  const User = authContext.getUser();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = React.useState(false);
   const [openDel, setopenDel] = React.useState(false);
@@ -178,9 +180,9 @@ export default function NeedRequestsList() {
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              طلب خدمة
+              الخدمات المطلوبة
             </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلب </Typography>
+            {/* <Typography sx={{ color: 'text.secondary' }}>تفاصيل الطلب </Typography> */}
           </Stack>
 
           <Box sx={{ width: '100%' }}>
@@ -191,7 +193,7 @@ export default function NeedRequestsList() {
                     <>
                       <ListItem
                         secondaryAction={
-                          <div>
+                          <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
                             {Requestlist[index].status === 1 && (
                               <Button
                                 onClick={() => {
@@ -212,6 +214,47 @@ export default function NeedRequestsList() {
                                 شكوى
                               </Button>
                             )}
+
+                            {Requestlist[index].status === 3 && (
+                              <Typography
+                                sx={{ display: 'inline' }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                تم التسليم
+                              </Typography>
+                            )}
+                            {Requestlist[index].status === 3 && (
+                              <Typography
+                                sx={{ display: 'inline' }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                {Ratings.filter((x) => x?.requestId === Requestlist[index].id)[0]
+                                  ?.value > 0 ? (
+                                  <Rating
+                                    name="half-rating"
+                                    defaultValue={
+                                      Ratings.filter(
+                                        (x) => x.requestId === Requestlist[index].id
+                                      )[0].value
+                                    }
+                                    readOnly
+                                    precision={0.5}
+                                  />
+                                ) : (
+                                  <Button
+                                    onClick={() => {
+                                      handleClickOpenDel(Requestlist[index].id);
+                                    }}
+                                  >
+                                    قيم مقدم الخدمة
+                                  </Button>
+                                )}
+                              </Typography>
+                            )}
                           </div>
                         }
                         alignItems="flex-start"
@@ -221,7 +264,7 @@ export default function NeedRequestsList() {
                             <Badge
                               variant="dot"
                               color={
-                                ['info', 'success', 'success', 'error'][Requestlist[index].status]
+                                ['info', 'success', 'error', 'success'][Requestlist[index].status]
                               }
                             >
                               <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
@@ -232,21 +275,91 @@ export default function NeedRequestsList() {
                           <ListItemText
                             primary={Requestlist[index].seviceType.title}
                             secondary={
-                              <>
-                                <Typography
-                                  sx={{ display: 'inline' }}
-                                  component="span"
-                                  variant="body2"
-                                  color="text.primary"
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  gap: '10%'
+                                }}
+                              >
+                                <div>
+                                  <Typography
+                                    sx={{ display: 'inline' }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                  >
+                                    {`${Requestlist[index].pName} - ${Requestlist[index].pDescription}`}
+                                  </Typography>
+                                </div>
+
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'start',
+                                    gap: 15
+                                  }}
                                 >
-                                  {Requestlist[index].pName}
-                                </Typography>
-                                {Requestlist[index].pDescription}
-                              </>
+                                  {Requestlist[index]?.status !== 2 && Requestlist[index]?.user && (
+                                    <>
+                                      <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        تواصل مع مقدم الخدمة :
+                                      </Typography>
+                                      <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        {Requestlist[index]?.user?.name}
+                                      </Typography>
+                                      <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        {Requestlist[index]?.user?.phone}
+                                      </Typography>
+                                    </>
+                                  )}
+                                  {!Requestlist[index]?.user && Requestlist[index]?.status !== 2 ? (
+                                    <Typography
+                                      sx={{ display: 'inline' }}
+                                      component="span"
+                                      variant="body2"
+                                      color="text.primary"
+                                    >
+                                      بانتظار قبول الطلب ...
+                                    </Typography>
+                                  ) : (
+                                    <Typography
+                                      style={{
+                                        display:
+                                          Requestlist[index]?.status === 2 ? 'inline' : 'none'
+                                      }}
+                                      sx={{ display: 'inline' }}
+                                      component="span"
+                                      variant="body2"
+                                      color="text.primary"
+                                    >
+                                      تم الغاء الطلب
+                                    </Typography>
+                                  )}
+                                </div>
+                              </div>
                             }
                           />
                         </ListItemButton>
                       </ListItem>
+
                       <Divider variant="inset" component="li" />
                     </>
                   ))}

@@ -123,7 +123,7 @@ export default function CardAttatchment({ Service, removeServices }) {
         //   </IconButton>
         // }
         title={Service.service_type.title}
-        subheader="September 14, 2016"
+        subheader={Service.service_type.desciption}
       />
       <CardMedia
         component="img"
@@ -134,11 +134,13 @@ export default function CardAttatchment({ Service, removeServices }) {
         }`}
         alt="Paella dish"
       />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {Service.service_type.desciption}
-        </Typography>
-      </CardContent>
+      {/* <CardContent>
+        {Service?.attachments?.filter((x, i) => i !== 0)?.length > 0 && (
+          <Typography variant="body2" color="text.secondary">
+            صور الملحق
+          </Typography>
+        )}
+      </CardContent> */}
       <CardActions disableSpacing>
         <Button
           onClick={() => {
@@ -154,7 +156,7 @@ export default function CardAttatchment({ Service, removeServices }) {
           }}
           color="success"
         >
-          استلام
+          طلب
         </Button>
 
         <ExpandMore
@@ -168,11 +170,8 @@ export default function CardAttatchment({ Service, removeServices }) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-            minutes.
-          </Typography>
+          <Typography paragraph> : الوصف</Typography>
+          <Typography paragraph>{Service?.service_type?.desciption}</Typography>
           <Grid item md={12} xs={12}>
             <ImageList sx={{ width: '100%', height: 'auto' }} cols={2}>
               {Service?.attachments

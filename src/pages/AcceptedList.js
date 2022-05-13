@@ -77,6 +77,7 @@ export default function AcceptedList() {
       const result = await response.json();
       setRequestlist([...result.value.requests]);
       setAcceptedRequests([...result.value.acceptedRequests]);
+      setRatings([...result.value.rating]);
     }
   }, [0]);
   React.useEffect(async () => {
@@ -104,11 +105,13 @@ export default function AcceptedList() {
       }
     }
   }, [0]);
+
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
   const [id, setId] = React.useState(0);
   const [Requestlist, setRequestlist] = React.useState([]);
   const [AcceptedRequests, setAcceptedRequests] = React.useState([]);
+  const [Ratings, setRatings] = React.useState([]);
   const [ScopeRequests, setScopeRequests] = React.useState([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -171,6 +174,7 @@ export default function AcceptedList() {
   const handleDeliveredRequest = async () => {
     const data = new FormData();
     data.append('Evaluation', Evaluation);
+    data.append('Rate', rateValue);
     data.append('RequestId', RequestId);
 
     const url = `${ApiRoot}/Service/DeliveredRequest`;
@@ -223,7 +227,6 @@ export default function AcceptedList() {
       setMessage('فشل حفظ المعلومات ');
     }
   };
-
   const updateArray = (id, val, arr = [...Requestlist], name = 'status') => {
     const index = arr.findIndex((x) => x.id === id);
     const newArray = [...arr];
@@ -259,7 +262,7 @@ export default function AcceptedList() {
                         <>
                           <ListItem
                             secondaryAction={
-                              <div>
+                              <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
                                 {Requestlist[index].status === 1 && (
                                   <Button
                                     onClick={() => {
@@ -270,6 +273,7 @@ export default function AcceptedList() {
                                     تم التسليم
                                   </Button>
                                 )}
+
                                 {Requestlist[index].status === 1 && (
                                   <Button
                                     onClick={() => {
@@ -279,6 +283,47 @@ export default function AcceptedList() {
                                   >
                                     رفض
                                   </Button>
+                                )}
+                                {Requestlist[index].status === 3 && (
+                                  <Typography
+                                    sx={{ display: 'inline' }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                  >
+                                    تم التسليم
+                                  </Typography>
+                                )}
+                                {Requestlist[index].status === 3 && (
+                                  <Typography
+                                    sx={{ display: 'inline' }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                  >
+                                    {Ratings.filter(
+                                      (x) => x?.requestId === Requestlist[index].id
+                                    )[0]?.value > 0 ? (
+                                      <Rating
+                                        name="half-rating"
+                                        defaultValue={
+                                          Ratings.filter(
+                                            (x) => x.requestId === Requestlist[index].id
+                                          )[0].value
+                                        }
+                                        readOnly
+                                        precision={0.5}
+                                      />
+                                    ) : (
+                                      <Button
+                                        onClick={() => {
+                                          handleClickOpenDel(Requestlist[index].id);
+                                        }}
+                                      >
+                                        قيم طالب الخدمة
+                                      </Button>
+                                    )}
+                                  </Typography>
                                 )}
                               </div>
                             }
@@ -304,17 +349,74 @@ export default function AcceptedList() {
                               <ListItemText
                                 primary={Requestlist[index].seviceType.title}
                                 secondary={
-                                  <>
-                                    <Typography
-                                      sx={{ display: 'inline' }}
-                                      component="span"
-                                      variant="body2"
-                                      color="text.primary"
-                                    >
-                                      {Requestlist[index].pName}
-                                    </Typography>
-                                    {Requestlist[index].pDescription}
-                                  </>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      gap: '10%'
+                                    }}
+                                  >
+                                    <div>
+                                      <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        {`${Requestlist[index].pName} - ${Requestlist[index].pDescription}`}
+                                      </Typography>
+                                    </div>
+                                    {Requestlist[index]?.status === 2 && (
+                                      <Typography
+                                        style={{
+                                          display:
+                                            Requestlist[index]?.status === 2 ? 'inline' : 'none'
+                                        }}
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        تم الغاء الطلب
+                                      </Typography>
+                                    )}
+                                    {Requestlist[index].status !== 2 && (
+                                      <div
+                                        style={{
+                                          display: 'flex',
+                                          flexDirection: 'row',
+                                          alignItems: 'start',
+                                          gap: 15
+                                        }}
+                                      >
+                                        <Typography
+                                          sx={{ display: 'inline' }}
+                                          component="span"
+                                          variant="body2"
+                                          color="text.primary"
+                                        >
+                                          تواصل مع طالب الخدمة :
+                                        </Typography>
+                                        <Typography
+                                          sx={{ display: 'inline' }}
+                                          component="span"
+                                          variant="body2"
+                                          color="text.primary"
+                                        >
+                                          {Requestlist[index]?.user?.name}
+                                        </Typography>
+                                        <Typography
+                                          sx={{ display: 'inline' }}
+                                          component="span"
+                                          variant="body2"
+                                          color="text.primary"
+                                        >
+                                          {Requestlist[index]?.user?.phone}
+                                        </Typography>
+                                      </div>
+                                    )}
+                                  </div>
                                 }
                               />
                             </ListItemButton>

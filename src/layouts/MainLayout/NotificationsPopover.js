@@ -196,8 +196,8 @@ export default function NotificationsPopover() {
         };
 
         try {
-          const response = await fetch(url, options);
-          if (response.ok && response.status === 200) {
+          const response = {}; //  await fetch(url, options);
+          if (response?.ok && response?.status === 200) {
             const result = await response.json();
             //  [...result.value.aroundScopeRequests]
             setNotifications([...result.value.inScopeRequests]);
