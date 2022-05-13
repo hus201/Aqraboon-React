@@ -49,7 +49,7 @@ const sidebarConfig = [
     ISVolunteer: false
   },
   {
-    title: 'طلب ملحق ظبي',
+    title: 'طلب ملحق طبي',
     path: '/Service/RequestAttatchment',
     icon: getIcon(personAddFill),
     ISVolunteer: false

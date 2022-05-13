@@ -40,7 +40,7 @@ const ExpandMore = styled((props) => {
   })
 }));
 
-export default function CardAttatchment({ Service }) {
+export default function CardAttatchment({ Service, removeServices }) {
   const theme = useTheme();
   const [expanded, setExpanded] = React.useState(false);
   const [Message, setMessage] = React.useState('');
@@ -64,13 +64,19 @@ export default function CardAttatchment({ Service }) {
   };
 
   const hadleAcceptService = (id) => {
+    const Config = {
+      headers: {
+        Authorization: `Bearer ${User.token}`
+      }
+    };
     const data = new FormData();
-    data.append('id', id);
+    data.append('reqId', id);
     axios
-      .post(`${ApiRoot}/Service/AcceptAttatch`, data)
+      .post(`${ApiRoot}/Service/UserAcceptAttatch`, data, Config)
       .then((res) => {
         if (res.data.Sccuess) {
           setMessage('تم قبول الطلب');
+          removeServices(id);
         } else {
           setMessage('عذرا,حدث خطا ما');
         }

@@ -132,7 +132,7 @@ export default function RequestAttachment() {
         <ContentStyle>
           <Box sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              الملحقاتالظبية
+              الملحقات الطبية
             </Typography>
             <Typography sx={{ color: 'text.secondary' }}>
               جميع الخدمات على هذا الموقع مجانية
@@ -140,7 +140,13 @@ export default function RequestAttachment() {
           </Box>
 
           {Services.map((item, index) => (
-            <CardAttatchment Service={item} key={index} />
+            <CardAttatchment
+              removeServices={(id) => {
+                setServices([...Services.filter((x) => x.id !== id)]);
+              }}
+              Service={item}
+              key={index}
+            />
           ))}
         </ContentStyle>
       </Paper>
