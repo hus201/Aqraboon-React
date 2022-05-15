@@ -7,24 +7,19 @@ import Typography from '@mui/material/Typography';
 import Collapse from '@mui/material/Collapse';
 
 const useStyles = makeStyles({
+  imag: {
+    backgroundColor: 'black',
+    color: 'white',
+    height: 500,
+    width: '49%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   root: {
-    maxWidth: 645,
-    background: 'rgba(0,0,0,0.5)',
-    margin: '20px'
-  },
-  media: {
-    height: 440
-  },
-  title: {
-    fontFamily: 'Nunito',
-    fontWeight: 'bold',
-    fontSize: '2rem',
-    color: '#fff'
-  },
-  desc: {
-    fontFamily: 'Nunito',
-    fontSize: '1.1rem',
-    color: '#ddd'
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 });
 
@@ -32,18 +27,13 @@ export default function ImageCard({ place, checked }) {
   const classes = useStyles();
 
   return (
-    <Collapse in={checked} {...(checked ? { timeout: 1000 } : {})}>
-      <Card className={classes.root}>
-        <CardMedia className={classes.media} image={place.imageUrl} title="Contemplative Reptile" />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h1" className={classes.title}>
-            {place.title}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p" className={classes.desc}>
-            {place.description}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Collapse>
+    <div className={classes.root}>
+      <div className={classes.imag}>Help where it is needed most.</div>
+      <div className={classes.imag}>
+        EDUCATION Give Hope Through the last years, we inspired hundreds of people to support us in
+        our mission and thereby give thousands of children around the world the possibility to
+        acquire English and computer education. Do you want to support us on our mission?
+      </div>
+    </div>
   );
 }

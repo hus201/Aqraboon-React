@@ -1,7 +1,19 @@
 import React from 'react';
 import { CssBaseline, Typography, ButtonGroup, Button, Box } from '@mui/material';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
+import FaceIcon from '@mui/icons-material/Face';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles((theme) => ({
+  iconClass: {
+    color: theme.palette.primary.main,
+    fontSize: 50
+  }
+}));
 
 export default function Section1() {
+  const classes = useStyles();
   return (
     <div
       style={{
@@ -10,16 +22,18 @@ export default function Section1() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 15
+        gap: 45
       }}
     >
-      <h3>This is Typography in mui and pragraoh ion html</h3>
       <p style={{ width: '50%', textAlign: 'center' }}>
-        Basic HTML Animals This is the first paragraph in our page. It introduces our animals. The
-        Llama Our Llama is a big fan of list items
+        <h3 style={{ margin: 10 }}>
+          اقربون منصة خدمات العناية بالمرضى بالمنزل التطوعية الاولى من نوعها في الاردن
+        </h3>
+        تهدف هذه المنصة الى تطوير العلاقات الاجتماعية الودية بين افراد مجتمع عبر اطفاء شكل من اشكال
+        التعاون في احد الامور الانسانية التي نتعامل معه بشكل دائم
       </p>
 
-      <Box
+      {/* <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -32,7 +46,29 @@ export default function Section1() {
         <ButtonGroup size="large" aria-label="large button group">
           {[<Button key="two">Two</Button>, <Button key="three">Three</Button>]}
         </ButtonGroup>
-      </Box>
+      </Box> */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 5,
+          width: '100%',
+          justifyContent: 'space-around'
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
+          <AccessibilityNewIcon className={classes.iconClass} />
+          <Typography> مريض 500+</Typography>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
+          <FaceIcon className={classes.iconClass} />
+          <Typography> ممرض 200+</Typography>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
+          <MapsHomeWorkIcon className={classes.iconClass} />
+          <Typography> حي سكني 50+</Typography>
+        </div>
+      </div>
     </div>
   );
 }

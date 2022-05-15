@@ -70,13 +70,11 @@ export default function Header() {
         <Collapse in={checked} {...(checked ? { timeout: 1000 } : {})} collapsedHeight={50}>
           <div className={classes.container}>
             <p className={classes.title}>
-              <span className={classes.colorText}>TAKE ACTION</span>
+              <span className={classes.colorText}>جيرانك اقرب !</span>
               <p style={{ fontSize: '19px', whiteSpace: 'wrap' }}>
-                Bring education to children in need We are providing modern educational
-                infrastructure
+                شاركنا الان في منصة اقربون واحصل او قدم المساعدة الى المرضى في المناطق المحيطة بك
+                تعرف وساعد المرضى ممن يحتاجون المساعدة من جيران لك لبناء مجتمع متعاون ومترابط
               </p>
-              and selected materials as well as edutainment programs and ongoing remote English
-              lessons with international volunteers and regional partners for children in need.
             </p>
             <div
               style={{
@@ -87,13 +85,13 @@ export default function Header() {
                 alignItems: 'center'
               }}
             >
-              <Scroll to="place-to-visit" smooth={Boolean(true)}>
+              {/* <Scroll to="place-to-visit" smooth={Boolean(true)}>
                 <IconButton>
                   <ExpandMoreIcon className={classes.goDown} />
                 </IconButton>
-              </Scroll>
+              </Scroll> */}
               <Button style={{ width: '25%', height: '55px' }} size="small" variant="contained">
-                Outlined
+                شاركنا الان
               </Button>
             </div>
           </div>
