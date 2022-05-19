@@ -34,62 +34,30 @@ import APIRoot from '../../Test/APiRoot';
 import { AuthContext } from '../../utils/ContextProvider';
 // ----------------------------------------------------------------------
 
-const NOTIFICATIONS = [
-  {
-    id: faker.datatype.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
-    avatar: null,
-    type: 'order_placed',
-    createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    isUnRead: true
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: faker.name.findName(),
-    description: 'answered to your comment on the Minimal',
-    avatar: mockImgAvatar(2),
-    type: 'friend_interactive',
-    createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-    isUnRead: true
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new message',
-    description: '5 unread messages',
-    avatar: null,
-    type: 'chat_message',
-    createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    isUnRead: false
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new mail',
-    description: 'sent from Guido Padberg',
-    avatar: null,
-    type: 'mail',
-    createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    isUnRead: false
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
-    avatar: null,
-    type: 'order_shipped',
-    createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    isUnRead: false
-  }
-];
+const getReturnValues = (countDown) => {
+  console.log(countDown);
+  countDown = new Date().getTime() - countDown;
+  console.log(countDown);
+  // calculate time left
+  const days = Math.floor(countDown / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((countDown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((countDown % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((countDown % (1000 * 60)) / 1000);
+
+  return [`${days} يوم - ${hours} ساعة - ${minutes} دقيقة - ${seconds} ثانية`];
+};
 
 function renderContent(notification) {
   const title = (
-    <Typography variant="subtitle2">
-      {notification?.seviceTypeId}
+    <>
+      <Typography variant="subtitle2">{notification?.seviceType.desciption}</Typography>
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification?.description || ' 00 ')}
+        &nbsp; {notification?.pName}
       </Typography>
-    </Typography>
+      <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+        &nbsp; {notification?.pDescription}
+      </Typography>
+    </>
   );
 
   if (notification?.isAccepted) {
@@ -165,7 +133,7 @@ function NotificationItem({ notification }) {
             }}
           >
             <Box component={Icon} icon={clockFill} sx={{ mr: 0.5, width: 16, height: 16 }} />
-            {formatDistanceToNow(new Date(notification.date))}
+            {getReturnValues(new Date(notification.date))}
           </Typography>
         }
       />
@@ -176,11 +144,10 @@ function NotificationItem({ notification }) {
 export default function NotificationsPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [notifications, setNotifications] = useState([]);
   const [totalUnRead, setTotalUnRead] = useState(0);
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
-
   useEffect(() => {
     if (User?.id && User?.role !== 'User') {
       setInterval(async () => {
@@ -196,7 +163,7 @@ export default function NotificationsPopover() {
         };
 
         try {
-          const response = {}; //  await fetch(url, options);
+          const response = await fetch(url, options);
           if (response?.ok && response?.status === 200) {
             const result = await response.json();
             //  [...result.value.aroundScopeRequests]
@@ -252,9 +219,9 @@ export default function NotificationsPopover() {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1">Notifications</Typography>
+            <Typography variant="subtitle1">الاشعارات</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              You have {totalUnRead} unread messages
+              لديك {totalUnRead} اشعار غير مقروء
             </Typography>
           </Box>
 
@@ -274,7 +241,7 @@ export default function NotificationsPopover() {
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                New
+                {doneAllFill > 0 ? '' : 'ليس لديك اشعارات'}
               </ListSubheader>
             }
           >
@@ -282,28 +249,9 @@ export default function NotificationsPopover() {
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
-
-          <List
-            disablePadding
-            subheader={
-              <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                Before that
-              </ListSubheader>
-            }
-          >
-            {notifications.slice(2, 5).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
-            ))}
-          </List>
         </Scrollbar>
 
         <Divider />
-
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple component={RouterLink} to="#">
-            View All
-          </Button>
-        </Box>
       </MenuPopover>
     </>
   );

@@ -3,7 +3,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 import PropTypes from 'prop-types';
 
 // /* Begin GetLocationMap*/
-const GetLocationMap = ({ setLocation }) => {
+const GetLocationMap = ({ setLocation, Lat, Lng }) => {
   useEffect(() => {
     let map;
     const additionalOptions = {};
@@ -16,7 +16,7 @@ const GetLocationMap = ({ setLocation }) => {
 
       loader.load().then(() => {
         map = new window.google.maps.Map(document.getElementById('GetLocationMap'), {
-          center: { lat: 31.963158, lng: 35.930359 },
+          center: { lat: parseFloat(Lat) ?? 31.963158, lng: parseFloat(Lng) ?? 35.930359 },
           zoom: 8,
           mapTypeId: window.google.maps.MapTypeId.HYBRID
         });

@@ -11,6 +11,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 import MenuPopover from '../../components/MenuPopover';
 //
 import { AuthContext } from '../../utils/ContextProvider';
+import ApiRoot from '../../Test/APiRoot';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -68,7 +69,7 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src={`/cpntent/${1}imag.png`} alt="photoURL" />
+        <Avatar src={`${ApiRoot.replace('api', '')}Contents/User/${User.id}.jpg`} alt="photoURL" />
       </IconButton>
 
       <MenuPopover

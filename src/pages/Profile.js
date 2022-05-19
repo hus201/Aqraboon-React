@@ -7,6 +7,7 @@ import Page from '../components/Page';
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
+  marginTop: '-64px',
   [theme.breakpoints.up('md')]: {
     display: 'flex'
   }
@@ -26,7 +27,7 @@ export default function Profile() {
       >
         <Container maxWidth="lg">
           <Typography sx={{ mb: 3 }} variant="h4">
-            Account
+            الملف الشخصي
           </Typography>
           <Grid container spacing={3}>
             <Grid item lg={4} md={6} xs={12}>

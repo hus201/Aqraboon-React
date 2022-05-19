@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { useRef, useState, useContext } from 'react';
+import { useRef, useState, useContext, useEffect } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
 import giftOutline from '@iconify/icons-eva/gift-outline';
@@ -13,6 +13,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 // components
 import MenuPopover from '../../components/MenuPopover';
 import { AuthContext } from '../../utils/ContextProvider';
+import ApiRoot from '../../Test/APiRoot';
 //
 
 // ----------------------------------------------------------------------
@@ -46,12 +47,12 @@ const MENU_OPTIONS = [
     icon: checkmarkSquareFill,
     linkTo: '/Service/ProvidedList',
     IsVolenteer: true
-  },
-  {
-    label: 'الاعدادات',
-    icon: settings2Fill,
-    linkTo: '#'
   }
+  // {
+  //   label: 'الاعدادات',
+  //   icon: settings2Fill,
+  //   linkTo: '#'
+  // }
 ];
 
 // ----------------------------------------------------------------------
@@ -59,6 +60,7 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const [trigger, setTrigger] = useState(1);
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
   const MenuOptionsFilterd =
@@ -93,7 +95,10 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src={`/content/UserAvatar/${User.id}.JPG`} alt="photoURL" />
+        <Avatar
+          src={`${ApiRoot.replace('api', '')}Contents/User/${User.id}.jpg`}
+          alt={User?.name}
+        />
       </IconButton>
 
       <MenuPopover

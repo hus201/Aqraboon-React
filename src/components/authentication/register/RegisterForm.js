@@ -187,8 +187,8 @@ export default function RegisterForm() {
               borderRadius: 10
             }}
             options={[
-              { label: 'male', value: 1 },
-              { label: 'female', value: 2 }
+              { label: 'ذكر', value: 1 },
+              { label: 'انثى', value: 2 }
             ]}
             onSort={onChangeGender}
           />

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import * as Yup from 'yup';
+import { useFormik, Form, FormikProvider } from 'formik';
 import {
   Box,
   Button,
@@ -7,143 +9,192 @@ import {
   CardHeader,
   Divider,
   Grid,
+  Typography,
   TextField
 } from '@mui/material';
+import axios from 'axios';
+import ApiRoot from '../../Test/APiRoot';
+import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap } from '../../utils/Maps';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
-
 export const AcountDetails = (props) => {
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
+  const authContext = React.useContext(AuthContext);
+  const User = authContext.getUser();
+  const _user = {
+    firstName: User.name.split(' ')[0],
+    lastName: User.name.split(' ')[1],
+    email: User.email,
+    phone: User.phone,
+    lat: User.lat,
+    lng: User.lng
+  };
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
+  const RegisterSchema = Yup.object().shape({
+    firstName: Yup.string().min(2, 'قصير جدا!').max(50, 'طويل جدا!').required('الاسم الأول مطلوب'),
+    lastName: Yup.string().min(2, 'قصير جدا!').max(50, 'طويل جدا!').required('اسم العائلة مطلوب'),
+    email: Yup.string()
+      .email('يجب أن يكون البريد الإلكتروني عنوان بريد إلكتروني صالحًا')
+      .nullable(),
+    phone: Yup.string()
+      .matches(phoneRegExp, 'يجب أن يكون رقم الهاتف صالحًا')
+      .required('رقم الهاتف مطلوب'),
+    lat: Yup.string().required('الموقع مطلوب'),
+    lng: Yup.string().required('الموقع مطلوب')
+  });
+  const formik = useFormik({
+    initialValues: {
+      firstName: User.name.split(' ')[0],
+      lastName: User.name.split(' ')[1],
+      email: User.email,
+      phone: User.phone,
+      lat: User.lat,
+      lng: User.lng
+    },
+    validationSchema: RegisterSchema,
+    onSubmit: (values) => {
+      SubmitForm(values);
+    }
+  });
+  const config = {
+    headers: {
+      Authorization: `Bearer ${User.token}`
+    }
+  };
+  const SubmitForm = async (values) => {
+    const { firstName, lat, lng, lastName, phone, email } = values;
+    const User = {
+      Name: `${firstName} ${lastName}`,
+      Email: email,
+      Phone: phone,
+      Lng: lng,
+      Lat: lat
+    };
+
+    const data = new FormData();
+    data.append('User', JSON.stringify(User));
+    const url = `${ApiRoot}/User/Update`;
+    axios.post(url, data, config).then((res) => {
+      const _user = { ...res.data.value.user, token: res.data.value.token };
+      authContext.setUser(_user);
     });
   };
-  const handleChangeLocation = (lat, lng) => {};
+
+  const handleChangeLocation = (lat, lng) => {
+    setFieldValue('lat', lat);
+    setFieldValue('lng', lng);
+  };
+  const {
+    errors,
+    touched,
+    handleSubmit,
+    setSubmitting,
+    setFieldValue,
+    isSubmitting,
+    values,
+    getFieldProps
+  } = formik;
 
   return (
-    <form autoComplete="off" noValidate {...props}>
-      <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
-                variant="outlined"
-              />
+    <FormikProvider value={formik}>
+      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+        <Card>
+          <CardHeader subheader="" title="المعلومات الشخصية" />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  label="الاسم الاول"
+                  name="firstName"
+                  required
+                  variant="outlined"
+                  onChange={(e) => {
+                    setFieldValue('firstName', e.target.value);
+                  }}
+                  value={values.firstName}
+                  error={Boolean(touched.firstName && errors.firstName)}
+                  helperText={touched.firstName && errors.firstName}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  label="الاسم الثاني"
+                  name="lastName"
+                  required
+                  variant="outlined"
+                  value={values.lastName}
+                  onChange={(e) => {
+                    setFieldValue('lastName', e.target.value);
+                  }}
+                  error={Boolean(touched.lastName && errors.lastName)}
+                  helperText={touched.lastName && errors.lastName}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  label="البريد الالكتروني"
+                  name="email"
+                  variant="outlined"
+                  value={values.email}
+                  onChange={(e) => {
+                    setFieldValue('email', e.target.value);
+                  }}
+                  error={Boolean(touched.email && errors.email)}
+                  helperText={touched.email && errors.email}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  label="رقم الهاتف"
+                  name="phone"
+                  required
+                  type="number"
+                  variant="outlined"
+                  value={values.phone}
+                  onChange={(e) => {
+                    setFieldValue('phone', e.target.value);
+                  }}
+                  error={Boolean(touched.phone && errors.phone)}
+                  helperText={touched.phone && errors.phone}
+                />
+              </Grid>
+
+              <Grid item md={12} xs={12} style={{ height: 300 }}>
+                <Typography style={{ margin: 8 }}>الموقع</Typography>
+                <GetLocationMap
+                  Lat={values.lat}
+                  Lng={values.lng}
+                  setLocation={handleChangeLocation}
+                />
+              </Grid>
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item md={12} xs={12} style={{ height: 300 }}>
-              <GetLocationMap setLocation={handleChangeLocation} />
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
-        >
-          <Button color="primary" variant="contained">
-            Save details
-          </Button>
-        </Box>
-      </Card>
-    </form>
+          </CardContent>
+          <Divider />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              p: 2
+            }}
+          >
+            <Button
+              disabled={JSON.stringify(_user) === JSON.stringify(values)}
+              style={{ margin: 8 }}
+              type="submit"
+              color="primary"
+              variant="contained"
+            >
+              حفظ المعلومات
+            </Button>
+          </Box>
+        </Card>
+      </Form>
+    </FormikProvider>
   );
 };

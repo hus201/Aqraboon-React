@@ -92,6 +92,7 @@ export default function RequestService() {
   const isStepOptional = (step) => step === 2;
   const isStepSkipped = (step) => skipped.has(step);
   const handleSubmit = async () => {
+    console.log('values', values);
     const request = {
       Description: values?.description,
       Lattiud: Loc?.lat,
@@ -104,6 +105,8 @@ export default function RequestService() {
       PGender: values?.Sex,
       ExpireTime: values?.ExpTime
     };
+    console.log('values', values);
+    console.log('request0', request);
 
     const data = new FormData();
     data.append('request', JSON.stringify(request));

@@ -64,7 +64,6 @@ export default function ProvidedList() {
     const response = await fetch(url, options);
     if (response.ok && response.status === 200) {
       const result = await response.json();
-      console.log('result', result);
       setRequestlist([...result.value.services]);
     }
   }, [0]);
@@ -184,7 +183,9 @@ export default function ProvidedList() {
                                   variant="body2"
                                   color="text.primary"
                                 >
-                                  {`${item.ageFrom} - ${item.ageTo}`}
+                                  {`${item.ageFrom !== -1 ? item.ageFrom : ''} - ${
+                                    item.ageTo !== -1 ? item.ageTo : 'كل الاعمار'
+                                  }`}
                                 </Typography>
                               </div>
                             }

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Avatar,
   Box,
@@ -8,50 +9,78 @@ import {
   Divider,
   Typography
 } from '@mui/material';
+import axios from 'axios';
+import ApiRoot from '../../Test/APiRoot';
+import { AuthContext } from '../../utils/ContextProvider';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith',
-  timezone: 'GTM-7'
-};
+export const AccountProfile = (props) => {
+  const [trigger, setTrigger] = React.useState(1);
+  const authContext = React.useContext(AuthContext);
+  const User = authContext.getUser();
+  const ImageRef = React.useRef();
+  const UpdaetImaegs = (file) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${User.token}`
+      }
+    };
+    const data = new FormData();
+    data.append('battlePlans', file, file.name);
+    axios
+      .post(`${ApiRoot}/User/SaveImage`, data, config)
+      .then((res) => {
+        setTrigger(trigger + 1);
+      })
+      .catch((err) => {});
+  };
 
-export const AccountProfile = (props) => (
-  <Card {...props}>
-    <CardContent>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Avatar
-          src={user.avatar}
+  return (
+    <Card {...props}>
+      <CardContent>
+        <Box
           sx={{
-            height: 64,
-            mb: 2,
-            width: 64
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column'
           }}
-        />
-        <Typography color="textPrimary" gutterBottom variant="h5">
-          {user.name}
-        </Typography>
-        <Typography color="textSecondary" variant="body2">
-          {`${user.city} ${user.country}`}
-        </Typography>
-        <Typography color="textSecondary" variant="body2">
-          {user.timezone}
-        </Typography>
-      </Box>
-    </CardContent>
-    <Divider />
-    <CardActions>
-      <Button color="primary" fullWidth variant="text">
-        Upload picture
-      </Button>
-    </CardActions>
-  </Card>
-);
+        >
+          <Avatar
+            src={`${ApiRoot.replace('api', '')}Contents/User/${User.id}.jpg?trigger=${trigger}`}
+            sx={{
+              height: 64,
+              mb: 2,
+              width: 64
+            }}
+          />
+          <Typography color="textPrimary" gutterBottom variant="h5">
+            {User?.name}
+          </Typography>
+        </Box>
+      </CardContent>
+      <Divider />
+      <CardActions>
+        <Button
+          color="primary"
+          fullWidth
+          variant="text"
+          onClick={() => {
+            ImageRef.current.click();
+          }}
+        >
+          <input
+            type="file"
+            style={{ display: 'none' }}
+            id="myFile"
+            onChange={(e) => {
+              UpdaetImaegs(e.target.files[0]);
+            }}
+            name="filename"
+            accept="image/png, image/jpeg"
+            ref={ImageRef}
+          />
+          تغيير الصورة الشخصية
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
