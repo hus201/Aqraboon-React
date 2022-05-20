@@ -258,7 +258,7 @@ export default function RequestService() {
                   const stepProps = {};
                   const labelProps = {};
                   if (isStepOptional(index)) {
-                    labelProps.optional = <Typography variant="caption">اختياري</Typography>;
+                    labelProps.optional = <Typography variant="caption" />;
                   }
                   if (isStepSkipped(index)) {
                     stepProps.completed = false;

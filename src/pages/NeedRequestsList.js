@@ -204,7 +204,9 @@ export default function NeedRequestsList() {
                                 استلمت الخدمة
                               </Button>
                             )}
-                            {Requestlist[index].status === 1 && (
+                            {((Requestlist[index].status === 2 &&
+                              Requestlist[index].reports === null) ||
+                              Requestlist[index].status === 1) && (
                               <Button
                                 onClick={() => {
                                   handleClickOpen(Requestlist[index].id);

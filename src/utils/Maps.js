@@ -3,7 +3,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 import PropTypes from 'prop-types';
 
 // /* Begin GetLocationMap*/
-const GetLocationMap = ({ setLocation, Lat, Lng }) => {
+const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) => {
   useEffect(() => {
     let map;
     const additionalOptions = {};

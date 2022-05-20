@@ -499,7 +499,7 @@ export default function AcceptedList() {
             <DialogContent style={{ width: 500, padding: 5 }} margin="denes">
               <TextField
                 value={Reason}
-                label="Outlined"
+                label=""
                 fullWidth
                 size="small"
                 onChange={(e) => {
