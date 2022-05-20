@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    color: '#dae2de'
   },
   ro: {
     backgroundColor: theme.palette.primary.main,
@@ -23,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     backgroundColor: theme.palette.primary.main,
-    height: '200px',
+    height: '140px',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 25
   },
   fultext: {
@@ -39,36 +41,36 @@ export default function Footer() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <div>
-        Our story starts with you Follow WeTomorrow on our mission by receiving the latest updates
-        via email.
-      </div>
       <div className={classes.ro}>
         <div className={classes.col}>
-          <h3 className={classes.fultext}>About</h3>
+          <h3 className={classes.fultext}> عنا</h3>
           <Typography className={classes.fultext}>
-            At WeTomorrow we strive to give every child the opportunity to acquire English and
-            computer skills, thereby gain hope and take their fate back into their own hands.
+            اقربون منصة خدمات العناية بالمرضى بالمنزل التطوعية الاولى من نوعها في الاردن تهدف هذه
+            المنصة الى تطوير العلاقات الاجتماعية الودية بين افراد مجتمع عبر اطفاء شكل من اشكال
+            التعاون في احد الامور الانسانية التي نتعامل معه بشكل دائم
           </Typography>
         </div>
         <div className={classes.col}>
-          <h3 className={classes.fultext}>Contact</h3>
-          <Typography className={classes.fultext}>Get in Touch hello@wetomorrow.one</Typography>
-        </div>
-        <div className={classes.col}>
-          <h3 className={classes.fultext}>Links</h3>
+          <h3 className={classes.fultext}>اتصل بنا </h3>
           <Typography className={classes.fultext}>
-            Projects <br /> Partnerships <br />
-            About us <br /> Press Kit
+            تواصل معنا عبر الايميل الاتي contact@aqraboon.com
+          </Typography>
+        </div>
+        <div className={classes.col} style={{ minWidth: 'fit-content', padding: 8 }}>
+          <h3 className={classes.fultext}>الراوبط </h3>
+          <Typography className={classes.fultext}>
+            <a style={{ textDecoration: 'none', color: '#dae2de' }} href="/register">
+              انضم لنا (تسجيل)
+            </a>
+            <br />
+            <a style={{ textDecoration: 'none', color: '#dae2de' }} href="/login">
+              سجل دخول (تسجيل دخول )
+            </a>
           </Typography>
         </div>
       </div>
       <div className={classes.col}>
-        <div className={classes.ro}>impressum privacy policy made with love donate now</div>
-        <Typography>
-          © 2021 | WeTomorrow, Neuwilstrasse 14, CH-9306 Freidorf, a nonprofit organization
-          registered under CHE-158.843.252 at the Commercial Register of Canton Thurgau, Switzerland
-        </Typography>
+        <div className={classes.ro}>Aqraboon Team @2022</div>
       </div>
     </div>
   );

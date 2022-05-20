@@ -344,7 +344,7 @@ export default function RegisterForm() {
           <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
             لديك حساب بالفعل ؟ &nbsp;
             <Link
-              to="/register"
+              to="/login"
               component={RouterLink}
               underline="always"
               style={{ cursor: 'pointer' }}

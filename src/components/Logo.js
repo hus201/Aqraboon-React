@@ -13,5 +13,5 @@ Logo.propTypes = {
 // }
 
 export default function Logo({ sx }) {
-  return <Avatar src="../favicon/favicon.jpeg" sx={{ width: 75, height: 40, ...sx }} />;
+  return <Avatar src="../favicon/favicon.png" sx={{ width: 'auto', height: 40, ...sx }} />;
 }
