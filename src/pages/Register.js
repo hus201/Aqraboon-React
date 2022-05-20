@@ -51,8 +51,8 @@ export default function Register() {
     <RootStyle title="انضم الينا | أقربون">
       <MHidden width="mdDown">
         <SectionStyle>
-          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Manage the job more effectively with Minimal
+          <Typography variant="h5" sx={{ px: 5, mt: 10, mb: 5 }}>
+            شاركنا الان في منصة اقربون واحصل او قدم المساعدة الى المرضى في المناطق المحيطة بك
           </Typography>
           <img alt="register" src="/static/illustrations/illustration_register.png" />
         </SectionStyle>

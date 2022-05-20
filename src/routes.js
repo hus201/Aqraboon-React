@@ -38,19 +38,34 @@ export default function Router() {
       path: '/Service',
       element: <MainLayout />,
       children: [
-        { path: 'RequestService', element: <RequestService /> },
-        { path: 'RequestAttatchment', element: <RequestAttatchment /> },
+        {
+          path: 'RequestService',
+          element: User?.IsLogedIn ? <RequestService /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'RequestAttatchment',
+          element: User?.IsLogedIn ? <RequestAttatchment /> : <Navigate to="/dashboard" />
+        },
         {
           path: 'AcceptedList',
-          element: User?.IsVolenteer ? <AcceptedList /> : <Navigate to="/dashboard" />
+          element: User?.IsLogedIn ? <AcceptedList /> : <Navigate to="/dashboard" />
         },
-        { path: 'NeedRequestsList', element: <NeedRequestsList /> },
+        {
+          path: 'NeedRequestsList',
+          element: User?.IsLogedIn ? <NeedRequestsList /> : <Navigate to="/dashboard" />
+        },
         {
           path: 'ProvidedList',
-          element: User?.IsVolenteer ? <ProvidedList /> : <Navigate to="/dashboard" />
+          element: User?.IsLogedIn ? <ProvidedList /> : <Navigate to="/dashboard" />
         },
-        { path: 'AcceptedRequest', element: <AcceptedRequest /> },
-        { path: 'AddService', element: <AddService /> }
+        {
+          path: 'AcceptedRequest',
+          element: User?.IsLogedIn ? <AcceptedRequest /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'AddService',
+          element: User?.IsLogedIn ? <AddService /> : <Navigate to="/dashboard" />
+        }
       ]
     },
     {
