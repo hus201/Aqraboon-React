@@ -104,7 +104,7 @@ export default function RequestAttachment() {
   //  --------------end form
 
   return (
-    <RootStyle title="Register | Minimal-UI">
+    <RootStyle title="الملحقات الطبية | أقربون">
       <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>

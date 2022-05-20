@@ -341,7 +341,12 @@ export default function AcceptedList() {
                                     ['info', 'info', 'error', 'success'][Requestlist[index].status]
                                   }
                                 >
-                                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
+                                  <Avatar
+                                    alt="Remy Sharp"
+                                    src={`${ApiRoot.replace('api', '')}Contents/User/${
+                                      Requestlist[index].senderId
+                                    }.jpg`}
+                                  >
                                     <PersonIcon />
                                   </Avatar>
                                 </Badge>

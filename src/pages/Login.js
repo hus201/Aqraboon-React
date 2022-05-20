@@ -40,7 +40,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 export default function Login() {
   return (
-    <RootStyle title="Login | Minimal-UI">
+    <RootStyle title="تسجيل الدخول | أقربون">
       <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" style={{ textAlign: 'center' }} sx={{ px: 5, mt: 10, mb: 5 }}>

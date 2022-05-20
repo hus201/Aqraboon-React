@@ -17,7 +17,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function Profile() {
   return (
-    <RootStyle title="Profile | Profile">
+    <RootStyle title="الملف الشخصي | أقربون">
       <Box
         component="main"
         sx={{

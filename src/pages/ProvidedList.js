@@ -122,7 +122,7 @@ export default function ProvidedList() {
     return newArray;
   };
   return (
-    <RootStyle title="Accepted reques list">
+    <RootStyle title="الخدمات المقدمة | أقربون">
       <Container style={{ display: 'flex', justifyContent: 'center' }}>
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>

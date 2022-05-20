@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '30%',
     color: '#dae2de'
   },
   ro: {
@@ -60,11 +61,11 @@ export default function Footer() {
           <h3 className={classes.fultext}>الراوبط </h3>
           <Typography className={classes.fultext}>
             <a style={{ textDecoration: 'none', color: '#dae2de' }} href="/register">
-              انضم لنا (تسجيل)
+              انضم لنا
             </a>
             <br />
             <a style={{ textDecoration: 'none', color: '#dae2de' }} href="/login">
-              سجل دخول (تسجيل دخول )
+              سجل دخول
             </a>
           </Typography>
         </div>

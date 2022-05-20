@@ -35,7 +35,7 @@ import {
 
 export default function DashboardApp() {
   return (
-    <Page title="Dashboard | Minimal-UI">
+    <Page title="الصفحة الرئيسية | أقربون">
       <IsLand />
     </Page>
   );

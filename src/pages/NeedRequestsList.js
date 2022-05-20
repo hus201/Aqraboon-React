@@ -269,7 +269,12 @@ export default function NeedRequestsList() {
                                 ['info', 'success', 'error', 'success'][Requestlist[index].status]
                               }
                             >
-                              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
+                              <Avatar
+                                alt="Remy Sharp"
+                                src={`${ApiRoot.replace('api', '')}Contents/User/${
+                                  Requestlist[index]?.user?.id
+                                }.jpg`}
+                              >
                                 <PersonIcon />
                               </Avatar>
                             </Badge>

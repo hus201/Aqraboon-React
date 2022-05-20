@@ -137,7 +137,7 @@ export default function AcceptedRequest() {
   };
 
   return (
-    <RootStyle title="Login | Minimal-UI">
+    <RootStyle title="الطلب المقول | أقربون">
       <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>

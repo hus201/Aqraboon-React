@@ -16,7 +16,7 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function AddService() {
   return (
-    <RootStyle title="Profile | Profile">
+    <RootStyle title="تقديم خدمة | أقربون">
       <Box
         component="main"
         sx={{
