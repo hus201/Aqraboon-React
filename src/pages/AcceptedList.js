@@ -61,6 +61,8 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AcceptedList() {
+  const [trigger, setTrigger] = React.useState(0);
+
   React.useEffect(async () => {
     const url = `${ApiRoot}/Service/GetVolunteerRequests`;
     const options = {
@@ -79,7 +81,7 @@ export default function AcceptedList() {
       setAcceptedRequests([...result.value.acceptedRequests]);
       setRatings([...result.value.rating]);
     }
-  }, [0]);
+  }, [trigger]);
   React.useEffect(async () => {
     if (User?.id) {
       const url = `${ApiRoot}/Service/GetVolunteerRequest`;
@@ -104,7 +106,7 @@ export default function AcceptedList() {
         console.error(error);
       }
     }
-  }, [0]);
+  }, [trigger]);
 
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
@@ -163,6 +165,7 @@ export default function AcceptedList() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...updateArray(RequestId, 2)]);
+        setTrigger(trigger + 1);
       } else {
         setMessage('فشل حفظ المعلومات');
       }
@@ -194,6 +197,7 @@ export default function AcceptedList() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...updateArray(RequestId, 3)]);
+        setTrigger(trigger + 1);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }
@@ -223,6 +227,7 @@ export default function AcceptedList() {
     if (response.ok && response.status === 200) {
       setMessage('تم حفظ المعلومات بنجاح');
       setScopeRequests([...updateArray(id, 1, ScopeRequests)]);
+      setTrigger(trigger + 1);
     } else {
       setMessage('فشل حفظ المعلومات ');
     }

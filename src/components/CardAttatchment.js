@@ -163,7 +163,7 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
           }}
           color="success"
         >
-          طلب
+          عرض الطلب
         </Button>
 
         <ExpandMore

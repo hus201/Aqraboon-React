@@ -55,6 +55,8 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function NeedRequestsList() {
+  const [trigger, setTrigger] = React.useState(0);
+
   React.useEffect(async () => {
     const url = `${ApiRoot}/Service/GetUserRequests`;
     const options = {
@@ -75,7 +77,7 @@ export default function NeedRequestsList() {
       setAcceptedRequests([...result.value.acceptedRequests]);
       setRatings([...result.value.rating]);
     }
-  }, [0]);
+  }, [trigger]);
 
   const [Requestlist, setRequestlist] = React.useState([]);
   const [Ratings, setRatings] = React.useState([]);
@@ -128,6 +130,7 @@ export default function NeedRequestsList() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...updateArray(RequestId, 2)]);
+        setTrigger(trigger + 1);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }
@@ -158,6 +161,7 @@ export default function NeedRequestsList() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...updateArray(RequestId, 1)]);
+        setTrigger(trigger + 1);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }
@@ -196,6 +200,7 @@ export default function NeedRequestsList() {
                           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
                             {Requestlist[index].status === 1 && (
                               <Button
+                                style={{ display: 'none' }}
                                 onClick={() => {
                                   handleClickOpenDel(Requestlist[index].id);
                                 }}
@@ -204,9 +209,8 @@ export default function NeedRequestsList() {
                                 استلمت الخدمة
                               </Button>
                             )}
-                            {((Requestlist[index].status === 2 &&
-                              Requestlist[index].reports === null) ||
-                              Requestlist[index].status === 1) && (
+                            {Requestlist[index].status === 2 &&
+                            Requestlist[index].reports === null ? (
                               <Button
                                 onClick={() => {
                                   handleClickOpen(Requestlist[index].id);
@@ -215,6 +219,17 @@ export default function NeedRequestsList() {
                               >
                                 شكوى
                               </Button>
+                            ) : (
+                              Requestlist[index].status === 1 && (
+                                <Button
+                                  onClick={() => {
+                                    handleClickOpen(Requestlist[index].id);
+                                  }}
+                                  color="error"
+                                >
+                                  الفاء الطلب
+                                </Button>
+                              )
                             )}
 
                             {Requestlist[index].status === 3 && (
@@ -384,7 +399,6 @@ export default function NeedRequestsList() {
             <DialogContent style={{ width: 500, padding: 5 }} margin="denes">
               <TextField
                 value={Report}
-                label="Outlined"
                 fullWidth
                 size="small"
                 onChange={(e) => {
@@ -401,6 +415,7 @@ export default function NeedRequestsList() {
                 disiabled={Boolean(!Reason)}
                 onClick={async () => {
                   await handleReportRequest();
+                  handleClose();
                 }}
                 autoFocus
               >
@@ -457,6 +472,7 @@ export default function NeedRequestsList() {
                 disabled={Boolean(!Evaluation)}
                 onClick={async () => {
                   await handleDeliveredRequest();
+                  handleCloseDel();
                 }}
                 autoFocus
               >
