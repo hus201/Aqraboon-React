@@ -60,6 +60,7 @@ const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) =
       console.log(ex);
     }
   }, [0]);
+
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       const info = new window.google.maps.Infowindow();
@@ -99,7 +100,7 @@ const DisplayPoint = ({ Lat, Lng }) => {
       loader.load().then(() => {
         map = new window.google.maps.Map(document.getElementById('GetLocationMap'), {
           center: { lat: parseFloat(Lat), lng: parseFloat(Lng) },
-          zoom: 8,
+          zoom: 15,
           mapTypeId: window.google.maps.MapTypeId.HYBRID
         });
 

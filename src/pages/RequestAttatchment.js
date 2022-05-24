@@ -85,6 +85,7 @@ export default function RequestAttachment() {
       if (response.ok && response.status === 200) {
         const result = await response.json();
         setServices([...result.value.inScopeServices]);
+        setRequests([...result.value.requests]);
       }
     } catch (err) {
       console.log(err);
@@ -95,6 +96,7 @@ export default function RequestAttachment() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [Message, setMessage] = React.useState('');
   const [Services, setServices] = React.useState([]);
+  const [Requests, setRequests] = React.useState([]);
   const [Images, setImages] = React.useState([
     'https://image.freepik.com/free-vector/flat-hand-drawn-patient-taking-medical-examination_52683-57828.jpg',
     'https://image.freepik.com/free-vector/person-with-cold-concept-illustration_114360-1594.jpg',
@@ -146,6 +148,7 @@ export default function RequestAttachment() {
               }}
               Service={item}
               key={index}
+              isRequested={Requests.filter((x) => x.serviceId === item.id).length > 0}
             />
           ))}
         </ContentStyle>

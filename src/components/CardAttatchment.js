@@ -18,7 +18,8 @@ import {
   DialogContent,
   DialogTitle,
   useMediaQuery,
-  DialogActions
+  DialogActions,
+  Box
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -28,6 +29,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ApiRoot from '../Test/APiRoot';
 import SnackBar from './SnackBar';
 import { AuthContext } from '../utils/ContextProvider';
+import { DisplayPoint } from '../utils/Maps';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -40,9 +42,10 @@ const ExpandMore = styled((props) => {
   })
 }));
 
-export default function CardAttatchment({ Service, removeServices }) {
+export default function CardAttatchment({ Service, removeServices, isRequested }) {
   const theme = useTheme();
   const [expanded, setExpanded] = React.useState(false);
+  const [OpenAcc, setOpenAcc] = React.useState(false);
   const [Message, setMessage] = React.useState('');
   const [Reason, setReason] = React.useState('');
   const [RequestId, setRequestId] = React.useState('');
@@ -156,7 +159,7 @@ export default function CardAttatchment({ Service, removeServices }) {
         </Button>
         <Button
           onClick={() => {
-            hadleAcceptService(Service.id);
+            setOpenAcc(true);
           }}
           color="success"
         >
@@ -234,6 +237,70 @@ export default function CardAttatchment({ Service, removeServices }) {
             autoFocus
           >
             ابلاغ
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={OpenAcc}
+        onClose={() => {
+          setOpenAcc(false);
+        }}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">تفاصيل الطلب</DialogTitle>
+        <DialogContent
+          style={{
+            width: 500,
+            padding: 5,
+            height: 320,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          margin="denes"
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+              padding: 8,
+              margin: '0 5%',
+              alignSelf: 'flex-start'
+            }}
+          >
+            <Typography>مقدم الخدمة : {Service.user.name}</Typography>
+            <Typography>رقم الهاتف : {Service.user.phone}</Typography>
+            {isRequested && <Typography>الحالة : تم الطلب</Typography>}
+            <Typography>الموقع :</Typography>
+          </div>
+          <Box style={{ width: '90%', height: 200 }}>
+            <DisplayPoint Lat={Service.user.lat} Lng={Service.user.lng} />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="error"
+            autoFocus
+            onClick={() => {
+              setOpenAcc(false);
+            }}
+          >
+            اغلاق
+          </Button>
+          <Button
+            color="primary"
+            onClick={async () => {
+              await hadleAcceptService(Service.id);
+              setOpenAcc(false);
+            }}
+            autoFocus
+            disabled={isRequested}
+          >
+            تاكيد
           </Button>
         </DialogActions>
       </Dialog>
