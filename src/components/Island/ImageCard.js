@@ -1,10 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@mui//styles';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Collapse from '@mui/material/Collapse';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const useStyles = makeStyles({
   imag: {
@@ -13,6 +9,7 @@ const useStyles = makeStyles({
     backgroundRepeat: 'no-repeat',
     color: 'white',
     height: '60vh',
+    maxWidth: '100%',
     width: '100vh',
     display: 'flex',
     justifyContent: 'end',
@@ -25,6 +22,7 @@ const useStyles = makeStyles({
     color: 'white',
     height: '60vh',
     width: '100vh',
+    maxWidth: '100%',
     display: 'flex',
     justifyContent: 'end',
     alignItems: 'center'
@@ -52,16 +50,24 @@ const useStyles = makeStyles({
     textDecorationColor: 'yellow',
     color: 'black',
     fontSize: 0
+  },
+  root2: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: 10
   }
 });
 
 export default function ImageCard({ place, checked }) {
   const classes = useStyles();
+  const IsMobile = useMediaQuery('(max-width:600px)');
 
   return (
-    <div className={classes.root}>
-      <div className={classes.imag} />
-      <div className={classes.imag2} />
+    <div className={IsMobile ? classes.root2 : classes.root}>
+      <div className={classes.imag} style={{ height: IsMobile ? 200 : '' }} />
+      <div className={classes.imag2} style={{ height: IsMobile ? 200 : '' }} />
     </div>
   );
 }

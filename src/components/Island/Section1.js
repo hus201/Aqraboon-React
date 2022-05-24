@@ -4,20 +4,28 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
 import FaceIcon from '@mui/icons-material/Face';
 import { makeStyles } from '@mui/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   iconClass: {
     color: theme.palette.primary.main,
     fontSize: 50
-  }
+  },
+  iconClass2: {
+    color: theme.palette.primary.main,
+    fontSize: 100
+  },
+  text: { fontSize: 35 }
 }));
 
 export default function Section1() {
   const classes = useStyles();
+  const IsMobile = useMediaQuery('(max-width:600px)');
   return (
     <div
       style={{
-        height: '200px',
+        minHeight: '200px',
+        height: 'fit-content',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -25,7 +33,13 @@ export default function Section1() {
         gap: 45
       }}
     >
-      <p style={{ width: '50%', textAlign: 'center' }}>
+      <p
+        style={{
+          width: IsMobile ? '100%' : '50%',
+          textAlign: 'center',
+          fontSize: IsMobile ? 22 : ''
+        }}
+      >
         <h3 style={{ margin: 10 }}>
           اقربون منصة خدمات العناية بالمرضى بالمنزل التطوعية الاولى من نوعها في الاردن
         </h3>
@@ -50,23 +64,23 @@ export default function Section1() {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row',
-          gap: 5,
+          flexDirection: IsMobile ? 'column' : 'row',
+          gap: IsMobile ? 50 : 5,
           width: '100%',
           justifyContent: 'space-around'
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
-          <AccessibilityNewIcon className={classes.iconClass} />
-          <Typography> مريض 500+</Typography>
+          <AccessibilityNewIcon className={IsMobile ? classes.iconClass2 : classes.iconClass} />
+          <Typography className={IsMobile ? classes.text : ''}> مريض 500+</Typography>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
-          <FaceIcon className={classes.iconClass} />
-          <Typography> ممرض 200+</Typography>
+          <FaceIcon className={IsMobile ? classes.iconClass2 : classes.iconClass} />
+          <Typography className={IsMobile ? classes.text : ''}> ممرض 200+</Typography>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
-          <MapsHomeWorkIcon className={classes.iconClass} />
-          <Typography> حي سكني 50+</Typography>
+          <MapsHomeWorkIcon className={IsMobile ? classes.iconClass2 : classes.iconClass} />
+          <Typography className={IsMobile ? classes.text : ''}> حي سكني 50+</Typography>
         </div>
       </div>
     </div>

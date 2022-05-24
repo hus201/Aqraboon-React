@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { AppBar, IconButton, Toolbar, Collapse, Button } from '@mui/material';
-import SortIcon from '@mui/icons-material/Sort';
+import { Collapse, Button } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Link as Scroll } from 'react-scroll';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '70vh',
+    height: '400px',
     fontFamily: 'Nunito'
   },
   appbar: {
@@ -31,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     color: '#f29a2e',
     fontSize: '30px'
   },
+  colorText2: {
+    color: '#f29a2e',
+    fontSize: '50px'
+  },
   container: {
     textAlign: 'center',
     display: 'flex',
@@ -43,6 +50,13 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'start',
     alignSelf: 'start'
   },
+  title2: {
+    color: '#000',
+    fontSize: '15px',
+    alignSelf: 'start',
+    width: '100%',
+    textAlign: 'center'
+  },
   goDown: {
     color: '#f29a2e',
     fontSize: '4rem'
@@ -51,7 +65,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
+  const IsMobile = useMediaQuery('(max-width:600px)');
   const [checked, setChecked] = useState(false);
+
   useEffect(() => {
     setChecked(true);
   }, []);
@@ -59,6 +75,11 @@ export default function Header() {
     <div className={classes.root} id="header">
       <div
         style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/static/Images/${
+            IsMobile ? '4.png' : '1.jpg'
+          })`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: IsMobile ? 'auto 100%' : '100%',
           display: 'flex',
           flexDirection: 'row',
           width: '100%',
@@ -69,9 +90,11 @@ export default function Header() {
       >
         <Collapse in={checked} {...(checked ? { timeout: 1000 } : {})} collapsedHeight={50}>
           <div className={classes.container}>
-            <p className={classes.title}>
-              <span className={classes.colorText}>جيرانك اقرب !</span>
-              <p style={{ fontSize: '19px', whiteSpace: 'wrap' }}>
+            <p className={IsMobile ? classes.title2 : classes.title}>
+              <span className={IsMobile ? classes.colorText2 : classes.colorText}>
+                جيرانك اقرب !
+              </span>
+              <p style={{ fontSize: '19px', whiteSpace: 'wrap', width: IsMobile ? '100%' : '' }}>
                 شاركنا الان في منصة اقربون واحصل او قدم المساعدة الى المرضى في المناطق المحيطة بك
                 تعرف وساعد المرضى ممن يحتاجون المساعدة من جيران لك لبناء مجتمع متعاون ومترابط
               </p>
@@ -85,12 +108,11 @@ export default function Header() {
                 alignItems: 'center'
               }}
             >
-              {/* <Scroll to="place-to-visit" smooth={Boolean(true)}>
-                <IconButton>
-                  <ExpandMoreIcon className={classes.goDown} />
-                </IconButton>
-              </Scroll> */}
-              <Button style={{ width: '25%', height: '55px' }} size="small" variant="contained">
+              <Button
+                style={{ width: IsMobile ? '100%' : '25%', height: '55px' }}
+                size="small"
+                variant="contained"
+              >
                 شاركنا الان
               </Button>
             </div>
