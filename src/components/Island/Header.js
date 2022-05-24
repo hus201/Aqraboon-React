@@ -94,7 +94,15 @@ export default function Header() {
               <span className={IsMobile ? classes.colorText2 : classes.colorText}>
                 جيرانك اقرب !
               </span>
-              <p style={{ fontSize: '19px', whiteSpace: 'wrap', width: IsMobile ? '100%' : '' }}>
+              <p
+                style={{
+                  fontSize: '19px',
+                  whiteSpace: 'wrap',
+                  width: IsMobile ? '100%' : '',
+                  color: IsMobile ? 'white' : '',
+                  marginBottom: IsMobile ? 10 : ''
+                }}
+              >
                 شاركنا الان في منصة اقربون واحصل او قدم المساعدة الى المرضى في المناطق المحيطة بك
                 تعرف وساعد المرضى ممن يحتاجون المساعدة من جيران لك لبناء مجتمع متعاون ومترابط
               </p>
