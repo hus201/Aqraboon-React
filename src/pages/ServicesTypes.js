@@ -49,9 +49,9 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function ProvidedList() {
+export default function ServicesTypes() {
   React.useEffect(async () => {
-    const url = `${ApiRoot}/Service/GetProvidedList`;
+    const url = `${ApiRoot}/Service/GetServicesTypes`;
     const options = {
       method: 'GET',
       mode: 'cors',
@@ -64,7 +64,7 @@ export default function ProvidedList() {
     const response = await fetch(url, options);
     if (response.ok && response.status === 200) {
       const result = await response.json();
-      setRequestlist([...result.value.services]);
+      setRequestlist([...result]);
     }
   }, [0]);
 
@@ -90,7 +90,7 @@ export default function ProvidedList() {
     const data = new FormData();
     data.append('id', RequestId);
 
-    const url = `${ApiRoot}/Service/RemoveService`;
+    const url = `${ApiRoot}/Service/RemoveServiceType`;
     const options = {
       method: 'POST',
       mode: 'cors',
@@ -122,18 +122,18 @@ export default function ProvidedList() {
     return newArray;
   };
   return (
-    <RootStyle title="الخدمات المقدمة | أقربون">
+    <RootStyle title="الفئات   | أقربون">
       <Container style={{ display: 'flex', justifyContent: 'center' }}>
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              الخدمات المقدمة
+              الفئات الخدمية
             </Typography>
             <Button
               size="small"
               style={{ width: 150 }}
               variant="outlined"
-              href="/Service/AddService"
+              href="/Service/AddServiceType"
             >
               اضافة فئة خدمية
             </Button>
@@ -148,10 +148,9 @@ export default function ProvidedList() {
                       <ListItem
                         secondaryAction={
                           <div>
-                            <Button href={`/Service/AddService?id=${item.id}`} color="success">
+                            <Button href={`/Service/AddServiceType?id=${item.id}`} color="success">
                               تعديل
                             </Button>
-
                             <Button
                               onClick={() => {
                                 handleClickOpen(item.id);
@@ -166,7 +165,7 @@ export default function ProvidedList() {
                       >
                         <ListItemButton>
                           <ListItemText
-                            primary={item.service_type.title}
+                            primary={item.title}
                             secondary={
                               <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
                                 <Typography
@@ -175,17 +174,9 @@ export default function ProvidedList() {
                                   variant="body2"
                                   color="text.primary"
                                 >
-                                  {item.service_type.desciption}
-                                </Typography>
-                                <Typography
-                                  sx={{ display: 'inline' }}
-                                  component="span"
-                                  variant="body2"
-                                  color="text.primary"
-                                >
-                                  {`${item.ageFrom !== -1 ? item.ageFrom : ''} - ${
-                                    item.ageTo !== -1 ? item.ageTo : 'كل الاعمار'
-                                  }`}
+                                  {item.category === '3' && ' خدمة تحتاج شهادة مزاولة'}
+                                  {item.category === '1' && ' خدمة لا تحتاج شهادة مزاولة'}
+                                  {item.category === '2' && 'ملحقات'}
                                 </Typography>
                               </div>
                             }

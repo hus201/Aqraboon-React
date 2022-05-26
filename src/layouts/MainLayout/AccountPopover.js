@@ -54,6 +54,18 @@ const MENU_OPTIONS = [
   //   linkTo: '#'
   // }
 ];
+const ADMI_OPTIONS = [
+  {
+    label: 'الشكاوي',
+    icon: homeFill,
+    linkTo: '/Service//Reports'
+  },
+  {
+    label: 'اضافة خدمة',
+    icon: personFill,
+    linkTo: '/Service/AddServiceType'
+  }
+];
 
 // ----------------------------------------------------------------------
 
@@ -63,8 +75,19 @@ export default function AccountPopover() {
   const [trigger, setTrigger] = useState(1);
   const authContext = useContext(AuthContext);
   const User = authContext.getUser();
-  const MenuOptionsFilterd =
-    User?.role !== 'User' ? [...MENU_OPTIONS] : [...MENU_OPTIONS.filter((x) => !x?.IsVolenteer)];
+  const [MenuOptionsFilterd, setMenuOptionsFilterd] = useState(
+    User?.role !== 'User' ? [...MENU_OPTIONS] : [...MENU_OPTIONS.filter((x) => !x?.IsVolenteer)]
+  );
+
+  useEffect(() => {
+    if (User?.role === 'Admin') {
+      setMenuOptionsFilterd([...MENU_OPTIONS, ...ADMI_OPTIONS]);
+    } else if (User?.role !== 'User') {
+      setMenuOptionsFilterd([...MENU_OPTIONS]);
+    } else {
+      setMenuOptionsFilterd([...MENU_OPTIONS.filter((x) => !x?.IsVolenteer)]);
+    }
+  }, [0]);
   const handleOpen = () => {
     setOpen(true);
     console.log(User);

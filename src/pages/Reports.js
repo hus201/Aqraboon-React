@@ -49,9 +49,9 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function ProvidedList() {
+export default function Reports() {
   React.useEffect(async () => {
-    const url = `${ApiRoot}/Service/GetProvidedList`;
+    const url = `${ApiRoot}/Service/GetReports`;
     const options = {
       method: 'GET',
       mode: 'cors',
@@ -64,7 +64,7 @@ export default function ProvidedList() {
     const response = await fetch(url, options);
     if (response.ok && response.status === 200) {
       const result = await response.json();
-      setRequestlist([...result.value.services]);
+      setRequestlist([...result]);
     }
   }, [0]);
 
@@ -122,21 +122,13 @@ export default function ProvidedList() {
     return newArray;
   };
   return (
-    <RootStyle title="الخدمات المقدمة | أقربون">
+    <RootStyle title=" الشكاوي | أقربون">
       <Container style={{ display: 'flex', justifyContent: 'center' }}>
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              الخدمات المقدمة
+              التقارير و الشكاوي
             </Typography>
-            <Button
-              size="small"
-              style={{ width: 150 }}
-              variant="outlined"
-              href="/Service/AddService"
-            >
-              اضافة فئة خدمية
-            </Button>
           </Stack>
 
           <Box sx={{ width: '100%' }}>
@@ -147,11 +139,74 @@ export default function ProvidedList() {
                     <>
                       <ListItem
                         secondaryAction={
-                          <div>
-                            <Button href={`/Service/AddService?id=${item.id}`} color="success">
-                              تعديل
-                            </Button>
-
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              gap: 8
+                            }}
+                          >
+                            {item.serviceId && (
+                              <>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 8
+                                  }}
+                                >
+                                  <Typography> الخدمة : </Typography>
+                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                    {item._user.name}
+                                  </Button>
+                                </div>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 8
+                                  }}
+                                >
+                                  <Typography> المشتكى عليه :</Typography>
+                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                    {item.user_reported.name}
+                                  </Button>
+                                </div>
+                              </>
+                            )}
+                            {item.requestId && (
+                              <>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 8
+                                  }}
+                                >
+                                  <Typography> الطلب : </Typography>
+                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                    {item._user.name}
+                                  </Button>
+                                </div>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 8
+                                  }}
+                                >
+                                  <Typography> المشتكى عليه :</Typography>
+                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                    {item.user_reported.name}
+                                  </Button>
+                                </div>
+                              </>
+                            )}
                             <Button
                               onClick={() => {
                                 handleClickOpen(item.id);
@@ -166,7 +221,7 @@ export default function ProvidedList() {
                       >
                         <ListItemButton>
                           <ListItemText
-                            primary={item.service_type.title}
+                            primary={item.description}
                             secondary={
                               <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
                                 <Typography
@@ -175,17 +230,10 @@ export default function ProvidedList() {
                                   variant="body2"
                                   color="text.primary"
                                 >
-                                  {item.service_type.desciption}
-                                </Typography>
-                                <Typography
-                                  sx={{ display: 'inline' }}
-                                  component="span"
-                                  variant="body2"
-                                  color="text.primary"
-                                >
-                                  {`${item.ageFrom !== -1 ? item.ageFrom : ''} - ${
-                                    item.ageTo !== -1 ? item.ageTo : 'كل الاعمار'
-                                  }`}
+                                  مقدم الشكوى : {item.type === 0 ? 'طالب خدمة' : 'مفدم خدمة'}
+                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                    {item._user.name}
+                                  </Button>
                                 </Typography>
                               </div>
                             }

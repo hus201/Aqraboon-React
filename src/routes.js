@@ -12,10 +12,13 @@ import ProvidedList from './pages/ProvidedList';
 import RequestService from './pages/RequestService';
 import RequestAttatchment from './pages/RequestAttatchment';
 import DashboardApp from './pages/DashboardApp';
+import AddServiceType from './pages/AddServiceType';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
 import Profile from './pages/Profile';
+import Reports from './pages/Reports';
 import AddService from './pages/AddService';
+import ServicesTypes from './pages/ServicesTypes';
 import NotFound from './pages/Page404';
 import { AuthContext } from './utils/ContextProvider';
 
@@ -41,6 +44,18 @@ export default function Router() {
         {
           path: 'RequestService',
           element: User?.IsLogedIn ? <RequestService /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'Reports',
+          element: User?.role === 'Admin' ? <Reports /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'ServicesTypes',
+          element: User?.role === 'Admin' ? <ServicesTypes /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'AddServiceType',
+          element: User?.role === 'Admin' ? <AddServiceType /> : <Navigate to="/dashboard" />
         },
         {
           path: 'RequestAttatchment',
