@@ -18,6 +18,7 @@ export const AccountProfile = (props) => {
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
   const ImageRef = React.useRef();
+
   const UpdaetImaegs = (file) => {
     const config = {
       headers: {

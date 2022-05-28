@@ -63,7 +63,7 @@ const ADMI_OPTIONS = [
   {
     label: 'اضافة خدمة',
     icon: personFill,
-    linkTo: '/Service/AddServiceType'
+    linkTo: '/Service/ServicesTypes'
   }
 ];
 

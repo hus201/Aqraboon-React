@@ -29,27 +29,29 @@ const SORT_OPTIONS = [
 export default function AddServiceType() {
   useEffect(async () => {
     const Url = new window.URL(window.location.href);
-    const id = Url.searchParams.get('id');
-    setId(id);
-    const url = `${ApiRoot}/Service/GetServiceType?id=${id}`;
-    const options = {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        Authorization: `Bearer ${User.token}`
+    const _id = Url.searchParams.get('id');
+    if (_id) {
+      setId(_id);
+      const url = `${ApiRoot}/Service/GetServiceType?id=${_id}`;
+      const options = {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${User.token}`
+        }
+      };
+      try {
+        const response = await fetch(url, options);
+        if (response.ok && response.status === 200) {
+          const result = await response.json();
+          setFieldValue('title', result.title);
+          setGender(result.category);
+        }
+      } catch (e) {
+        console.log(e);
       }
-    };
-    try {
-      const response = await fetch(url, options);
-      if (response.ok && response.status === 200) {
-        const result = await response.json();
-        setFieldValue('title', result.title);
-        setGender(result.category);
-      }
-    } catch (e) {
-      console.log(e);
     }
   }, [0]);
 

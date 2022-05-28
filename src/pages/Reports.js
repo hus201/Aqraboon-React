@@ -171,7 +171,10 @@ export default function Reports() {
                                   }}
                                 >
                                   <Typography> المشتكى عليه :</Typography>
-                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                  <Button
+                                    href={`/User/Profile?id=${item.user_reported.id}`}
+                                    color="info"
+                                  >
                                     {item.user_reported.name}
                                   </Button>
                                 </div>
@@ -188,7 +191,7 @@ export default function Reports() {
                                   }}
                                 >
                                   <Typography> الطلب : </Typography>
-                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                  <Button href={`/User/Profile?id=${item._user.id}`} color="info">
                                     {item._user.name}
                                   </Button>
                                 </div>
@@ -201,7 +204,10 @@ export default function Reports() {
                                   }}
                                 >
                                   <Typography> المشتكى عليه :</Typography>
-                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                  <Button
+                                    href={`/User/Profile?id=${item.user_reported.id}`}
+                                    color="info"
+                                  >
                                     {item.user_reported.name}
                                   </Button>
                                 </div>
@@ -225,13 +231,17 @@ export default function Reports() {
                             secondary={
                               <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
                                 <Typography
-                                  sx={{ display: 'inline' }}
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                  }}
                                   component="span"
                                   variant="body2"
                                   color="text.primary"
                                 >
-                                  مقدم الشكوى : {item.type === 0 ? 'طالب خدمة' : 'مفدم خدمة'}
-                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
+                                  مقدم الشكوى : {item.type === 1 ? 'طالب خدمة' : 'مفدم خدمة'}
+                                  <Button href={`/User/Profile?id=${item._user.id}`} color="info">
                                     {item._user.name}
                                   </Button>
                                 </Typography>

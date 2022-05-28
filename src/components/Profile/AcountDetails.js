@@ -17,7 +17,39 @@ import ApiRoot from '../../Test/APiRoot';
 import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap } from '../../utils/Maps';
 
-export const AcountDetails = (props) => {
+export const AcountDetails = () => {
+  React.useEffect(async () => {
+    const Url = new window.URL(window.location.href);
+    const id = Url.searchParams.get('id');
+    if (id) {
+      setId(id);
+      const url = `${ApiRoot}/User/GetMember?id=${id}`;
+      const options = {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          Accept: 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${User.token}`
+        }
+      };
+      try {
+        const response = await fetch(url, options);
+        if (response.ok && response.status === 200) {
+          const result = await response.json();
+          setFieldValue('firstName', result.firstName);
+          setFieldValue('lastName', result.lastName);
+          setFieldValue('email', result.email);
+          setFieldValue('phone', result.phone);
+          setFieldValue('lat', result.lat);
+          setFieldValue('lng', result.lng);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [0]);
+  const [id, setId] = React.useState(0);
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
   const _user = {
@@ -176,23 +208,25 @@ export const AcountDetails = (props) => {
             </Grid>
           </CardContent>
           <Divider />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              p: 2
-            }}
-          >
-            <Button
-              disabled={JSON.stringify(_user) === JSON.stringify(values)}
-              style={{ margin: 8 }}
-              type="submit"
-              color="primary"
-              variant="contained"
+          {!id && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                p: 2
+              }}
             >
-              حفظ المعلومات
-            </Button>
-          </Box>
+              <Button
+                disabled={JSON.stringify(_user) === JSON.stringify(values)}
+                style={{ margin: 8 }}
+                type="submit"
+                color="primary"
+                variant="contained"
+              >
+                حفظ المعلومات
+              </Button>
+            </Box>
+          )}
         </Card>
       </Form>
     </FormikProvider>
