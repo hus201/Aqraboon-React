@@ -101,6 +101,9 @@ export default function AddServiceType() {
       const response = await fetch(url, options);
       if (response.ok && response.status === 200) {
         setHelperText('تم الحفظ');
+        setTimeout(() => {
+          window.location.href = '/Service/NeedRequestsList';
+        }, 1000);
       } else {
         setHelperText('حدث خظا ما');
       }
