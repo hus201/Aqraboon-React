@@ -102,7 +102,7 @@ export default function AddServiceType() {
       if (response.ok && response.status === 200) {
         setHelperText('تم الحفظ');
         setTimeout(() => {
-          window.location.href = '/Service/NeedRequestsList';
+          window.location.href = '/Service/ServicesTypes';
         }, 1000);
       } else {
         setHelperText('حدث خظا ما');
