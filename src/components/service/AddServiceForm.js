@@ -17,7 +17,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  FormHelperText
+  Typography
 } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -168,6 +168,16 @@ export const AddServiceForm = (props) => {
   //   setFieldValue('Lat', lng);
   // };
 
+  useEffect(() => {
+    try {
+      if (services.filter((x) => x.id === values.TypeId)[0]?.category === '1') {
+        setImagesData([]);
+      }
+    } catch (e) {
+      console.log('catch success');
+    }
+  }, [values.TypeId]);
+
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" onSubmit={handleSubmit}>
@@ -302,10 +312,18 @@ export const AddServiceForm = (props) => {
                       setImagesData([...imagesData, ...e.target.files]);
                     }}
                   />
-
-                  <Button disabled={imagesData.length > 2} variant="contained" component="span">
-                    تحميل ملحقات
-                  </Button>
+                  {services.filter((x) => x.id === values.TypeId)[0]?.category &&
+                    services.filter((x) => x.id === values.TypeId)[0]?.category !== '1' && (
+                      <Button disabled={imagesData.length > 2} variant="contained" component="span">
+                        تحميل ملحقات
+                      </Button>
+                    )}
+                  <Typography style={{ fontSize: 13, padding: 10 }}>
+                    {services.filter((x) => x.id === values.TypeId)[0]?.category === '2' &&
+                      'يجب تحميل صور الملحق'}
+                    {services.filter((x) => x.id === values.TypeId)[0]?.category === '3' &&
+                      'هذه الخدمة تحتاج الي شهادة اثبات لتقديمها , يجب رفع صورة الشهادة'}
+                  </Typography>
                 </label>
               </Grid>
               <Grid item md={12} xs={12}>
@@ -349,7 +367,16 @@ export const AddServiceForm = (props) => {
               p: 2
             }}
           >
-            <Button color="primary" variant="contained" type="submit">
+            <Button
+              color="primary"
+              variant="contained"
+              type="submit"
+              disabled={
+                services.filter((x) => x.id === values.TypeId)[0]?.category &&
+                services.filter((x) => x.id === values.TypeId)[0]?.category !== '1' &&
+                imagesData.length < 1
+              }
+            >
               حفظ
             </Button>
           </Box>

@@ -19,6 +19,7 @@ import {
   TextField,
   useMediaQuery
 } from '@mui/material';
+import ImageViewer from 'react-simple-image-viewer';
 import Page from '../components/Page';
 import SnackBar from '../components/SnackBar';
 import ApiRoot from '../Test/APiRoot';
@@ -49,9 +50,11 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function ProvidedList() {
+export default function ApproveService() {
+  const [trigger, setTrigger] = React.useState(0);
+
   React.useEffect(async () => {
-    const url = `${ApiRoot}/Service/GetProvidedList`;
+    const url = `${ApiRoot}/Service/GetUnApprovalService`;
     const options = {
       method: 'GET',
       mode: 'cors',
@@ -64,9 +67,9 @@ export default function ProvidedList() {
     const response = await fetch(url, options);
     if (response.ok && response.status === 200) {
       const result = await response.json();
-      setRequestlist([...result.value.services]);
+      setRequestlist([...result]);
     }
-  }, [0]);
+  }, [trigger]);
 
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
@@ -77,6 +80,13 @@ export default function ProvidedList() {
   const [RequestId, setRequestId] = React.useState(0);
   const [Report, setReport] = React.useState('');
   const [Message, setMessage] = React.useState('');
+  const [isViewerOpen, setIsViewerOpen] = React.useState(0);
+  const images = [
+    'http://placeimg.com/1200/800/nature',
+    'http://placeimg.com/800/1200/nature',
+    'http://placeimg.com/1920/1080/nature',
+    'http://placeimg.com/1500/500/nature'
+  ];
 
   const handleClickOpen = (id) => {
     setRequestId(id);
@@ -84,6 +94,66 @@ export default function ProvidedList() {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const ApproveService = async (id) => {
+    const data = new FormData();
+    data.append('id', id);
+
+    const url = `${ApiRoot}/Service/ApproveService`;
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      },
+      body: data
+    };
+
+    try {
+      const response = await fetch(url, options);
+      if (response.ok && response.status === 200) {
+        setMessage('تم حفظ المعلومات بنجاح');
+        setRequestlist([...removeArrayObj(id)]);
+      } else {
+        setMessage('فشل حفظ المعلومات ');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    setTrigger(trigger + 1);
+  };
+
+  const DeleteService = async (id) => {
+    const data = new FormData();
+    data.append('id', id);
+
+    const url = `${ApiRoot}/Service/DeleteService`;
+    const options = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${User.token}`
+      },
+      body: data
+    };
+
+    try {
+      const response = await fetch(url, options);
+      if (response.ok && response.status === 200) {
+        setMessage('تم حفظ المعلومات بنجاح');
+        setRequestlist([...removeArrayObj(id)]);
+      } else {
+        setMessage('فشل حفظ المعلومات ');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleRemoveService = async () => {
@@ -114,7 +184,7 @@ export default function ProvidedList() {
     } catch (error) {
       console.error(error);
     }
-
+    setTrigger(trigger + 1);
     handleClose();
   };
   const removeArrayObj = (id, arr = [...Requestlist]) => {
@@ -122,21 +192,13 @@ export default function ProvidedList() {
     return newArray;
   };
   return (
-    <RootStyle title="الخدمات المقدمة | أقربون">
+    <RootStyle title=" طلب تقديم خدمة | أقربون">
       <Container style={{ display: 'flex', justifyContent: 'center' }}>
         <ContentStyle>
           <Stack sx={{ mb: 5 }}>
             <Typography variant="h4" gutterBottom>
-              الخدمات المقدمة
+              طلب تقديم خدمة
             </Typography>
-            <Button
-              size="small"
-              style={{ width: 150 }}
-              variant="outlined"
-              href="/Service/AddService"
-            >
-              اضافة فئة خدمية
-            </Button>
           </Stack>
 
           <Box sx={{ width: '100%' }}>
@@ -148,13 +210,28 @@ export default function ProvidedList() {
                       <ListItem
                         secondaryAction={
                           <div>
-                            <Button href={`/Service/AddService?id=${item.id}`} color="success">
-                              تعديل
+                            {item?.attachments && (
+                              <Button
+                                onClick={async () => {
+                                  setIsViewerOpen(item.id);
+                                }}
+                                color="success"
+                              >
+                                عرض الوثائق
+                              </Button>
+                            )}
+                            <Button
+                              onClick={async () => {
+                                await ApproveService(item.id);
+                              }}
+                              color="success"
+                            >
+                              موافقة
                             </Button>
 
                             <Button
                               onClick={() => {
-                                handleClickOpen(item.id);
+                                DeleteService(item.id);
                               }}
                               color="error"
                             >
@@ -187,19 +264,33 @@ export default function ProvidedList() {
                                     item.ageTo !== -1 ? item.ageTo : 'كل الاعمار'
                                   }`}
                                 </Typography>
-                                <Typography
-                                  sx={{ display: 'inline' }}
-                                  component="span"
-                                  variant="body2"
-                                  color="text.primary"
-                                >
-                                  {!item.isActive && 'بانتظار الموافقة ...'}
-                                </Typography>
                               </div>
                             }
                           />
                         </ListItemButton>
                       </ListItem>
+
+                      {isViewerOpen === item.id && (
+                        <ImageViewer
+                          src={[
+                            ...item?.attachments?.map(
+                              (x) =>
+                                `${ApiRoot.replace('api', '')}Contents/Service/Attachment/${
+                                  item.id
+                                }/${x?.attachment}`
+                            )
+                          ]}
+                          currentIndex={0}
+                          onClose={() => {
+                            setIsViewerOpen(0);
+                          }}
+                          disableScroll={false}
+                          backgroundStyle={{
+                            backgroundColor: 'rgba(0,0,0,0.9)'
+                          }}
+                          closeOnClickOutside={Boolean(true)}
+                        />
+                      )}
                       <Divider variant="inset" component="li" />
                     </>
                   ))}

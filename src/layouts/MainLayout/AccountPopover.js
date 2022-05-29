@@ -61,9 +61,14 @@ const ADMI_OPTIONS = [
     linkTo: '/Service//Reports'
   },
   {
-    label: 'اضافة خدمة',
+    label: 'اضافة فئة خدمية',
     icon: personFill,
     linkTo: '/Service/ServicesTypes'
+  },
+  {
+    label: 'طلبات تقديم الخدمات',
+    icon: personFill,
+    linkTo: '/Service/ApproveService'
   }
 ];
 

@@ -15,14 +15,15 @@ import {
 import axios from 'axios';
 import ApiRoot from '../../Test/APiRoot';
 import { AuthContext } from '../../utils/ContextProvider';
-import { GetLocationMap } from '../../utils/Maps';
+import { GetLocationMap, DisplayPoint } from '../../utils/Maps';
 
 export const AcountDetails = () => {
   React.useEffect(async () => {
     const Url = new window.URL(window.location.href);
     const id = Url.searchParams.get('id');
+    setId(id);
     if (id) {
-      setId(id);
+      rest();
       const url = `${ApiRoot}/User/GetMember?id=${id}`;
       const options = {
         method: 'GET',
@@ -37,8 +38,9 @@ export const AcountDetails = () => {
         const response = await fetch(url, options);
         if (response.ok && response.status === 200) {
           const result = await response.json();
-          setFieldValue('firstName', result.firstName);
-          setFieldValue('lastName', result.lastName);
+          console.log('result', result);
+          setFieldValue('firstName', result.name.split(' ')[0]);
+          setFieldValue('lastName', result.name.split(' ')[1]);
           setFieldValue('email', result.email);
           setFieldValue('phone', result.phone);
           setFieldValue('lat', result.lat);
@@ -49,7 +51,17 @@ export const AcountDetails = () => {
       }
     }
   }, [0]);
-  const [id, setId] = React.useState(0);
+
+  const rest = () => {
+    setFieldValue('firstName', '');
+    setFieldValue('lastName', '');
+    setFieldValue('email', '');
+    setFieldValue('phone', '');
+    setFieldValue('lat', '');
+    setFieldValue('lng', '');
+  };
+
+  const [Id, setId] = React.useState(1);
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
   const _user = {
@@ -199,16 +211,20 @@ export const AcountDetails = () => {
 
               <Grid item md={12} xs={12} style={{ height: 300 }}>
                 <Typography style={{ margin: 8 }}>الموقع</Typography>
-                <GetLocationMap
-                  Lat={values.lat}
-                  Lng={values.lng}
-                  setLocation={handleChangeLocation}
-                />
+                {!Id ? (
+                  <GetLocationMap
+                    Lat={values.lat}
+                    Lng={values.lng}
+                    setLocation={handleChangeLocation}
+                  />
+                ) : (
+                  <DisplayPoint Lat={values.lat} Lng={values.lng} />
+                )}
               </Grid>
             </Grid>
           </CardContent>
           <Divider />
-          {!id && (
+          {!Id && (
             <Box
               sx={{
                 display: 'flex',

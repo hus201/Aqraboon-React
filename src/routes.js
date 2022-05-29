@@ -11,6 +11,7 @@ import NeedRequestsList from './pages/NeedRequestsList';
 import ProvidedList from './pages/ProvidedList';
 import RequestService from './pages/RequestService';
 import RequestAttatchment from './pages/RequestAttatchment';
+import ApproveService from './pages/ApproveService';
 import DashboardApp from './pages/DashboardApp';
 import AddServiceType from './pages/AddServiceType';
 import Products from './pages/Products';
@@ -56,6 +57,10 @@ export default function Router() {
         {
           path: 'AddServiceType',
           element: User?.role === 'Admin' ? <AddServiceType /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'ApproveService',
+          element: User?.role === 'Admin' ? <ApproveService /> : <Navigate to="/dashboard" />
         },
         {
           path: 'RequestAttatchment',
