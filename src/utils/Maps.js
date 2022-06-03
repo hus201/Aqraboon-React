@@ -105,6 +105,15 @@ GetLocationMap.propTypes = {
 // /* Begin DisplayPoint*/
 
 const DisplayPoint = ({ Lat, Lng }) => {
+  const [lat, setLat] = useState(`${Lat}`);
+  const [lng, setLng] = useState(`${Lng}`);
+
+  useEffect(() => {
+    setLng(`${Lng}`);
+    setLat(`${Lat}`);
+    console.log(`${Lat}`, '  ', `${Lng}`);
+  }, [Lat, Lng]);
+
   useEffect(() => {
     let map;
     const additionalOptions = {};
@@ -117,7 +126,7 @@ const DisplayPoint = ({ Lat, Lng }) => {
 
       loader.load().then(() => {
         map = new window.google.maps.Map(document.getElementById('GetLocationMap'), {
-          center: { lat: parseFloat(Lat), lng: parseFloat(Lng) },
+          center: { lat: parseFloat(lat) || Lat, lng: parseFloat(lng) || lng },
           zoom: 15,
           mapTypeId: window.google.maps.MapTypeId.HYBRID
         });
@@ -128,7 +137,7 @@ const DisplayPoint = ({ Lat, Lng }) => {
         }));
 
         const marker = new window.google.maps.Marker({
-          position: { lat: parseFloat(Lat), lng: parseFloat(Lng) }
+          position: { lat: parseFloat(lat) || Lat, lng: parseFloat(lng) || lng }
         });
         marker.setMap(map);
       });

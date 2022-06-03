@@ -49,8 +49,8 @@ export default function AcceptedReqForm({ request, rate }) {
     setService({
       service: request?.seviceType?.title,
       desc: request.description,
-      lat: request.lattiud || '31.963158',
-      lng: request.longtiud || '35.930359',
+      lat: request.lattiud,
+      lng: request.longtiud,
       date: new Date(request.expireTime).toLocaleString()
     });
   }, [request]);
@@ -58,8 +58,6 @@ export default function AcceptedReqForm({ request, rate }) {
   const [Service, setService] = useState({
     service: request?.seviceType?.title,
     desc: request.description,
-    lat: request.lattiud || '31.963158',
-    lng: request.longtiud || '35.930359',
     date: new Date(request.expireTime).toLocaleString()
   });
   const [Rate, setRate] = useState(0);
@@ -86,7 +84,7 @@ export default function AcceptedReqForm({ request, rate }) {
           value={Service.desc}
         />
         <Box style={{ height: '300px' }}>
-          <DisplayPoint Lat={Service.lat} Lng={Service.lng} />
+          {Service?.lat && <DisplayPoint Lat={Service?.lat} Lng={Service?.lng} />}
         </Box>
         <TextField fullWidth disabled size="small" label="الوقت المطلوب" value={Service.date} />
         <Box
