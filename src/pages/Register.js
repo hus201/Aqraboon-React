@@ -33,15 +33,17 @@ const SectionStyle = styled(Card)(({ theme }) => ({
 
 const ContentStyle = styled('div')(({ theme }) => ({
   maxWidth: 480,
-  margin: 'auto',
   display: 'flex',
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
   marginRight: '0px !important',
-  marginLeft: '50% !important',
   width: '100% !important',
-  padding: theme.spacing(12, 0)
+  padding: theme.spacing(12, 0),
+  [theme.breakpoints.up('md')]: {
+    marginLeft: '50% !important',
+    margin: 'auto'
+  }
 }));
 
 // ----------------------------------------------------------------------

@@ -20,6 +20,7 @@ import Profile from './pages/Profile';
 import Reports from './pages/Reports';
 import AddService from './pages/AddService';
 import ServicesTypes from './pages/ServicesTypes';
+import BlockedUser from './pages/BlockedUser';
 import NotFound from './pages/Page404';
 import { AuthContext } from './utils/ContextProvider';
 
@@ -95,6 +96,10 @@ export default function Router() {
         {
           path: 'Profile',
           element: User?.IsLogedIn ? <Profile /> : <Navigate to="/dashboard" />
+        },
+        {
+          path: 'BlockedUser',
+          element: User?.role === 'Admin' ? <BlockedUser /> : <Navigate to="/dashboard" />
         }
       ]
     },

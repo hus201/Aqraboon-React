@@ -1,12 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import PropTypes from 'prop-types';
 
 // /* Begin GetLocationMap*/
-const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) => {
+const GetLocationMap = ({ setLocation, Lat, Lng, Zoom = 8 }) => {
+  const [lat, setLat] = useState(Lat);
+  const [lng, setLng] = useState(Lng);
+
+  useEffect(() => {
+    setLat(Lat);
+    setLng(Lng);
+  }, [Lng, Lat]);
+
   useEffect(() => {
     let map;
     const additionalOptions = {};
+
     try {
       const loader = new Loader({
         apiKey: 'AIzaSyC4EGFc_Y4wOspdDUmgEUu_76dBP2v6RD4',
@@ -16,8 +25,8 @@ const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) =
 
       loader.load().then(() => {
         map = new window.google.maps.Map(document.getElementById('GetLocationMap'), {
-          center: { lat: parseFloat(Lat) ?? 31.963158, lng: parseFloat(Lng) ?? 35.930359 },
-          zoom: 8,
+          center: { lat: parseFloat(lat) || 31.963158, lng: parseFloat(lng) || 35.930359 },
+          zoom: Zoom,
           mapTypeId: window.google.maps.MapTypeId.HYBRID
         });
 
@@ -27,7 +36,7 @@ const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) =
         }));
 
         const marker = new window.google.maps.Marker({
-          position: { lat: 31.963158, lng: 35.930359 }
+          position: { lat: parseFloat(lat), lng: parseFloat(lng) }
         });
         marker.setMap(map);
         const infowindow = new window.google.maps.InfoWindow({
@@ -52,7 +61,8 @@ const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) =
         btnCurrentLoc.style.marginRight = '5px';
         btnCurrentLoc.style.height = '50px';
         btnCurrentLoc.style.width = '50px';
-        //  btnCurrentLoc.onClick = (e) => getCurrentLocation(e);
+        btnCurrentLoc.type = 'button';
+        btnCurrentLoc.id = 'getLocation';
 
         map.controls[window.google.maps.ControlPosition.RIGHT_CENTER].push(btnCurrentLoc);
       });
@@ -62,18 +72,26 @@ const GetLocationMap = ({ setLocation, Lat = '31.963158', Lng = '35.930359' }) =
   }, [0]);
 
   const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      const info = new window.google.maps.Infowindow();
-      navigator.geolocation.getCurrentLocation(
-        (position) => {
-          console.log(position);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+    try {
+      if (navigator.geolocation) {
+        //  const info = new window.google.maps.Infowindow();
+        navigator.geolocation.getCurrentLocation(
+          (position) => {
+            console.log('position', position);
+          },
+          (err) => {
+            console.log('err', err);
+          }
+        );
+      }
+    } catch (e) {
+      console.log('eeeee', e);
     }
   };
+
+  // useEffect(() => {
+  //   getCurrentLocation();
+  // }, [navigator, navigator.geolocation, window?.google?.maps]);
 
   return <div id="GetLocationMap" style={{ height: '100%', width: '100%' }} />;
 };

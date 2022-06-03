@@ -1,20 +1,30 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
+
 import { styled } from '@mui/material/styles';
-import { Box, Drawer } from '@mui/material';
+import { Box, Drawer, Button } from '@mui/material';
 // components
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
+import { AuthContext } from '../../utils/ContextProvider';
 //
 import sidebarConfig from './SidebarConfig';
 
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
+
+const BoxStyled = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  padding: '0 10px',
+  alignItems: 'flex-start',
+  gap: 20
+}));
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
@@ -40,7 +50,7 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
+  const authContext = useContext(AuthContext);
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -60,7 +70,17 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           <Logo />
         </Box>
       </Box>
-      <NavSection navConfig={sidebarConfig} />
+      {authContext.User?.IsLogedIn && <NavSection navConfig={sidebarConfig} />}
+      {!authContext.User?.IsLogedIn && (
+        <BoxStyled>
+          <Button component={RouterLink} to="/login" size="medium">
+            تسجيل الدخول
+          </Button>
+          <Button component={RouterLink} to="/register" size="medium">
+            تسجيل الاشتراك
+          </Button>
+        </BoxStyled>
+      )}
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

@@ -103,10 +103,8 @@ export default function RequestService() {
       PName: values?.Name,
       VGender: values?.VolunteerSex,
       PGender: values?.Sex,
-      ExpireTime: values?.ExpTime
+      ExpireTime: values?.ExpTime || new Date(Date.now() + 11 * 3600 * 1000 * 5)
     };
-    console.log('values', values);
-    console.log('request0', request);
 
     const data = new FormData();
     data.append('request', JSON.stringify(request));

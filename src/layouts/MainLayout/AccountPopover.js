@@ -6,6 +6,7 @@ import giftOutline from '@iconify/icons-eva/gift-outline';
 import listOutline from '@iconify/icons-eva/list-outline';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
 import checkmarkSquareFill from '@iconify/icons-eva/checkmark-square-fill';
+import baselineBlock from '@iconify/icons-ic/baseline-block';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { alpha } from '@mui/material/styles';
@@ -14,6 +15,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 import MenuPopover from '../../components/MenuPopover';
 import { AuthContext } from '../../utils/ContextProvider';
 import ApiRoot from '../../Test/APiRoot';
+
 //
 
 // ----------------------------------------------------------------------
@@ -69,6 +71,11 @@ const ADMI_OPTIONS = [
     label: 'طلبات تقديم الخدمات',
     icon: personFill,
     linkTo: '/Service/ApproveService'
+  },
+  {
+    label: 'المستخدمين المحظورين',
+    icon: baselineBlock,
+    linkTo: '/User/BlockedUser'
   }
 ];
 

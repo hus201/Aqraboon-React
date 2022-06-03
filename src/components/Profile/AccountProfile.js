@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import ApiRoot from '../../Test/APiRoot';
+import SnackBar from '../SnackBar';
 import { AuthContext } from '../../utils/ContextProvider';
 
 export const AccountProfile = (props) => {
@@ -34,6 +35,7 @@ export const AccountProfile = (props) => {
         if (response.ok && response.status === 200) {
           const result = await response.json();
           setName(result.name);
+          //   setBLocked(result.role === 'Block');
         }
       } catch (e) {
         console.log(e);
@@ -43,11 +45,12 @@ export const AccountProfile = (props) => {
 
   const [trigger, setTrigger] = React.useState(1);
   const [Name, setName] = React.useState('');
+  const [BLocked, setBLocked] = React.useState(false);
   const [Id, setId] = React.useState(0);
   const authContext = React.useContext(AuthContext);
   const User = authContext.getUser();
   const ImageRef = React.useRef();
-
+  const [Message, setMessage] = React.useState('');
   const UpdaetImaegs = (file) => {
     const config = {
       headers: {
@@ -75,8 +78,17 @@ export const AccountProfile = (props) => {
 
     axios
       .post(`${ApiRoot}/User/BlockUser`, data, config)
-      .then((res) => {})
-      .catch((err) => {});
+      .then((res) => {
+        if (BLocked) {
+          setMessage('تم الغاء حظر المستخدم');
+        } else {
+          setMessage('تم حظر المستخدم');
+        }
+        setBLocked(!BLocked);
+      })
+      .catch((err) => {
+        setMessage('لم يتم الحفظ');
+      });
   };
 
   return (
@@ -107,8 +119,13 @@ export const AccountProfile = (props) => {
       <Divider />
       <CardActions>
         {Id && User.role === 'Admin' && User.id !== Id && (
-          <Button color="primary" fullWidth variant="text" onClick={blockUser}>
-            حظر
+          <Button
+            color={BLocked ? 'primary' : 'error'}
+            fullWidth
+            variant="text"
+            onClick={blockUser}
+          >
+            {BLocked ? 'الغاء الحظر' : 'حظر'}
           </Button>
         )}
         {!Id && (
@@ -135,6 +152,7 @@ export const AccountProfile = (props) => {
           </Button>
         )}
       </CardActions>
+      <SnackBar message={Message} />
     </Card>
   );
 };

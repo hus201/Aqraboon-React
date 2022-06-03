@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 import {
@@ -13,9 +13,11 @@ import {
   TextField
 } from '@mui/material';
 import axios from 'axios';
+import SnackBar from '../SnackBar';
 import ApiRoot from '../../Test/APiRoot';
 import { AuthContext } from '../../utils/ContextProvider';
 import { GetLocationMap, DisplayPoint } from '../../utils/Maps';
+import { UpdateUser } from '../../utils/UpdateUserInfo';
 
 export const AcountDetails = () => {
   React.useEffect(async () => {
@@ -63,6 +65,7 @@ export const AcountDetails = () => {
 
   const [Id, setId] = React.useState(1);
   const authContext = React.useContext(AuthContext);
+  const [Message, setMessage] = React.useState('');
   const User = authContext.getUser();
   const _user = {
     firstName: User.name.split(' ')[0],
@@ -72,6 +75,7 @@ export const AcountDetails = () => {
     lat: User.lat,
     lng: User.lng
   };
+
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -122,6 +126,7 @@ export const AcountDetails = () => {
     axios.post(url, data, config).then((res) => {
       const _user = { ...res.data.value.user, token: res.data.value.token };
       authContext.setUser(_user);
+      UpdateUser(authContext);
     });
   };
 
@@ -220,6 +225,7 @@ export const AcountDetails = () => {
                     Lat={values.lat}
                     Lng={values.lng}
                     setLocation={handleChangeLocation}
+                    Zoom={18}
                   />
                 ) : (
                   <DisplayPoint Lat={values.lat} Lng={values.lng} />
@@ -248,6 +254,7 @@ export const AcountDetails = () => {
             </Box>
           )}
         </Card>
+        <SnackBar message={Message} />
       </Form>
     </FormikProvider>
   );
