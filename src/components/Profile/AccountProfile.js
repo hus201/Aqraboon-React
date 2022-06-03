@@ -63,6 +63,21 @@ export const AccountProfile = (props) => {
       })
       .catch((err) => {});
   };
+  const blockUser = () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${User.token}`
+      }
+    };
+
+    const data = new FormData();
+    data.append('Id', Id);
+
+    axios
+      .post(`${ApiRoot}/User/BlockUser`, data, config)
+      .then((res) => {})
+      .catch((err) => {});
+  };
 
   return (
     <Card {...props}>
@@ -75,7 +90,9 @@ export const AccountProfile = (props) => {
           }}
         >
           <Avatar
-            src={`${ApiRoot.replace('api', '')}Contents/User/${User.id}.jpg?trigger=${trigger}`}
+            src={`${ApiRoot.replace('api', '')}Contents/User/${
+              Id ?? User.id
+            }.jpg?trigger=${trigger}`}
             sx={{
               height: 64,
               mb: 2,
@@ -89,6 +106,11 @@ export const AccountProfile = (props) => {
       </CardContent>
       <Divider />
       <CardActions>
+        {Id && User.role === 'Admin' && User.id !== Id && (
+          <Button color="primary" fullWidth variant="text" onClick={blockUser}>
+            حظر
+          </Button>
+        )}
         {!Id && (
           <Button
             color="primary"

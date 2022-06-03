@@ -20,7 +20,13 @@ export default function PatientReqForm({ request }) {
         label="وصف حالة المريض"
       />
       <TextField fullWidth disabled value={Patient.Age} size="small" label="العمر" />
-      <TextField fullWidth disabled value={Patient.Sex} size="small" label="جنس المريض" />
+      <TextField
+        fullWidth
+        disabled
+        value={Patient.Sex === 2 ? 'انثى' : 'ذكر'}
+        size="small"
+        label="جنس المريض"
+      />
     </Stack>
   );
 }

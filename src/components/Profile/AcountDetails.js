@@ -151,6 +151,7 @@ export const AcountDetails = () => {
               <Grid item md={6} xs={12}>
                 <TextField
                   fullWidth
+                  disabled={Id}
                   label="الاسم الاول"
                   name="firstName"
                   required
@@ -166,6 +167,7 @@ export const AcountDetails = () => {
               <Grid item md={6} xs={12}>
                 <TextField
                   fullWidth
+                  disabled={Id}
                   label="الاسم الثاني"
                   name="lastName"
                   required
@@ -181,6 +183,7 @@ export const AcountDetails = () => {
               <Grid item md={6} xs={12}>
                 <TextField
                   fullWidth
+                  disabled={Id}
                   label="البريد الالكتروني"
                   name="email"
                   variant="outlined"
@@ -195,6 +198,7 @@ export const AcountDetails = () => {
               <Grid item md={6} xs={12}>
                 <TextField
                   fullWidth
+                  disabled={Id}
                   label="رقم الهاتف"
                   name="phone"
                   required
