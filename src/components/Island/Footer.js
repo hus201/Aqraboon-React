@@ -96,7 +96,7 @@ export default function Footer() {
           </Typography>
         </div>
       </div>
-      <div className={IsMobile ? classes.colFooter : classes.ro}>
+      <div className={IsMobile ? classes.colFooter : classes.ro} style={{ width: '100%' }}>
         <div className={classes.ro}>Aqraboon Team @2022</div>
       </div>
     </div>

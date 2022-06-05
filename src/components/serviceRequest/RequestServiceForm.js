@@ -38,7 +38,7 @@ export default function RequestServiceForm({ errors, values, setObjValues, handl
       const response = await fetch(url, options);
       if (response.ok && response.status === 200) {
         const result = await response.json();
-        setServices([...result.services]);
+        setServices([...result.services.filter((x) => x.category !== '2')]);
       }
     } catch (ex) {
       alert(ex);

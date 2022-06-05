@@ -101,6 +101,7 @@ export default function AcceptedList() {
           const result = await response.json();
           console.log('ScopeRequests ', result);
           setScopeRequests([...result.value.inScopeRequests]);
+          setAroundScopeRequests([...result.value.aroundScopeRequests]);
         }
       } catch (error) {
         console.error(error);
@@ -115,6 +116,7 @@ export default function AcceptedList() {
   const [AcceptedRequests, setAcceptedRequests] = React.useState([]);
   const [Ratings, setRatings] = React.useState([]);
   const [ScopeRequests, setScopeRequests] = React.useState([]);
+  const [AroundScopeRequests, setAroundScopeRequests] = React.useState([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = React.useState(false);
@@ -164,8 +166,8 @@ export default function AcceptedList() {
       const response = await fetch(url, options);
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
-        setRequestlist([...updateArray(RequestId, 2)]);
         setTrigger(trigger + 1);
+        setRequestlist([...updateArray(RequestId, 2)]);
       } else {
         setMessage('فشل حفظ المعلومات');
       }
@@ -442,6 +444,64 @@ export default function AcceptedList() {
                   <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                     {ScopeRequests.length > 0 &&
                       ScopeRequests.slice((x) => x.status !== 0).map((item, index) => (
+                        <>
+                          <ListItem
+                            key={index}
+                            secondaryAction={
+                              <Button
+                                onClick={() => {
+                                  hadleAcceptService(item.id);
+                                }}
+                                color="success"
+                              >
+                                استلام
+                              </Button>
+                            }
+                            alignItems="flex-start"
+                          >
+                            <ListItemButton
+                              onClick={() => {
+                                window.location.href = `/Service/AcceptedRequest?id=${item.id}`;
+                              }}
+                            >
+                              <ListItemAvatar>
+                                <Badge
+                                  variant="dot"
+                                  color={['info', 'info', 'error', 'success'][item?.status]}
+                                >
+                                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
+                                    <PersonIcon />
+                                  </Avatar>
+                                </Badge>
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={item?.seviceType?.title}
+                                secondary={
+                                  <>
+                                    <Typography
+                                      sx={{ display: 'inline' }}
+                                      component="span"
+                                      variant="body2"
+                                      color="text.primary"
+                                    >
+                                      {item.pName}
+                                    </Typography>
+                                    {item.pDescription}
+                                  </>
+                                }
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                          <Divider variant="inset" component="li" />
+                        </>
+                      ))}
+                  </List>
+                  <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                    {AroundScopeRequests.length > 0 && (
+                      <Typography> طلبات في اماكن غير مجاورة :</Typography>
+                    )}
+                    {AroundScopeRequests.length > 0 &&
+                      AroundScopeRequests.slice((x) => x.status !== 0).map((item, index) => (
                         <>
                           <ListItem
                             key={index}

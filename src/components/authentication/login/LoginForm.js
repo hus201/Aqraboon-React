@@ -71,12 +71,18 @@ export default function LoginForm() {
       setSubmitting(false);
       if (response.ok && response.status === 200) {
         const result = await response.json();
-        const _user = { ...result.value.user, token: result.value.token };
-        authContext.setUser(_user);
-        return <Navigate to="/" />;
+        console.log('result ', result);
+        if (result === 'تم حظر المستخدم') {
+          setHelperText('تم حظر المستخدم, يرجى التواصل مع فرق الدعم الفني');
+          setError(true);
+        } else {
+          const _user = { ...result.value.user, token: result.value.token };
+          authContext.setUser(_user);
+          return <Navigate to="/" />;
+        }
       }
       setSubmitting(false);
-      setHelperText('عذرا حدث خطا ما!');
+      if (!error) setHelperText('عذرا حدث خطا ما!');
       setError(true);
       return <></>;
     } catch (error) {
