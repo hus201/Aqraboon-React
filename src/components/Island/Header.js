@@ -120,6 +120,7 @@ export default function Header() {
                 style={{ width: IsMobile ? '100%' : '25%', height: '55px' }}
                 size="small"
                 variant="contained"
+                href="/login"
               >
                 شاركنا الان
               </Button>
