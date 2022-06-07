@@ -18,7 +18,7 @@ const GetLocationMap = ({ setLocation, Lat, Lng, Zoom = 8 }) => {
 
     try {
       const loader = new Loader({
-        apiKey: 'AIzaSyD4mODV5Y_F2FP3E3VhmGoc5kc3KoE36zE',
+        apiKey: 'AIzaSyCGU33mNWQMitRM6_rnAnzcgerHU9t-pFM',
         version: 'weekly',
         ...additionalOptions
       });
@@ -119,7 +119,7 @@ const DisplayPoint = ({ Lat, Lng }) => {
     const additionalOptions = {};
     try {
       const loader = new Loader({
-        apiKey: 'AIzaSyD4mODV5Y_F2FP3E3VhmGoc5kc3KoE36zE',
+        apiKey: 'AIzaSyCGU33mNWQMitRM6_rnAnzcgerHU9t-pFM',
         version: 'weekly',
         ...additionalOptions
       });

@@ -214,6 +214,7 @@ export default function Reports() {
                               </>
                             )}
                             <Button
+                              style={{ display: 'none' }}
                               onClick={() => {
                                 handleClickOpen(item.id);
                               }}
