@@ -171,7 +171,7 @@ export default function NeedRequestsList() {
                           <ListItemAvatar>
                             <Avatar
                               alt="Remy Sharp"
-                              src={`${ApiRoot.replace('api', '')}Contents/User/${item.id}.jpg`}
+                              src={`${ApiRoot.replace(/api$/, '')}Contents/User/${item.id}.jpg`}
                             >
                               <PersonIcon />
                             </Avatar>

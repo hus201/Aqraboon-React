@@ -350,7 +350,7 @@ export default function AcceptedList() {
                                 >
                                   <Avatar
                                     alt="Remy Sharp"
-                                    src={`${ApiRoot.replace('api', '')}Contents/User/${
+                                    src={`${ApiRoot.replace(/api$/, '')}Contents/User/${
                                       Requestlist[index].senderId
                                     }.jpg`}
                                   >

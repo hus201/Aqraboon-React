@@ -102,7 +102,7 @@ export const AccountProfile = (props) => {
           }}
         >
           <Avatar
-            src={`${ApiRoot.replace('api', '')}Contents/User/${
+            src={`${ApiRoot.replace(/api$/, '')}Contents/User/${
               Id ?? User.id
             }.jpg?trigger=${trigger}`}
             sx={{

@@ -286,7 +286,7 @@ export default function NeedRequestsList() {
                             >
                               <Avatar
                                 alt="Remy Sharp"
-                                src={`${ApiRoot.replace('api', '')}Contents/User/${
+                                src={`${ApiRoot.replace(/api$/, '')}Contents/User/${
                                   Requestlist[index]?.user?.id
                                 }.jpg`}
                               >

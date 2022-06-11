@@ -1,3 +1,3 @@
-const ApiRoot = 'https://localhost:44327/api';
+const ApiRoot = 'http://api.aqraboon.ml/api';
 
 export default ApiRoot;

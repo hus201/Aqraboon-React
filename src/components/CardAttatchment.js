@@ -117,7 +117,7 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
       <CardHeader
         avatar={
           <Avatar
-            src={`${ApiRoot.replace('api', '')}Contents/User/${Service.userId}.jpg`}
+            src={`${ApiRoot.replace(/api$/, '')}Contents/User/${Service.userId}.jpg`}
             sx={{ bgcolor: red[500] }}
             aria-label="recipe"
           >
@@ -136,7 +136,7 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
         component="img"
         height="auto"
         style={{ width: 480, margin: 'auto' }}
-        image={`${ApiRoot.replace('api', '')}Contents/Service/Attachment/${Service.id}/${
+        image={`${ApiRoot.replace(/api$/, '')}Contents/Service/Attachment/${Service.id}/${
           Service?.attachments[0].attachment
         }`}
         alt="Paella dish"
@@ -187,10 +187,10 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
                   <ImageListItem key={index} style={{ MaxWidth: '50%' }}>
                     <img
                       style={{ width: 'auto', flexGrow: 0 }}
-                      src={`${ApiRoot.replace('api', '')}Contents/Service/Attachment/${
+                      src={`${ApiRoot.replace(/api$/, '')}Contents/Service/Attachment/${
                         Service.id
                       }/${item.attachment}`} //   ?w=248&fit=crop&auto=format
-                      srcSet={`${ApiRoot.replace('api', '')}Contents/Service/Attachment/${
+                      srcSet={`${ApiRoot.replace(/api$/, '')}Contents/Service/Attachment/${
                         Service.id
                       }/${item.attachment}`} //   ?w=248&fit=crop&auto=format&dpr=2 2x
                       alt={item?.attachment}

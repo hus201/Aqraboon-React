@@ -278,7 +278,7 @@ export default function ApproveService() {
                           src={[
                             ...item?.attachments?.map(
                               (x) =>
-                                `${ApiRoot.replace('api', '')}Contents/Service/Attachment/${
+                                `${ApiRoot.replace(/api$/, '')}Contents/Service/Attachment/${
                                   item.id
                                 }/${x?.attachment}`
                             )

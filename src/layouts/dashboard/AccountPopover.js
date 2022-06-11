@@ -69,7 +69,7 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src={`${ApiRoot.replace('api', '')}Contents/User/${User.id}.jpg`} alt="photoURL" />
+        <Avatar src={`${ApiRoot.replace(/api$/, '')}Contents/User/${User.id}.jpg`} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
