@@ -66,13 +66,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const IsMobile = useMediaQuery('(max-width:600px)');
+  const IsMini = useMediaQuery('(max-width:350px)');
+
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     setChecked(true);
   }, []);
   return (
-    <div className={classes.root} id="header">
+    <div className={classes.root} id="header" style={{ height: IsMini ? 'auto' : '400px' }}>
       <div
         style={{
           backgroundImage: `url(${process.env.PUBLIC_URL}/static/Images/${
