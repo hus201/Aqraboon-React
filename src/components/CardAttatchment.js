@@ -130,7 +130,7 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
         //   </IconButton>
         // }
         title={Service.service_type.title}
-        subheader={Service.service_type.desciption}
+        subheader=""
       />
       <CardMedia
         component="img"
@@ -178,7 +178,6 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph> : الوصف</Typography>
-          <Typography paragraph>{Service?.service_type?.desciption}</Typography>
           <Grid item md={12} xs={12}>
             <ImageList sx={{ width: '100%', height: 'auto' }} cols={2}>
               {Service?.attachments

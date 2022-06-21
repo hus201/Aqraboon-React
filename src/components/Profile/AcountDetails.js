@@ -123,10 +123,10 @@ export const AcountDetails = () => {
     const data = new FormData();
     data.append('User', JSON.stringify(User));
     const url = `${ApiRoot}/User/Update`;
-    axios.post(url, data, config).then((res) => {
+    axios.post(url, data, config).then(async (res) => {
       const _user = { ...res.data.value.user, token: res.data.value.token };
       authContext.setUser(_user);
-      UpdateUser(authContext);
+      await UpdateUser(authContext);
     });
   };
 

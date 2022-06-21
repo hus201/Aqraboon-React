@@ -14,7 +14,7 @@ const UpdateUser = async (authContext) => {
   };
   try {
     const response = await fetch(url, options);
-    console.log('response', response);
+    console.log('responseresponse', response);
     if (response.ok && response.status === 200) {
       const result = await response.json();
       const _user = { ...result.value.user, token: result.value.token };

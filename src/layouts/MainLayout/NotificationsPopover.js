@@ -50,7 +50,6 @@ const getReturnValues = (countDown) => {
 function renderContent(notification) {
   const title = (
     <>
-      <Typography variant="subtitle2">{notification?.seviceType.desciption}</Typography>
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
         &nbsp; {notification?.pName}
       </Typography>

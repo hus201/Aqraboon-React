@@ -107,7 +107,7 @@ export default function Reports() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...removeArrayObj(RequestId)]);
-        UpdateUser(authContext);
+        await UpdateUser(authContext);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }
@@ -190,9 +190,11 @@ export default function Reports() {
                                     gap: 8
                                   }}
                                 >
-                                  <Typography> الطلب : </Typography>
-                                  <Button href={`/User/Profile?id=${item._user.id}`} color="info">
-                                    {item._user.name}
+                                  <Button
+                                    href={`/Service/AcceptedRequest?id=${item.requestId}`}
+                                    color="info"
+                                  >
+                                    <Typography> الطلب </Typography>
                                   </Button>
                                 </div>
                                 <div

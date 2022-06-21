@@ -148,7 +148,7 @@ export const AddServiceForm = (props) => {
     if (response?.ok && response?.status === 200) {
       setMessage('تم الحفظ بنجاح');
       formik.resetForm();
-      setMessage(UpdateUser(authContext));
+      setMessage(await UpdateUser(authContext));
       setTimeout(() => {
         window.location.href = '/Service/ProvidedList';
       }, [500]);
@@ -191,6 +191,11 @@ export const AddServiceForm = (props) => {
                   <Autocomplete
                     id="size-small-outlined"
                     onChange={(e, value) => {
+                      if (value?.id === '2') {
+                        setFieldValue('AgeFrom', -1);
+                        setFieldValue('AgeTo', -1);
+                        setFieldValue('Gender', 3);
+                      }
                       setFieldValue('TypeId', value?.id || '');
                     }}
                     size="small"
@@ -211,75 +216,78 @@ export const AddServiceForm = (props) => {
                   />
                 </Stack>
               </Grid>
-
-              <Grid item md={12} xs={12}>
-                <Stack spacing={3}>
-                  <Mune
-                    options={[
-                      { label: 'أي منهما', value: 3 },
-                      { label: 'ذكر', value: 1 },
-                      { label: 'انثى', value: 2 }
-                    ]}
-                    CurrentValue={values?.Gender}
-                    error={Boolean(touched?.Gender && errors?.Gender)}
-                    helperText={touched?.Gender && errors?.Gender}
-                    onSort={onChangeGender}
-                  />
-                </Stack>
-              </Grid>
-
-              <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <Grid item md={6} xs={12} space={1}>
-                  <Autocomplete
-                    id="size-small-outlined"
-                    onChange={(e, value) => {
-                      if (value?.value === -1) {
-                        setFieldValue('AgeTo', -1);
-                      } else if (value?.value >= values.AgeFrom) {
-                        setFieldValue('AgeTo', '');
-                      }
-                      setFieldValue('AgeFrom', value?.value);
-                    }}
-                    value={{
-                      ...DatePeriod.filter((x) => x.value === values.AgeFrom)[0]
-                    }}
-                    size="small"
-                    options={[...DatePeriod]}
-                    getOptionLabel={(option) => option?.title || ''}
-                    renderInput={(params) => (
-                      <TextField
-                        {...getFieldProps('AgeFrom')}
-                        error={Boolean(touched?.AgeFrom && errors?.AgeFrom)}
-                        helperText={touched?.AgeFrom && errors?.AgeFrom}
-                        {...params}
-                        label="العمر من"
+              {services.filter((x) => x.id === values.TypeId)[0]?.category !== '2' && (
+                <>
+                  <Grid item md={12} xs={12}>
+                    <Stack spacing={3}>
+                      <Mune
+                        options={[
+                          { label: 'أي منهما', value: 3 },
+                          { label: 'ذكر', value: 1 },
+                          { label: 'انثى', value: 2 }
+                        ]}
+                        CurrentValue={values?.Gender}
+                        error={Boolean(touched?.Gender && errors?.Gender)}
+                        helperText={touched?.Gender && errors?.Gender}
+                        onSort={onChangeGender}
                       />
-                    )}
-                  />
-                </Grid>
-                <Grid item md={6} xs={12} space={1}>
-                  <Autocomplete
-                    id="size-small-outlined"
-                    onChange={(e, value) => setFieldValue('AgeTo', value?.value)}
-                    size="small"
-                    value={{
-                      ...DatePeriod.filter((x) => x.value === values.AgeTo)[0]
-                    }}
-                    disabled={Boolean(!(typeof values.AgeFrom === 'number'))}
-                    options={[...DatePeriod.filter((x) => x.value > values?.AgeFrom)]}
-                    getOptionLabel={(option) => option?.title || ''}
-                    renderInput={(params) => (
-                      <TextField
-                        {...getFieldProps('AgeTo')}
-                        error={Boolean(touched?.AgeTo && errors?.AgeTo)}
-                        helperText={touched?.AgeTo && errors?.AgeTo}
-                        {...params}
-                        label="الى عمر"
+                    </Stack>
+                  </Grid>
+
+                  <Grid item md={12} xs={12} style={{ display: 'flex' }}>
+                    <Grid item md={6} xs={12} space={1}>
+                      <Autocomplete
+                        id="size-small-outlined"
+                        onChange={(e, value) => {
+                          if (value?.value === -1) {
+                            setFieldValue('AgeTo', -1);
+                          } else if (value?.value >= values.AgeFrom) {
+                            setFieldValue('AgeTo', '');
+                          }
+                          setFieldValue('AgeFrom', value?.value);
+                        }}
+                        value={{
+                          ...DatePeriod.filter((x) => x.value === values.AgeFrom)[0]
+                        }}
+                        size="small"
+                        options={[...DatePeriod]}
+                        getOptionLabel={(option) => option?.title || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...getFieldProps('AgeFrom')}
+                            error={Boolean(touched?.AgeFrom && errors?.AgeFrom)}
+                            helperText={touched?.AgeFrom && errors?.AgeFrom}
+                            {...params}
+                            label="العمر من"
+                          />
+                        )}
                       />
-                    )}
-                  />
-                </Grid>
-              </Grid>
+                    </Grid>
+                    <Grid item md={6} xs={12} space={1}>
+                      <Autocomplete
+                        id="size-small-outlined"
+                        onChange={(e, value) => setFieldValue('AgeTo', value?.value)}
+                        size="small"
+                        value={{
+                          ...DatePeriod.filter((x) => x.value === values.AgeTo)[0]
+                        }}
+                        disabled={Boolean(!(typeof values.AgeFrom === 'number'))}
+                        options={[...DatePeriod.filter((x) => x.value > values?.AgeFrom)]}
+                        getOptionLabel={(option) => option?.title || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...getFieldProps('AgeTo')}
+                            error={Boolean(touched?.AgeTo && errors?.AgeTo)}
+                            helperText={touched?.AgeTo && errors?.AgeTo}
+                            {...params}
+                            label="الى عمر"
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                </>
+              )}
               {/* <Grid item md={12} xs={12}>
                 {!values.UserLocation && (
                   <Box style={{ height: '300px' }}>

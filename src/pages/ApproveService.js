@@ -177,7 +177,7 @@ export default function ApproveService() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...removeArrayObj(RequestId)]);
-        UpdateUser(authContext);
+        await UpdateUser(authContext);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }
@@ -249,14 +249,6 @@ export default function ApproveService() {
                             primary={item.service_type.title}
                             secondary={
                               <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
-                                <Typography
-                                  sx={{ display: 'inline' }}
-                                  component="span"
-                                  variant="body2"
-                                  color="text.primary"
-                                >
-                                  {item.service_type.desciption}
-                                </Typography>
                                 <Typography
                                   sx={{ display: 'inline' }}
                                   component="span"

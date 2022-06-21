@@ -107,7 +107,7 @@ export default function ServicesTypes() {
       if (response.ok && response.status === 200) {
         setMessage('تم حفظ المعلومات بنجاح');
         setRequestlist([...removeArrayObj(RequestId)]);
-        UpdateUser(authContext);
+        await UpdateUser(authContext);
       } else {
         setMessage('فشل حفظ المعلومات ');
       }
