@@ -223,7 +223,7 @@ export default function CardAttatchment({ Service, removeServices, isRequested }
         </DialogContent>
         <DialogActions>
           <Button color="success" autoFocus onClick={handleClose}>
-            الفاء
+            الغاء
           </Button>
           <Button
             color="error"

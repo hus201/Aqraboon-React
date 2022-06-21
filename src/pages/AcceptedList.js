@@ -579,7 +579,7 @@ export default function AcceptedList() {
             </DialogContent>
             <DialogActions>
               <Button color="success" autoFocus onClick={handleClose}>
-                الفاء
+                الغاء
               </Button>
               <Button
                 color="error"

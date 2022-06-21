@@ -157,10 +157,7 @@ export default function Reports() {
                                     gap: 8
                                   }}
                                 >
-                                  <Typography> الخدمة : </Typography>
-                                  <Button href={`/Service/AddService?id=${item.id}`} color="info">
-                                    {item._user.name}
-                                  </Button>
+                                  <Typography> خدمة </Typography>
                                 </div>
                                 <div
                                   style={{

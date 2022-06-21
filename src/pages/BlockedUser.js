@@ -160,7 +160,7 @@ export default function NeedRequestsList() {
                                 }}
                                 color="success"
                               >
-                                الفاء الحظر
+                                الغاء الحظر
                               </Button>
                             )}
                           </div>

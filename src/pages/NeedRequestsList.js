@@ -227,7 +227,7 @@ export default function NeedRequestsList() {
                                   }}
                                   color="error"
                                 >
-                                  الفاء الطلب
+                                  الغاء الطلب
                                 </Button>
                               )
                             )}
@@ -465,7 +465,7 @@ export default function NeedRequestsList() {
             </DialogContent>
             <DialogActions>
               <Button color="error" autoFocus onClick={handleCloseDel}>
-                الفاء
+                الغاء
               </Button>
               <Button
                 color="success"
