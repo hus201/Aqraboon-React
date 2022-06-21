@@ -157,7 +157,7 @@ export default function Reports() {
                                     gap: 8
                                   }}
                                 >
-                                  <Typography> خدمة </Typography>
+                                  <Typography />
                                 </div>
                                 <div
                                   style={{
