@@ -105,9 +105,9 @@ export const AddServiceForm = (props) => {
   const formik = useFormik({
     initialValues: {
       TypeId: '',
-      Gender: '',
-      AgeFrom: '',
-      AgeTo: '',
+      Gender: 3,
+      AgeFrom: -1,
+      AgeTo: -1,
       //  Lat: User.lat,
       //  Lng: User.lng,
       UserLocation: false
@@ -191,11 +191,6 @@ export const AddServiceForm = (props) => {
                   <Autocomplete
                     id="size-small-outlined"
                     onChange={(e, value) => {
-                      if (value?.id === '2') {
-                        setFieldValue('AgeFrom', -1);
-                        setFieldValue('AgeTo', -1);
-                        setFieldValue('Gender', 3);
-                      }
                       setFieldValue('TypeId', value?.id || '');
                     }}
                     size="small"
